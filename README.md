@@ -46,5 +46,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Google Audit
 
-![Google audit 19/07/19](https://photos.google.com/photo/AF1QipNrqth1yyJhEUxqgdSpWvUWt7BjyI7Fkq6pLU6H)
+![Google audit 19/07/19](./src/assets/images/19-07-19.google-audit.png)
 
