@@ -34,7 +34,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [ ] Local storage
 - [ ] Change store to NGRX
 - [ ] Files for hardcoded text and translation
-- [ ] Optimistic deasign/Graphql
+- [ ] Optimistic design/Graphql
 - [ ] Tests
 - [ ] Firestore rules
 - [ ] Progress bar cases
