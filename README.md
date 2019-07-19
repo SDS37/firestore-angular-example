@@ -38,7 +38,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [ ] Firestore rules
 - [ ] Progress bar cases
 - [x] Disable form buttons when necessary
-- [ ] Show errors
+- [x] Show errors
 - [ ] Reuse components
   - [ ] delete item
 - [ ] Remove unused files from prod
