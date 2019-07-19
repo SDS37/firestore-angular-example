@@ -27,17 +27,18 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
 ## Improvements
-[ ] Performance
-[ ] SEO (robots.txt)
-[ ] Progressive app features
-[ ] Local storage
-[ ] Change store to NGRX
-[ ] Files for hardcoded text and translation
-[ ] Optimistic graph ql
-[ ] Tests
-[ ] Firestore rules
-[ ] Progress bar cases
-[ ] Disable form buttons when necessary ([disable] form.invalid)
-[ ] Show errors
-[ ] Reuse components - delete item
-[ ] Remove unused files from prod
+- [ ] Performance
+- [ ] SEO (robots.txt)
+- [ ] Progressive app features
+- [ ] Local storage
+- [ ] Change store to NGRX
+- [ ] Files for hardcoded text and translation
+- [ ] Optimistic deasign/Graphql
+- [ ] Tests
+- [ ] Firestore rules
+- [ ] Progress bar cases
+- [x] Disable form buttons when necessary
+- [ ] Show errors
+- [ ] Reuse components
+  - [ ] delete item
+- [ ] Remove unused files from prod
