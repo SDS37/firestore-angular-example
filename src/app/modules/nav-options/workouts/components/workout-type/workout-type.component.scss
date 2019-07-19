@@ -1,0 +1,22 @@
+@import '../../../../../../styles/variables.scss';
+mat-icon {
+    background-color: $color-blue-1;
+    color: $color-white;
+    border-radius: 100%;
+    padding: 14px;
+    box-shadow: $mat-button-shadow;
+}
+
+span {
+    color: $color-black-2;
+}
+
+.active {
+    background-color: $color-green-1;
+    mat-icon {
+        background-color: $color-green-2;
+    }
+    span {
+        color: $color-white;
+    }
+}

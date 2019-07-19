@@ -1,0 +1,24 @@
+// Colors
+$color-white: #fff;
+$color-black-2: #000;
+$color-black-1: #444;
+$color-green-2: #00AA4B;
+$color-green-1: #00893D;
+$color-gray-3: #707070;
+$color-gray-2: #f2f2f2;
+$color-gray-1: #d9dad8;
+$color-gray-0: #e6e6e6;
+$color-red-error: #a94442;
+$color-red-error-background: #f2dede;
+$color-red-error-border: #e4b3b3;
+$color-blue-1: #3f51b5;
+// Fonts
+$font-family: "The Message",
+"Helvetica Neue",
+sans-serif;
+// Breakpoints
+$bp-tablet: 1024px;
+$bp-tablet-portrait: 768px;
+$mat-button-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2),
+0 6px 10px 0 rgba(0, 0, 0, .14),
+0 1px 18px 0 rgba(0, 0, 0, .12);

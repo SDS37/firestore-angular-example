@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "fir-example-app-5c3d3"
+  },
+  "targets": {
+    "fir-example-app-5c3d3": {
+      "hosting": {
+        "firebase-example-app": [
+          "fir-example-app-5c3d3"
+        ]
+      }
+    }
+  }
+}

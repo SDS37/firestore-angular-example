@@ -1,0 +1,6 @@
+@import '../../../../../../styles/variables.scss';
+#div-as-button {
+    &:hover {
+        background-color: $color-gray-0;
+    }
+}
