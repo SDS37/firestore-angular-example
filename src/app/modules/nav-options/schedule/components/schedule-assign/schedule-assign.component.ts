@@ -103,7 +103,7 @@ export class ScheduleAssignComponent implements OnInit {
   }
 
   exists(name: string): boolean {
-    // double back to convert to boolean
+    // double bang to convert to boolean
     // ~ bitwise operator NOT. inverts all the bits
     return !!~this.selected.indexOf(name);
   }
