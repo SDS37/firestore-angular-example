@@ -4,12 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 // third-party modules - firebase
 import { AngularFireModule } from '@angular/fire';
-// third-party firebase
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-
-// third-party firebase
 import { AngularFirestore } from '@angular/fire/firestore';
 
 // shared modules
