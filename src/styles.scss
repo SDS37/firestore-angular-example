@@ -210,7 +210,7 @@ a {
     color: $color-green-1;
     cursor: pointer;
     text-decoration: none;
-    word-break: break-all;
+    // word-break: break-all;
     padding: 10px;
     &:hover {
         color: $color-green-2;

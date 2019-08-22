@@ -14,7 +14,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
       {{ error }}
     </div>
     <a routerLink="/auth/login">Already have an account ?</a>
-    <button mat-raised-button color="primary" type="submit">create account</button>
+    <button mat-raised-button color="primary" type="submit">register</button>
   </auth-form>
   `
 })
