@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'auth-form',
   template: `
-    <form class="flex-column-container padding-20 margin-10 border-solid-1 min-width-300" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="flex-column-container padding-20 margin-10 border-solid-1 min-width-258" [formGroup]="form" (ngSubmit)="onSubmit()">
 
       <ng-content select="h1"></ng-content>
 
