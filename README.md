@@ -5,6 +5,7 @@ This webapp shows how to communicate firestore as reactive backend with angular 
 ## Improvements
 
 - [ ] Performance
+- [ ] Ivy tests/configuration
 - [ ] SEO (robots.txt)
 - [ ] Progressive app features
 - [ ] Local storage
