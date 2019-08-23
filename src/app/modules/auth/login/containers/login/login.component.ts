@@ -36,7 +36,7 @@ export class LoginComponent {
       await this.authService.loginUser(email, password);
       this.router.navigate(['/']);
     } catch (error) {
-      this. error = error.message;
+      this.error = error.message;
     }
   }
 

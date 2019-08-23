@@ -5,7 +5,7 @@ import { State } from './state';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, pluck } from 'rxjs/operators';
 
-const state: State  = {
+const defaultState: State  = {
   user: undefined,
   meals: undefined,
   workouts: undefined,
@@ -18,7 +18,7 @@ const state: State  = {
 export class Store {
 
   // BehaviourSubject accepts initial value 'state'
-  private behaviourSubject = new BehaviorSubject<State>(state);
+  private behaviourSubject = new BehaviorSubject<State>(defaultState);
 
   private store = this.behaviourSubject.asObservable().pipe (
     distinctUntilChanged(),
@@ -26,7 +26,7 @@ export class Store {
     // tap( store => console.log('store', store))
   );
 
-  get value() {
+  get value(): State {
     return this.behaviourSubject.value;
   }
 
@@ -37,7 +37,7 @@ export class Store {
     );
   }
 
-  set(name: string, state: any) {
+  set(name: string, state: any): void {
     this.behaviourSubject.next(
       // spread ... - merge objects
       {

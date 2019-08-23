@@ -25,9 +25,6 @@ export class AuthGuard implements CanActivate {
             this.router.navigate(['/auth/login']);
           }
           // double bang
-          // It is possible to use a couple of NOT operators in series to explicitly force the conversion
-          // of any value to the corresponding boolean primitive. The conversion is based on the
-          // "truthyness" or "falsyness" of the value.
           return !!user;
       })
     );

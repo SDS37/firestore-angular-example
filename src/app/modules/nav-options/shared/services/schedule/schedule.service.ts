@@ -64,15 +64,11 @@ export class ScheduleService {
 
   schedule$: Observable<ScheduleItem[]> = this.date$.pipe(
     tap( (next: Date): void => this.store.set('date', next) ),
-    // map. Applies a given project function to each value emitted by the source Observable,
-    // and emits the resulting values as an Observable.
     map( (day: Date): DateRange => {
       const startAt: number = (new Date(day.getFullYear(), day.getMonth(), day.getDate())).getTime();
       const endAt: number = (new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)).getTime() - 1;
       return { startAt, endAt };
     }),
-    // switchMap. Projects each source value to an Observable which is merged in the output
-    // Observable, emitting values only from the most recently projected Observable.
     switchMap( ({startAt, endAt}: DateRange ): Observable<ScheduleItem[]> => {
       return this.af
         .collection<User>('users').doc(this.uid)

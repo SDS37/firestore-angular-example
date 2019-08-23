@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
 
 // guards
-import { AuthGuard } from '../auth/shared/guards/auth.guard'
+import { AuthGuard } from '../auth/shared/guards/auth.guard';
 
 // loadChildren feature for lazy loading
 export const ROUTES: Routes = [
