@@ -134,5 +134,8 @@
       }
     }
   },
-  "defaultProject": "firebase-example-app"
+  "defaultProject": "firebase-example-app",
+  "cli": {
+    "analytics": "52658d14-2456-42fe-b533-107a6d7d0171"
+  }
 }
