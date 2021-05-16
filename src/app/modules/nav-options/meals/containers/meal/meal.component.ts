@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 // services
-import { MealsService } from '../../../shared/services/meals/meals.service';
+import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 
 // interfaces
-import { Meal } from '../../../../../models/meal.interface';
+import { Meal } from 'src/app/models/meal.interface';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';

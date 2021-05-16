@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 // shared modules
-import { MaterialModule } from '../../../modules//shared/material/material.module';
+import { MaterialModule } from 'src/app/modules//shared/material/material.module';
 
 // components
 import { ListItemComponent } from './components/list-item/list-item.component';

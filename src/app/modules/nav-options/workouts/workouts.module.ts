@@ -4,8 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 // shared modules
-import { SharedModule } from '../shared/shared.module';
-import { MaterialModule } from '../../../modules//shared/material/material.module';
+import { SharedModule } from 'src/app/modules/nav-options/shared/shared.module';
+import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 
 // Containers
 import { WorkoutsComponent } from './containers/workouts/workouts.component';

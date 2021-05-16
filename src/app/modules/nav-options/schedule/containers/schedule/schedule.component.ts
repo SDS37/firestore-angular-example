@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 // store
-import { Store } from '../../../../../store/store';
+import { Store } from 'src/app/store/store';
 
 // services
-import { ScheduleService } from '../../../shared/services/schedule/schedule.service';
-import { MealsService } from '../../../shared/services/meals/meals.service';
-import { WorkoutsService } from '../../../shared/services/workouts/workouts.service';
+import { ScheduleService } from 'src/app/modules/nav-options/shared/services/schedule/schedule.service';
+import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
+import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';

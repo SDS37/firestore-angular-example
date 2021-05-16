@@ -13,7 +13,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { SharedModule } from './shared/shared.module';
 
 // constants
-import { Constants } from '../../../constants/constants';
+import { Constants } from 'src/constants/constants';
 
 export const ROUTES: Routes = [
   {

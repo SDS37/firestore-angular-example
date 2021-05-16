@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 // interfaces
-import { ScheduleItem } from '../../../../../models/schedule-item.interface';
-import { ScheduleList } from '../../../../../models/schedule-list.interface';
+import { ScheduleItem } from 'src/app/models/schedule-item.interface';
+import { ScheduleList } from 'src/app/models/schedule-list.interface';
 
 @Component({
   selector: 'schedule-calendar',

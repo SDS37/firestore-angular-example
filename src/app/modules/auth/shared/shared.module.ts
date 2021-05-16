@@ -9,7 +9,7 @@ import { AuthFormComponent } from './components/auth-form/auth-form.component';
 import { AuthService } from './services/auth/auth.service';
 
 // shared
-import { MaterialModule } from '../../shared/material/material.module';
+import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 
 // guards
 import { AuthGuard } from './guards/auth.guard';

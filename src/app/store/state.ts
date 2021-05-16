@@ -1,7 +1,7 @@
-import { User } from '../models/user.interface';
-import { Meal } from '../models/meal.interface';
-import { Workout } from '../models/workout.interface';
-import { ScheduleItem } from '../models/schedule-item.interface';
+import { User } from 'src/app/models/user.interface';
+import { Meal } from 'src/app/models/meal.interface';
+import { Workout } from 'src/app/models/workout.interface';
+import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 
 export interface State {
   user: User;

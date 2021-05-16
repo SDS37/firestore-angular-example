@@ -20,7 +20,7 @@ import { AppHeaderComponent } from './components/app/app-header/app-header.compo
 import { AppNavComponent } from './components/app/app-nav/app-nav.component';
 
 // environments
-import { environment } from '../environments/environment';
+import { environment } from 'src/environments/environment';
 
 // store
 import { Store } from './store/store';

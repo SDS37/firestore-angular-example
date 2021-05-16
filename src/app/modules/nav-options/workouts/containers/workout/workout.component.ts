@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 // services
-import { WorkoutsService } from '../../../shared/services/workouts/workouts.service';
+import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 
 // interfaces
-import { Workout } from '../../../../../models/workout.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';

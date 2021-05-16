@@ -5,14 +5,14 @@ import { AngularFirestore, CollectionReference, DocumentReference, DocumentChang
 import { User } from 'firebase';
 
 // store
-import { Store } from '../../../../../store/store';
+import { Store } from 'src/app/store/store';
 
 // rxjs
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { tap, map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 // services
-import { AuthService } from '../../../../auth/shared/services/auth/auth.service';
+import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';

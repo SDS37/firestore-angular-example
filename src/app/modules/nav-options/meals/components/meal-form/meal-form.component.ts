@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChan
 import { FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 // interfaces
-import { Meal } from '../../../../../models/meal.interface';
+import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
   selector: 'meal-form',

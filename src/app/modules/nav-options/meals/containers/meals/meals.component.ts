@@ -4,13 +4,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
 // store
-import { Store } from '../../../../../store/store';
+import { Store } from 'src/app/store/store';
 
 // services
-import { MealsService } from '../../../shared/services/meals/meals.service';
+import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 
 // interfaces
-import { Meal } from '../../../../../models/meal.interface';
+import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
   selector: 'meals',

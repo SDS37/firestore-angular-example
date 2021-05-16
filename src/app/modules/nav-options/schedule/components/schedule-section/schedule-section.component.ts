@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 
 // interfaces
-import { ScheduleItem } from '../../../../../models/schedule-item.interface';
+import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 
 @Component({
   selector: 'schedule-section',

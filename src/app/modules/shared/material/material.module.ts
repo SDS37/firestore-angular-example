@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 // constants
-import { Constants } from '../../../../constants/constants';
+import { Constants } from 'src/constants/constants';
 
 @NgModule({
   imports: [

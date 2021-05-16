@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 // interfaces
-import { User } from '../../../models/user.interface';
+import { User } from 'src/app/models/user.interface';
 
 @Component({
   selector: 'app-header',

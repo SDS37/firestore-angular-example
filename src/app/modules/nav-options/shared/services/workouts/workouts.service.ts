@@ -5,17 +5,17 @@ import { AngularFirestore, DocumentReference, DocumentChangeAction } from '@angu
 import { User } from 'firebase';
 
 // store
-import { Store } from '../../../../../store/store';
+import { Store } from 'src/app/store/store';
 
 // services
-import { AuthService } from '../../../../auth/shared/services/auth/auth.service';
+import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 // rxjs
 import { Observable, of } from 'rxjs';
 import { tap, map, filter, shareReplay } from 'rxjs/operators';
 
 // interfaces
-import { Workout } from '../../../../../models/workout.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 @Injectable()
 export class WorkoutsService {

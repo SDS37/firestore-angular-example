@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 // store
-import { Store } from '../../store/store';
+import { Store } from 'src/app/store/store';
 
 // services
-import { AuthService } from '../../modules/auth/shared/services/auth/auth.service';
+import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 // interfaces
-import { User } from '../../models/user.interface';
+import { User } from 'src/app/models/user.interface';
 
 @Component({
   selector: 'app-root',

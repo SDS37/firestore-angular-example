@@ -6,8 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { RegisterComponent } from './containers/register/register.component';
 
 // shared
-import { SharedModule } from '../shared/shared.module';
-import { MaterialModule } from '../../shared/material/material.module';
+import { SharedModule } from 'src/app/modules/auth/shared/shared.module';
+import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 
 export const ROUTES: Routes = [
   { path: '', component: RegisterComponent }

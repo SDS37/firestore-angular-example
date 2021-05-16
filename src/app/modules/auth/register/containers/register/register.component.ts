@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 // services
-import { AuthService } from '../../../shared/services/auth/auth.service';
+import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 @Component({
   selector: 'register',

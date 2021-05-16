@@ -5,14 +5,14 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { UserInfo } from 'firebase';
 
 // store
-import { Store } from '../../../../../store/store';
+import { Store } from 'src/app/store/store';
 
 // rxjs
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 // interfaces
-import { User } from '../../../../../models/user.interface';
+import { User } from 'src/app/models/user.interface';
 
 @Injectable()
 export class AuthService {

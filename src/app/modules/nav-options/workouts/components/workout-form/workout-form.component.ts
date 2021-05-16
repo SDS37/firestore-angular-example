@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChan
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 // interfaces
-import { Workout } from '../../../../../models/workout.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
   selector: 'workout-form',

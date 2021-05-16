@@ -4,13 +4,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
 // store
-import { Store } from '../../../../../store/store';
+import { Store } from 'src/app/store/store';
 
 // services
-import { WorkoutsService } from '../../../shared/services/workouts/workouts.service';
+import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 
 // interfaces
-import { Workout } from '../../../../../models/workout.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
   selector: 'workouts',

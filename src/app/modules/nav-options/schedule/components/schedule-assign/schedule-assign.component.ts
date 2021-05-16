@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit, ViewEncapsulation } from '@angular/core';
 
 // interfaces
-import { Meal } from '../../../../../models/meal.interface';
-import { Workout } from '../../../../../models/workout.interface';
+import { Meal } from 'src/app/models/meal.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
   selector: 'schedule-assign',
