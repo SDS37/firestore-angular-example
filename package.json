@@ -23,7 +23,6 @@
     "@angular/platform-browser-dynamic": "~9.1.13",
     "@angular/router": "~9.1.13",
     "@angular/service-worker": "~9.1.13",
-    "@ng-toolkit/universal": "^1.1.21",
     "firebase": "^6.2.4",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.6.7",
