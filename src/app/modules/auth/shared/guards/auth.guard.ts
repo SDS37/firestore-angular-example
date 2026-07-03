@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
+import { User } from '@angular/fire/auth';
 
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 // rxjs
-import { map } from 'rxjs/operators';
-
-// firebase
-import { User } from 'firebase';
+import { map, take } from 'rxjs/operators';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -19,13 +17,13 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate() {
-    return this.authService.authState.pipe (
-      map( (user: User): boolean => {
-          if (!user) {
-            this.router.navigate(['/auth/login']);
-          }
-          // double bang
-          return !!user;
+    return this.authService.authState.pipe(
+      take(1),
+      map((user: User | null): boolean => {
+        if (!user) {
+          this.router.navigate(['/auth/login']);
+        }
+        return !!user;
       })
     );
   }

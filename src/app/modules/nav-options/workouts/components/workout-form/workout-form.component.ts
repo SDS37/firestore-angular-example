@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
+  standalone: false,
   selector: 'workout-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -132,13 +133,13 @@ import { Workout } from 'src/app/models/workout.interface';
               mat-icon-button
               type="button"
               (click)="toggle()">
-              <mat-icon aria-hidden="false" aria-label="Cancel delete meal">cancel</mat-icon>
+              <mat-icon aria-hidden="false" aria-label="Cancel delete workout">cancel</mat-icon>
             </button>
             <button
               mat-icon-button
               type="button"
-              (click)="deleteMeal()">
-              <mat-icon color="warn" aria-hidden="false" aria-label="Delete meal">delete</mat-icon>
+              (click)="deleteWorkout()">
+              <mat-icon color="warn" aria-hidden="false" aria-label="Delete workout">delete</mat-icon>
             </button>
           </div>
 

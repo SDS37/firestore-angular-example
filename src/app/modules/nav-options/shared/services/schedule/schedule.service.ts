@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
-
-// third-party firebase
-import { AngularFirestore, CollectionReference, DocumentReference, DocumentChangeAction } from '@angular/fire/firestore';
-import { User } from 'firebase';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+  updateDoc,
+  doc,
+  query,
+  orderBy,
+  startAt,
+  endAt,
+  DocumentReference
+} from '@angular/fire/firestore';
 
 // store
 import { Store } from 'src/app/store/store';
 
 // rxjs
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, from } from 'rxjs';
 import { tap, map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 // services
@@ -22,95 +31,92 @@ import { DateRange } from 'src/app/models/date-range.interface';
 @Injectable()
 export class ScheduleService {
 
-  // BehaviorSubjects
-  private date$: BehaviorSubject<Date> = new BehaviorSubject<Date>(new Date());
-  // Subjects
-  private section$: any = new Subject();
-  private itemList$ = new Subject();
+  private date$ = new BehaviorSubject<Date>(new Date());
+  private section$ = new Subject<{
+    type: string;
+    assigned: string[];
+    data: ScheduleItem;
+    section: string;
+    day: Date;
+  }>();
+  private itemList$ = new Subject<Record<string, string[]>>();
 
-  items$: Observable<ScheduleList> = this.itemList$.pipe(
+  items$ = this.itemList$.pipe(
     withLatestFrom(this.section$),
-    map( ([ items, section ]: any[] ): any => {
+    switchMap(([items, section]) => {
       const id = section.data.$key;
       const defaults: ScheduleItem = {
-        workouts: null,
         meals: null,
+        workouts: null,
         section: section.section,
         timestamp: new Date(section.day).getTime()
       };
-      // object spread
-      const payload: any = {
+      const payload: ScheduleItem = {
         ...(id ? section.data : defaults),
         ...items
       };
       if (id) {
-        return this.updateSection(id, payload);
-      } else {
-        return this.createSection(payload);
+        return from(this.updateSection(id, payload));
       }
+      return from(this.createSection(payload));
     })
   );
 
-  selected$: Observable<any> = this.section$.pipe(
-    tap( (next: any): void => this.store.set('selected', next) )
+  selected$ = this.section$.pipe(
+    tap((next) => this.store.set('selected', next))
   );
 
-  list$: Observable<any> = this.section$.pipe(
-    map( ( value: any ): ScheduleItem => {
-      return this.store.value[value.type];
-    }),
-    tap( ( next: ScheduleItem ): void => this.store.set('list', next) )
+  list$ = this.section$.pipe(
+    map((value) => this.store.value[value.type as 'meals' | 'workouts']),
+    tap((next) => this.store.set('list', next))
   );
 
-  schedule$: Observable<ScheduleItem[]> = this.date$.pipe(
-    tap( (next: Date): void => this.store.set('date', next) ),
-    map( (day: Date): DateRange => {
-      const startAt: number = (new Date(day.getFullYear(), day.getMonth(), day.getDate())).getTime();
-      const endAt: number = (new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)).getTime() - 1;
-      return { startAt, endAt };
+  schedule$ = this.date$.pipe(
+    tap((next: Date) => this.store.set('date', next)),
+    map((day: Date): DateRange => {
+      const startAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime();
+      const endAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime() - 1;
+      return { startAt: startAtValue, endAt: endAtValue };
     }),
-    switchMap( ({startAt, endAt}: DateRange ): Observable<ScheduleItem[]> => {
-      return this.af
-        .collection<User>('users').doc(this.uid)
-        .collection<ScheduleItem>('schedule',  ( reference: CollectionReference ): any => {
-          // query
-          return reference.orderBy('timestamp').startAt(startAt).endAt(endAt);
-        })
-        .snapshotChanges().pipe(
-          map( ( documentChangeActions: DocumentChangeAction<ScheduleItem>[] ): ScheduleItem[] => {
-            return documentChangeActions.map( ( documentChangeAction: DocumentChangeAction<ScheduleItem> ): ScheduleItem => {
-                const $key = documentChangeAction.payload.doc.id as string;
-                const data = documentChangeAction.payload.doc.data();
-                return { $key, ...data };
-            });
-          })
-        );
+    switchMap(({ startAt: startAtValue, endAt: endAtValue }) => {
+      const scheduleCollection = collection(this.firestore, `users/${this.uid}/schedule`);
+      const scheduleQuery = query(
+        scheduleCollection,
+        orderBy('timestamp'),
+        startAt(startAtValue),
+        endAt(endAtValue)
+      );
+      return collectionData(scheduleQuery, { idField: '$key' }) as Observable<ScheduleItem[]>;
     }),
-    map( (data: ScheduleItem[]): ScheduleList => {
+    map((data: ScheduleItem[]): ScheduleList => {
       const mapped: ScheduleList = {};
-      for (const prop of data) {
-        if (!mapped[prop.section]) {
-          mapped[prop.section] = prop;
+      for (const item of data) {
+        if (!mapped[item.section]) {
+          mapped[item.section] = item;
         }
       }
       return mapped;
     }),
-    tap ( (next: ScheduleItem[]): void => {
+    tap((next: ScheduleList) => {
       this.store.set('schedule', next);
-    } )
+    })
   );
 
   constructor(
-    private af: AngularFirestore,
+    private firestore: Firestore,
     private store: Store,
     private authService: AuthService
   ) {}
 
   get uid(): string {
-    return this.authService.user.uid;
+    const user = this.authService.user;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+    return user.uid;
   }
 
-  updateItems(items: string[]): void {
+  updateItems(items: Record<string, string[]>): void {
     this.itemList$.next(items);
   }
 
@@ -118,16 +124,24 @@ export class ScheduleService {
     this.date$.next(date);
   }
 
-  selectSection(event: any): void {
+  selectSection(event: {
+    type: string;
+    assigned: string[];
+    data: ScheduleItem;
+    section: string;
+    day: Date;
+  }): void {
     this.section$.next(event);
   }
 
   private createSection(payload: ScheduleItem): Promise<DocumentReference> {
-    return this.af.collection<User>('users').doc(this.uid).collection<ScheduleItem>('schedule').add(payload);
+    const scheduleCollection = collection(this.firestore, `users/${this.uid}/schedule`);
+    return addDoc(scheduleCollection, payload);
   }
 
   private updateSection(key: string, payload: ScheduleItem): Promise<void> {
-    return this.af.collection<User>('users').doc(this.uid).collection<ScheduleItem>('schedule').doc(key).update(payload);
+    const scheduleDoc = doc(this.firestore, `users/${this.uid}/schedule/${key}`);
+    return updateDoc(scheduleDoc, { ...payload });
   }
 
 }

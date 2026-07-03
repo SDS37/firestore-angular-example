@@ -4,6 +4,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 import { User } from 'src/app/models/user.interface';
 
 @Component({
+  standalone: false,
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

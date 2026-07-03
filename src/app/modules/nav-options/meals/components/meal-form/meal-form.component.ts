@@ -5,6 +5,7 @@ import { FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@ang
 import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
+  standalone: false,
   selector: 'meal-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

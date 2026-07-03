@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'auth-form',
   template: `
     <form class="flex-column-container padding-20 margin-10 border-solid-1 min-width-258" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -38,7 +39,7 @@ export class AuthFormComponent {
   @Output() submitted = new EventEmitter<FormGroup>();
 
   form = this.fb.group({
-    email: ['', Validators.email],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
   });
 

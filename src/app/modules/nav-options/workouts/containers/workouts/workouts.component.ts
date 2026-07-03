@@ -13,6 +13,7 @@ import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/wor
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
+  standalone: false,
   selector: 'workouts',
   template: `
   <div

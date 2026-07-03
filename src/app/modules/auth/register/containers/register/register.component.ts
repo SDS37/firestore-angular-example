@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 @Component({
+  standalone: false,
   selector: 'register',
   template: `
   <auth-form (submitted)="registerUser($event)">
@@ -33,8 +34,8 @@ export class RegisterComponent {
     try {
       await this.authService.createUser(email, password);
       this.router.navigate(['/']);
-    } catch (error) {
-      this.error = error.message;
+    } catch (error: unknown) {
+      this.error = error instanceof Error ? error.message : 'Registration failed';
     }
   }
 

@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
-
-// third-party firebase
-import { AngularFirestore, DocumentReference, DocumentChangeAction } from '@angular/fire/firestore';
-import { User } from 'firebase';
+import { Auth } from '@angular/fire/auth';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  DocumentReference
+} from '@angular/fire/firestore';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -12,7 +19,8 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 // rxjs
 import { Observable, of } from 'rxjs';
-import { tap, map, filter, shareReplay } from 'rxjs/operators';
+import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
+import { authState } from '@angular/fire/auth';
 
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
@@ -20,49 +28,53 @@ import { Workout } from 'src/app/models/workout.interface';
 @Injectable()
 export class WorkoutsService {
 
-  workouts$: Observable<Workout[]> = this.af.collection<User>(`users`).doc(this.uid).collection<Workout>('workouts')
-    .snapshotChanges().pipe (
-      shareReplay(1),
-      map( ( next: DocumentChangeAction<Workout>[] ): Workout[] => {
-        return next.map( ( item: DocumentChangeAction<Workout> ): Workout => {
-          const data = item.payload.doc.data();
-          const $key = item.payload.doc.id;
-          return { $key, ...data };
-        });
-      }),
-      tap( ( ( next: Workout[] ): void => {
-        this.store.set('workouts', next);
-      })
-    )
+  workouts$: Observable<Workout[]> = authState(this.auth).pipe(
+    filter((user): user is NonNullable<typeof user> => !!user),
+    switchMap(user => {
+      const workoutsCollection = collection(this.firestore, `users/${user.uid}/workouts`);
+      return collectionData(workoutsCollection, { idField: '$key' }) as Observable<Workout[]>;
+    }),
+    shareReplay(1),
+    tap((next: Workout[]): void => {
+      this.store.set('workouts', next);
+    })
   );
 
   constructor(
-    private af: AngularFirestore,
+    private firestore: Firestore,
+    private auth: Auth,
     private store: Store,
     private authService: AuthService
   ) {}
 
   get uid(): string {
-    return this.authService.user.uid;
+    const user = this.authService.user;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+    return user.uid;
   }
 
   addWorkout(workout: Workout): Promise<DocumentReference> {
-    return this.af.collection<User>('users').doc(this.uid).collection<Workout>('workouts').add(workout);
+    const workoutsCollection = collection(this.firestore, `users/${this.uid}/workouts`);
+    return addDoc(workoutsCollection, workout);
   }
 
   updateWorkout(key: string, workout: Workout): Promise<void> {
-    return this.af.collection<User>('users').doc(this.uid).collection<Workout>('workouts').doc(key).update(workout);
+    const workoutDoc = doc(this.firestore, `users/${this.uid}/workouts/${key}`);
+    return updateDoc(workoutDoc, { ...workout });
   }
 
   deleteWorkout(key: string): Promise<void> {
-    return this.af.collection<User>('users').doc(this.uid).collection<Workout>('workouts').doc(key).delete();
+    const workoutDoc = doc(this.firestore, `users/${this.uid}/workouts/${key}`);
+    return deleteDoc(workoutDoc);
   }
 
-  getWorkout(paramskey: string): Observable<Workout> {
+  getWorkout(paramskey: string): Observable<Workout | undefined> {
     if (!paramskey) {
       return of({
         name: '',
-        type: '',
+        type: 'strength',
         strength: {},
         endurance: {},
         timestamp: null,
@@ -70,9 +82,9 @@ export class WorkoutsService {
         $exists: () => false
       });
     }
-    return this.store.select<Workout[]>('workouts').pipe (
+    return this.store.select<Workout[]>('workouts').pipe(
       filter(Boolean),
-      map( (workouts: Workout[]): Workout => workouts.find((workout: Workout) => workout.$key === paramskey))
+      map((workouts: Workout[]) => workouts.find((workout: Workout) => workout.$key === paramskey))
     );
   }
 

@@ -13,6 +13,7 @@ import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/
 import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
+  standalone: false,
   selector: 'meals',
   template: `
   <div

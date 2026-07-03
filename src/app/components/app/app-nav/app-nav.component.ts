@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-nav',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -16,20 +17,20 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
     <a
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
-      routerLink="schedule" routerLinkActive="active-link">
+      routerLink="/schedule" routerLinkActive="active-link">
       <mat-icon aria-hidden="false" aria-label="Schedule section">schedule</mat-icon>
       <span class="margin-left-10">Schedule</span>
     </a>
     <a
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
-      routerLink="meals"
+      routerLink="/meals"
       routerLinkActive="active-link">
       <mat-icon aria-hidden="false" aria-label="Meals section">fastfood</mat-icon>
       <span class="margin-left-10">Meals</span>
     </a>
     <a
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
-      routerLink="workouts"
+      routerLink="/workouts"
       routerLinkActive="active-link">
       <mat-icon aria-hidden="false" aria-label="Meals section">fitness_center</mat-icon>
       <span class="margin-left-10">Workouts</span>
