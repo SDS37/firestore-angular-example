@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 // rxjs
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 // store
@@ -16,14 +15,15 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 import { User } from 'src/app/models/user.interface';
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 
 export class AppComponent implements OnInit, OnDestroy {
 
-  user$: Observable<User>;
-  subscription: Subscription;
+  user$: Observable<User | null>;
+  private subscriptions = new Subscription();
 
   currentUrl: string = null;
   isAuthUrl = false;
@@ -35,48 +35,33 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.authService.auth$.subscribe();
-    this.user$ = this.store.select<User>('user');
+    this.subscriptions.add(this.authService.auth$.subscribe());
+    this.user$ = this.store.select('user');
     this.onRouterChange();
   }
 
   onRouterChange(): void {
-    this.router.events.pipe(
-      filter( event => event instanceof NavigationEnd)
-    ).subscribe( (navigationEnd: NavigationEnd) => {
-      this.currentUrl = navigationEnd.url;
-      this.isAuthUrl = this.currentUrl.includes('login') ? true : false || this.currentUrl.includes('register') ? true : false;
-    });
+    this.subscriptions.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd)
+      ).subscribe((navigationEnd: NavigationEnd) => {
+        this.currentUrl = navigationEnd.url;
+        this.isAuthUrl = this.currentUrl.includes('login') || this.currentUrl.includes('register');
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
-
-  // onBrowserNavigation() {
-  //   // DO NOT REMOVE. This covers case where the browser back button is clicked from the home page.
-  //   // the logout function also covers the authentication action from the store
-  //   this.platformLocation.onPopState(() => {
-  //     this.router.events.subscribe(event => {
-  //       if (event instanceof NavigationEnd && event.url === '/login') {
-  //         this.logout();
-  //       }
-  //     });
-  //   });
-  // }
 
   async onLogout(): Promise<void> {
     await this.authService.logoutUser();
     this.router.navigate(['/auth/login']);
   }
 
-  onActivate(event: Router): void {
-    // console.log('activate', event);
-  }
+  onActivate(_event: unknown): void {}
 
-  onDeactivate(event: Router): void {
-    // console.log('deactivate', event);
-  }
+  onDeactivate(_event: unknown): void {}
 
 }
-

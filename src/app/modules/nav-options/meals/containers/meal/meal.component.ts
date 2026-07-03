@@ -8,10 +8,11 @@ import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/
 import { Meal } from 'src/app/models/meal.interface';
 
 // rxjs
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, Subscription, of, EMPTY } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'meal',
   template: `
   <div
@@ -59,7 +60,14 @@ export class MealComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = this.mealsService.meals$.subscribe();
     this.meal$ = this.activatedRoute.params.pipe(
-      switchMap( param => this.mealsService.getMeal(param.id))
+      switchMap(param => this.mealsService.getMeal(param.id).pipe(
+        tap(meal => {
+          if (param.id && meal === undefined) {
+            void this.router.navigate(['/meals']);
+          }
+        }),
+        switchMap(meal => meal ? of(meal) : EMPTY)
+      ))
     );
   }
 
@@ -68,24 +76,36 @@ export class MealComponent implements OnInit, OnDestroy {
   }
 
   async addMeal(event: Meal): Promise<void> {
-    await this.mealsService.addMeal(event);
-    this.backToMeals();
+    try {
+      await this.mealsService.addMeal(event);
+      this.backToMeals();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async updateMeal(event: Meal): Promise<void> {
-    const key = this.activatedRoute.snapshot.params.id;
-    await this.mealsService.updateMeal(key, event);
-    this.backToMeals();
+    try {
+      const key = this.activatedRoute.snapshot.params.id;
+      await this.mealsService.updateMeal(key, event);
+      this.backToMeals();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  async deleteMeal(event: Meal): Promise<void> {
-    const key = this.activatedRoute.snapshot.params.id;
-    await this.mealsService.deleteMeal(key);
-    this.backToMeals();
+  async deleteMeal(_event: Meal): Promise<void> {
+    try {
+      const key = this.activatedRoute.snapshot.params.id;
+      await this.mealsService.deleteMeal(key);
+      this.backToMeals();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   backToMeals(): void {
-    this.router.navigate(['meals']);
+    this.router.navigate(['/meals']);
   }
 
 }

@@ -5,6 +5,7 @@ import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
+  standalone: false,
   selector: 'schedule-assign',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,
@@ -82,7 +83,7 @@ export class ScheduleAssignComponent implements OnInit {
   // constructor() {}
 
   ngOnInit(): void {
-    this.selected = [...this.section.assigned];
+    this.selected = [...(this.section?.assigned ?? [])];
   }
 
   toggleItem(name: string): void {

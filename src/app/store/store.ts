@@ -3,9 +3,9 @@ import { State } from './state';
 
 // rxjs
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
-const defaultState: State  = {
+const defaultState: State = {
   user: undefined,
   meals: undefined,
   workouts: undefined,
@@ -17,34 +17,27 @@ const defaultState: State  = {
 
 export class Store {
 
-  // BehaviourSubject accepts initial value 'state'
   private behaviourSubject = new BehaviorSubject<State>(defaultState);
 
-  private store = this.behaviourSubject.asObservable().pipe (
-    distinctUntilChanged(),
-    // for dev
-    // tap( store => console.log('store', store))
+  private store = this.behaviourSubject.asObservable().pipe(
+    distinctUntilChanged()
   );
 
   get value(): State {
     return this.behaviourSubject.value;
   }
 
-  // <T>  generic type
-  select<T>(name: string): Observable<T> {
-    return this.store.pipe (
-      pluck(name)
+  select<T>(name: keyof State): Observable<T> {
+    return this.store.pipe(
+      map(state => state[name] as T)
     );
   }
 
-  set(name: string, state: any): void {
-    this.behaviourSubject.next(
-      // spread ... - merge objects
-      {
-        ...this.value,
-        [name]: state
-      }
-    );
+  set<K extends keyof State>(name: K, state: State[K]): void {
+    this.behaviourSubject.next({
+      ...this.value,
+      [name]: state
+    });
   }
 
 }

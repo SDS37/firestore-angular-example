@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 // feature modules
 import { AuthModule } from './modules/auth/auth.module';
@@ -19,8 +21,8 @@ import { AppComponent } from './containers/app/app.component';
 import { AppHeaderComponent } from './components/app/app-header/app-header.component';
 import { AppNavComponent } from './components/app/app-nav/app-nav.component';
 
-// environments
-import { environment } from 'src/environments/environment';
+// constants
+import { Constants } from 'src/constants/constants';
 
 // store
 import { Store } from './store/store';
@@ -34,22 +36,21 @@ import { Store } from './store/store';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
-    // feature modules
     AuthModule,
     NavOptionsModule,
     NotFoundModule,
-    // shared modules
     AppRoutingModule,
     MaterialModule
   ],
   providers: [
-    Store
+    Store,
+    provideFirebaseApp(() => initializeApp(Constants.FIREBASE_CONFIG)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
   ],
   bootstrap: [
     AppComponent
   ]
-  // exports: []
 })
 
 export class AppModule {}

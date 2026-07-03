@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-
-// third-party firebase
-import { AngularFireAuth } from '@angular/fire/auth';
-import { UserInfo } from 'firebase';
+import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -12,18 +9,18 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 // interfaces
-import { User } from 'src/app/models/user.interface';
+import { User as AppUser } from 'src/app/models/user.interface';
 
 @Injectable()
 export class AuthService {
 
-  auth$: Observable<firebase.User> = this.af.authState.pipe(
-    tap( ( next: firebase.User ) => {
+  auth$: Observable<User | null> = authState(this.auth).pipe(
+    tap((next: User | null) => {
       if (!next) {
         this.store.set('user', null);
         return;
       }
-      const user: User = {
+      const user: AppUser = {
         email: next.email,
         uid: next.uid,
         authenticated: true
@@ -33,28 +30,28 @@ export class AuthService {
   );
 
   constructor(
-    private af: AngularFireAuth,
+    private auth: Auth,
     private store: Store
   ) {}
 
-  get user(): UserInfo {
-    return this.af.auth.currentUser;
+  get user(): User | null {
+    return this.auth.currentUser;
   }
 
-  get authState(): Observable<firebase.User> {
-    return this.af.authState;
+  get authState(): Observable<User | null> {
+    return authState(this.auth);
   }
 
-  createUser(email: string, password: string): Promise<firebase.auth.UserCredential> {
-    return this.af.auth.createUserWithEmailAndPassword(email, password);
+  createUser(email: string, password: string) {
+    return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
-  loginUser(email: string, password: string): Promise<firebase.auth.UserCredential> {
-    return this.af.auth.signInWithEmailAndPassword(email, password);
+  loginUser(email: string, password: string) {
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  logoutUser(): Promise<void> {
-    return this.af.auth.signOut();
+  logoutUser() {
+    return signOut(this.auth);
   }
 
 }

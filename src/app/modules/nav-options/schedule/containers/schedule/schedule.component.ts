@@ -12,11 +12,13 @@ import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/wor
 import { Observable, Subscription } from 'rxjs';
 
 // interfaces
+import { ScheduleList } from 'src/app/models/schedule-list.interface';
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
+  standalone: false,
   selector: 'schedule',
   template: `
   <div
@@ -56,9 +58,9 @@ import { Workout } from 'src/app/models/workout.interface';
 export class ScheduleComponent implements OnInit, OnDestroy {
 
   date$: Observable<Date>;
-  selected$: Observable<any>;
+  selected$: Observable<unknown>;
   list$: Observable<Meal[] | Workout[]>;
-  schedule$: Observable<ScheduleItem[]>;
+  schedule$: Observable<ScheduleList>;
   subscriptions: Subscription[] = [];
 
   open = false;
@@ -73,24 +75,29 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.date$ = this.store.select('date');
     this.schedule$ = this.store.select('schedule');
-    this.selected$ = this.store.select('selected') ;
+    this.selected$ = this.store.select('selected');
     this.list$ = this.store.select('list');
     this.subscriptions = [
       this.scheduleService.schedule$.subscribe(),
       this.scheduleService.selected$.subscribe(),
       this.scheduleService.list$.subscribe(),
       this.scheduleService.items$.subscribe(),
-      // to preload data from other nav options
       this.mealsService.meals$.subscribe(),
       this.workoutService.workouts$.subscribe()
     ];
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach( subscription  => subscription.unsubscribe() );
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  changeSection(event: any): void {
+  changeSection(event: {
+    type: string;
+    assigned: string[];
+    data: ScheduleItem;
+    section: string;
+    day: Date;
+  }): void {
     this.open = true;
     this.scheduleService.selectSection(event);
   }
@@ -99,7 +106,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.scheduleService.updateDate(date);
   }
 
-  updateItems(items: string[]): void {
+  updateItems(items: Record<string, string[]>): void {
     this.scheduleService.updateItems(items);
     this.closeAssign();
   }

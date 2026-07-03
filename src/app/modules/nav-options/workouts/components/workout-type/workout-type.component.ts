@@ -8,6 +8,7 @@ export const TYPE_CONTROL_ACCESOR = {
 };
 
 @Component({
+  standalone: false,
   selector: 'workout-type',
   providers: [ TYPE_CONTROL_ACCESOR ],
   changeDetection: ChangeDetectionStrategy.OnPush,

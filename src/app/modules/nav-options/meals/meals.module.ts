@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 // shared modules
 import { SharedModule } from 'src/app/modules/nav-options/shared/shared.module';
-import { MaterialModule } from 'src/app/modules//shared/material/material.module';
+import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 
 // Containers
 import { MealsComponent } from './containers/meals/meals.component';

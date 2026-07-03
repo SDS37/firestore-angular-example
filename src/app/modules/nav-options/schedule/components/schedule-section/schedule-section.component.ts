@@ -4,6 +4,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewEn
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 
 @Component({
+  standalone: false,
   selector: 'schedule-section',
   styleUrls: ['schedule-section.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

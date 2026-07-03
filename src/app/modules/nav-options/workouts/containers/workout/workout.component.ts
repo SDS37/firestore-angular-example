@@ -8,10 +8,11 @@ import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/wor
 import { Workout } from 'src/app/models/workout.interface';
 
 // rxjs
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, Subscription, of, EMPTY } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'workout',
   template: `
   <div
@@ -59,7 +60,14 @@ export class WorkoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = this.workoutsService.workouts$.subscribe();
     this.workout$ = this.activatedRoute.params.pipe(
-      switchMap( param => this.workoutsService.getWorkout(param.id))
+      switchMap(param => this.workoutsService.getWorkout(param.id).pipe(
+        tap(workout => {
+          if (param.id && workout === undefined) {
+            void this.router.navigate(['/workouts']);
+          }
+        }),
+        switchMap(workout => workout ? of(workout) : EMPTY)
+      ))
     );
   }
 
@@ -68,24 +76,36 @@ export class WorkoutComponent implements OnInit, OnDestroy {
   }
 
   async addWorkout(event: Workout): Promise<void> {
-    await this.workoutsService.addWorkout(event);
-    this.backToWorkouts();
+    try {
+      await this.workoutsService.addWorkout(event);
+      this.backToWorkouts();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async updateWorkout(event: Workout): Promise<void> {
-    const key = this.activatedRoute.snapshot.params.id;
-    await this.workoutsService.updateWorkout(key, event);
-    this.backToWorkouts();
+    try {
+      const key = this.activatedRoute.snapshot.params.id;
+      await this.workoutsService.updateWorkout(key, event);
+      this.backToWorkouts();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  async deleteWorkout(event: Workout): Promise<void> {
-    const key = this.activatedRoute.snapshot.params.id;
-    await this.workoutsService.deleteWorkout(key);
-    this.backToWorkouts();
+  async deleteWorkout(_event: Workout): Promise<void> {
+    try {
+      const key = this.activatedRoute.snapshot.params.id;
+      await this.workoutsService.deleteWorkout(key);
+      this.backToWorkouts();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   backToWorkouts(): void {
-    this.router.navigate(['workouts']);
+    this.router.navigate(['/workouts']);
   }
 
 }

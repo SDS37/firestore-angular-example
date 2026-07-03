@@ -1,6 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'list-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

@@ -7,7 +7,6 @@ import { SharedModule } from './shared/shared.module';
 // guards
 import { AuthGuard } from 'src/app/modules/auth/shared/guards/auth.guard';
 
-// loadChildren feature for lazy loading
 export const ROUTES: Routes = [
   { path: 'schedule', canActivate: [AuthGuard], loadChildren: () => import('./schedule/schedule.module').then(m => m.ScheduleModule) },
   { path: 'meals', canActivate: [AuthGuard], loadChildren: () => import('./meals/meals.module').then(m => m.MealsModule) },
@@ -19,8 +18,6 @@ export const ROUTES: Routes = [
     RouterModule.forChild(ROUTES),
     SharedModule.forRoot()
   ]
-  // declarations: [],
-  // providers: []
 })
 
 export class NavOptionsModule {}
