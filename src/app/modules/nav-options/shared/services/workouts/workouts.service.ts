@@ -1,15 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import {
-  Firestore,
-  collection,
-  collectionData,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  DocumentReference
-} from '@angular/fire/firestore';
+import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -19,11 +10,19 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 // utils
 import { toFirestoreData } from 'src/app/utils/firestore-document';
+import { observeAuthState } from 'src/app/utils/firebase-auth.utils';
+import {
+  getCollection,
+  observeCollectionData,
+  getDocument,
+  createDocument,
+  updateDocument,
+  deleteDocument
+} from 'src/app/utils/firestore.utils';
 
 // rxjs
 import { Observable, of } from 'rxjs';
 import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
-import { authState } from '@angular/fire/auth';
 
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
@@ -31,13 +30,13 @@ import { Workout } from 'src/app/models/workout.interface';
 @Injectable()
 export class WorkoutsService {
 
-  workouts$: Observable<Workout[]> = authState(this.auth).pipe(
+  workouts$: Observable<Workout[]> = observeAuthState(this.auth).pipe(
     filter((user): user is NonNullable<typeof user> => !!user),
     switchMap(user => {
-      const workoutsCollection = collection(this.firestore, `users/${user.uid}/workouts`);
-      return collectionData(workoutsCollection, { idField: '$key' }) as Observable<Workout[]>;
+      const workoutsCollection = getCollection(this.firestore, `users/${user.uid}/workouts`);
+      return observeCollectionData<Workout>(workoutsCollection, { idField: '$key' });
     }),
-    shareReplay(1),
+    shareReplay({ bufferSize: 1, refCount: true }),
     tap((next: Workout[]): void => {
       this.store.set('workouts', next);
     })
@@ -59,18 +58,21 @@ export class WorkoutsService {
   }
 
   addWorkout(workout: Workout): Promise<DocumentReference> {
-    const workoutsCollection = collection(this.firestore, `users/${this.uid}/workouts`);
-    return addDoc(workoutsCollection, toFirestoreData(workout));
+    const workoutsCollection = getCollection(this.firestore, `users/${this.uid}/workouts`);
+    return createDocument(workoutsCollection, toFirestoreData({
+      ...workout,
+      timestamp: workout.timestamp ?? Date.now()
+    }));
   }
 
   updateWorkout(key: string, workout: Workout): Promise<void> {
-    const workoutDoc = doc(this.firestore, `users/${this.uid}/workouts/${key}`);
-    return updateDoc(workoutDoc, toFirestoreData(workout));
+    const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
+    return updateDocument(workoutDoc, toFirestoreData(workout));
   }
 
   deleteWorkout(key: string): Promise<void> {
-    const workoutDoc = doc(this.firestore, `users/${this.uid}/workouts/${key}`);
-    return deleteDoc(workoutDoc);
+    const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
+    return deleteDocument(workoutDoc);
   }
 
   getWorkout(paramskey: string): Observable<Workout | undefined> {

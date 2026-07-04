@@ -1,18 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import {
-  Firestore,
-  collection,
-  collectionData,
-  addDoc,
-  updateDoc,
-  doc,
-  query,
-  orderBy,
-  startAt,
-  endAt,
-  DocumentReference
-} from '@angular/fire/firestore';
+import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -22,11 +10,22 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 // utils
 import { toFirestoreData } from 'src/app/utils/firestore-document';
+import { observeAuthState } from 'src/app/utils/firebase-auth.utils';
+import {
+  getCollection,
+  observeCollectionData,
+  getDocument,
+  createDocument,
+  updateDocument,
+  buildQuery,
+  orderByField,
+  startAtValue,
+  endAtValue
+} from 'src/app/utils/firestore.utils';
 
 // rxjs
 import { BehaviorSubject, Subject, Observable, from } from 'rxjs';
 import { tap, map, switchMap, withLatestFrom, filter } from 'rxjs/operators';
-import { authState } from '@angular/fire/auth';
 
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
@@ -76,7 +75,7 @@ export class ScheduleService {
     tap((next) => this.store.set('list', next))
   );
 
-  schedule$ = authState(this.auth).pipe(
+  schedule$ = observeAuthState(this.auth).pipe(
     filter((user): user is NonNullable<typeof user> => !!user),
     switchMap(user => this.date$.pipe(
       tap((next: Date) => this.store.set('date', next)),
@@ -85,15 +84,15 @@ export class ScheduleService {
         const endAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime() - 1;
         return { startAt: startAtValue, endAt: endAtValue };
       }),
-      switchMap(({ startAt: startAtValue, endAt: endAtValue }) => {
-        const scheduleCollection = collection(this.firestore, `users/${user.uid}/schedule`);
-        const scheduleQuery = query(
+      switchMap(({ startAt: rangeStart, endAt: rangeEnd }) => {
+        const scheduleCollection = getCollection(this.firestore, `users/${user.uid}/schedule`);
+        const scheduleQuery = buildQuery(
           scheduleCollection,
-          orderBy('timestamp'),
-          startAt(startAtValue),
-          endAt(endAtValue)
+          orderByField('timestamp'),
+          startAtValue(rangeStart),
+          endAtValue(rangeEnd)
         );
-        return collectionData(scheduleQuery, { idField: '$key' }) as Observable<ScheduleItem[]>;
+        return observeCollectionData<ScheduleItem>(scheduleQuery, { idField: '$key' });
       }),
       map((data: ScheduleItem[]): ScheduleList => {
         const mapped: ScheduleList = {};
@@ -144,13 +143,13 @@ export class ScheduleService {
   }
 
   private createSection(payload: ScheduleItem): Promise<DocumentReference> {
-    const scheduleCollection = collection(this.firestore, `users/${this.uid}/schedule`);
-    return addDoc(scheduleCollection, toFirestoreData(payload));
+    const scheduleCollection = getCollection(this.firestore, `users/${this.uid}/schedule`);
+    return createDocument(scheduleCollection, toFirestoreData(payload));
   }
 
   private updateSection(key: string, payload: ScheduleItem): Promise<void> {
-    const scheduleDoc = doc(this.firestore, `users/${this.uid}/schedule/${key}`);
-    return updateDoc(scheduleDoc, toFirestoreData(payload));
+    const scheduleDoc = getDocument(this.firestore, `users/${this.uid}/schedule/${key}`);
+    return updateDocument(scheduleDoc, toFirestoreData(payload));
   }
 
 }

@@ -29,13 +29,13 @@ import { Component, Input, Output, ChangeDetectionStrategy, EventEmitter } from 
             mat-icon-button
             type="button"
             (click)="removeItem()">
-            <mat-icon color="warn" aria-hidden="false" aria-label="Delete meal">delete</mat-icon>
+            <mat-icon color="warn" aria-hidden="false" [attr.aria-label]="deleteLabel">delete</mat-icon>
           </button>
           <button
             mat-icon-button
             type="button"
             (click)="toggle()">
-            <mat-icon aria-hidden="false" aria-label="Cancel delete meal">cancel</mat-icon>
+            <mat-icon aria-hidden="false" [attr.aria-label]="cancelDeleteLabel">cancel</mat-icon>
           </button>
         </div>
 
@@ -68,6 +68,14 @@ export class ListItemComponent {
 
   removeItem(): void {
     this.remove.emit(this.item);
+  }
+
+  get deleteLabel(): string {
+    return this.item.ingredients ? 'Delete meal' : 'Delete workout';
+  }
+
+  get cancelDeleteLabel(): string {
+    return this.item.ingredients ? 'Cancel delete meal' : 'Cancel delete workout';
   }
 
   getRoute(item: any): any[] {
