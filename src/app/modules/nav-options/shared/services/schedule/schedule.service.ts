@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
 import {
   Firestore,
   collection,
@@ -16,12 +17,16 @@ import {
 // store
 import { Store } from 'src/app/store/store';
 
-// rxjs
-import { BehaviorSubject, Subject, Observable, from } from 'rxjs';
-import { tap, map, switchMap, withLatestFrom } from 'rxjs/operators';
-
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
+
+// utils
+import { toFirestoreData } from 'src/app/utils/firestore-document';
+
+// rxjs
+import { BehaviorSubject, Subject, Observable, from } from 'rxjs';
+import { tap, map, switchMap, withLatestFrom, filter } from 'rxjs/operators';
+import { authState } from '@angular/fire/auth';
 
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
@@ -71,39 +76,43 @@ export class ScheduleService {
     tap((next) => this.store.set('list', next))
   );
 
-  schedule$ = this.date$.pipe(
-    tap((next: Date) => this.store.set('date', next)),
-    map((day: Date): DateRange => {
-      const startAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime();
-      const endAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime() - 1;
-      return { startAt: startAtValue, endAt: endAtValue };
-    }),
-    switchMap(({ startAt: startAtValue, endAt: endAtValue }) => {
-      const scheduleCollection = collection(this.firestore, `users/${this.uid}/schedule`);
-      const scheduleQuery = query(
-        scheduleCollection,
-        orderBy('timestamp'),
-        startAt(startAtValue),
-        endAt(endAtValue)
-      );
-      return collectionData(scheduleQuery, { idField: '$key' }) as Observable<ScheduleItem[]>;
-    }),
-    map((data: ScheduleItem[]): ScheduleList => {
-      const mapped: ScheduleList = {};
-      for (const item of data) {
-        if (!mapped[item.section]) {
-          mapped[item.section] = item;
+  schedule$ = authState(this.auth).pipe(
+    filter((user): user is NonNullable<typeof user> => !!user),
+    switchMap(user => this.date$.pipe(
+      tap((next: Date) => this.store.set('date', next)),
+      map((day: Date): DateRange => {
+        const startAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime();
+        const endAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime() - 1;
+        return { startAt: startAtValue, endAt: endAtValue };
+      }),
+      switchMap(({ startAt: startAtValue, endAt: endAtValue }) => {
+        const scheduleCollection = collection(this.firestore, `users/${user.uid}/schedule`);
+        const scheduleQuery = query(
+          scheduleCollection,
+          orderBy('timestamp'),
+          startAt(startAtValue),
+          endAt(endAtValue)
+        );
+        return collectionData(scheduleQuery, { idField: '$key' }) as Observable<ScheduleItem[]>;
+      }),
+      map((data: ScheduleItem[]): ScheduleList => {
+        const mapped: ScheduleList = {};
+        for (const item of data) {
+          if (!mapped[item.section]) {
+            mapped[item.section] = item;
+          }
         }
-      }
-      return mapped;
-    }),
-    tap((next: ScheduleList) => {
-      this.store.set('schedule', next);
-    })
+        return mapped;
+      }),
+      tap((next: ScheduleList) => {
+        this.store.set('schedule', next);
+      })
+    ))
   );
 
   constructor(
     private firestore: Firestore,
+    private auth: Auth,
     private store: Store,
     private authService: AuthService
   ) {}
@@ -136,12 +145,12 @@ export class ScheduleService {
 
   private createSection(payload: ScheduleItem): Promise<DocumentReference> {
     const scheduleCollection = collection(this.firestore, `users/${this.uid}/schedule`);
-    return addDoc(scheduleCollection, payload);
+    return addDoc(scheduleCollection, toFirestoreData(payload));
   }
 
   private updateSection(key: string, payload: ScheduleItem): Promise<void> {
     const scheduleDoc = doc(this.firestore, `users/${this.uid}/schedule/${key}`);
-    return updateDoc(scheduleDoc, { ...payload });
+    return updateDoc(scheduleDoc, toFirestoreData(payload));
   }
 
 }
