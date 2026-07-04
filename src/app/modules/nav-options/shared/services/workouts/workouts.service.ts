@@ -17,6 +17,9 @@ import { Store } from 'src/app/store/store';
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
+// utils
+import { toFirestoreData } from 'src/app/utils/firestore-document';
+
 // rxjs
 import { Observable, of } from 'rxjs';
 import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
@@ -57,12 +60,12 @@ export class WorkoutsService {
 
   addWorkout(workout: Workout): Promise<DocumentReference> {
     const workoutsCollection = collection(this.firestore, `users/${this.uid}/workouts`);
-    return addDoc(workoutsCollection, workout);
+    return addDoc(workoutsCollection, toFirestoreData(workout));
   }
 
   updateWorkout(key: string, workout: Workout): Promise<void> {
     const workoutDoc = doc(this.firestore, `users/${this.uid}/workouts/${key}`);
-    return updateDoc(workoutDoc, { ...workout });
+    return updateDoc(workoutDoc, toFirestoreData(workout));
   }
 
   deleteWorkout(key: string): Promise<void> {

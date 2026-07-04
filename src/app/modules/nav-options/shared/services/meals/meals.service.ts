@@ -17,6 +17,9 @@ import { Store } from 'src/app/store/store';
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
+// utils
+import { toFirestoreData } from 'src/app/utils/firestore-document';
+
 // rxjs
 import { Observable, of } from 'rxjs';
 import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
@@ -57,12 +60,12 @@ export class MealsService {
 
   addMeal(meal: Meal): Promise<DocumentReference> {
     const mealsCollection = collection(this.firestore, `users/${this.uid}/meals`);
-    return addDoc(mealsCollection, meal);
+    return addDoc(mealsCollection, toFirestoreData(meal));
   }
 
   updateMeal(key: string, meal: Meal): Promise<void> {
     const mealDoc = doc(this.firestore, `users/${this.uid}/meals/${key}`);
-    return updateDoc(mealDoc, { ...meal });
+    return updateDoc(mealDoc, toFirestoreData(meal));
   }
 
   deleteMeal(key: string): Promise<void> {

@@ -21,8 +21,8 @@ import { AppComponent } from './containers/app/app.component';
 import { AppHeaderComponent } from './components/app/app-header/app-header.component';
 import { AppNavComponent } from './components/app/app-nav/app-nav.component';
 
-// constants
-import { Constants } from 'src/constants/constants';
+// environments
+import { environment } from 'src/environments/environment';
 
 // store
 import { Store } from './store/store';
@@ -44,7 +44,7 @@ import { Store } from './store/store';
   ],
   providers: [
     Store,
-    provideFirebaseApp(() => initializeApp(Constants.FIREBASE_CONFIG)),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ],
