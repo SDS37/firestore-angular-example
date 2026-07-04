@@ -1,40 +1,35 @@
 {
-    "database": {
-        "rules": "database.rules.json"
-    },
-    "hosting": [{
-            "target": "firebase-example-app",
-            "public": "dist/firebase-example-app",
-            "ignore": [
-                "firebase.json",
-                ".firebaserc",
-                ".git",
-                ".gitignore",
-                ".editorconfig",
-                "src/**/.*",
-                "database.rules.json",
-                "package.json",
-                "README.md",
-                "tsconfig.json",
-                "**/node_modules/**"
-            ],
-            "rewrites": [{
-                "source": "**",
-                "destination": "/index.html"
-            }]
-        },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "hosting": [
+    {
+      "target": "firebase-example-app",
+      "public": "dist/firebase-example-app/browser",
+      "ignore": [
+        "firebase.json",
+        ".firebaserc",
+        ".git",
+        ".gitignore",
+        ".editorconfig",
+        "firestore.rules",
+        "firestore.indexes.json",
+        "database.rules.json",
+        "package.json",
+        "README.md",
+        "tsconfig.json",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
         {
-            "target": "firebase-example-app",
-            "public": "dist/firebase-example-app",
-            "ignore": [
-                "firebase.json",
-                "**/.*",
-                "**/node_modules/**"
-            ],
-            "rewrites": [{
-                "source": "**",
-                "destination": "/index.html"
-            }]
+          "source": "**",
+          "destination": "/index.html"
         }
-    ]
+      ]
+    }
+  ]
 }
