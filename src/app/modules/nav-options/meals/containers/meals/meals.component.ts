@@ -45,7 +45,7 @@ import { Meal } from 'src/app/models/meal.interface';
       <div
         *ngIf="!meals.length"
         class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-1">
-        <mat-icon color="warn" aria-hidden="false" aria-label="Logout">error_outline</mat-icon>
+        <mat-icon color="warn" aria-hidden="false" aria-label="No meals">error_outline</mat-icon>
         <span>No meals, add a new meal to start</span>
       </div>
       <list-item
@@ -86,8 +86,12 @@ export class MealsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  removeMeal(event: Meal): void {
-    this.mealsService.deleteMeal(event.$key);
+  async removeMeal(event: Meal): Promise<void> {
+    try {
+      await this.mealsService.deleteMeal(event.$key);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 }

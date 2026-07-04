@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, UrlTree } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'src/app/utils/firebase-auth.utils';
 
 // rxjs
 import { Observable } from 'rxjs';

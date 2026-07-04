@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
+import { Auth, User } from '@angular/fire/auth';
 
 // store
 import { Store } from 'src/app/store/store';
+
+// utils
+import {
+  observeAuthState,
+  registerUser,
+  signInUser,
+  signOutUser
+} from 'src/app/utils/firebase-auth.utils';
 
 // rxjs
 import { Observable } from 'rxjs';
@@ -14,7 +22,7 @@ import { User as AppUser } from 'src/app/models/user.interface';
 @Injectable()
 export class AuthService {
 
-  auth$: Observable<User | null> = authState(this.auth).pipe(
+  auth$: Observable<User | null> = observeAuthState(this.auth).pipe(
     tap((next: User | null) => {
       if (!next) {
         this.store.set('user', null);
@@ -39,19 +47,19 @@ export class AuthService {
   }
 
   get authState(): Observable<User | null> {
-    return authState(this.auth);
+    return observeAuthState(this.auth);
   }
 
   createUser(email: string, password: string) {
-    return createUserWithEmailAndPassword(this.auth, email, password);
+    return registerUser(this.auth, email, password);
   }
 
   loginUser(email: string, password: string) {
-    return signInWithEmailAndPassword(this.auth, email, password);
+    return signInUser(this.auth, email, password);
   }
 
   logoutUser() {
-    return signOut(this.auth);
+    return signOutUser(this.auth);
   }
 
 }

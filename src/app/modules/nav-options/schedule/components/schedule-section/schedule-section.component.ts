@@ -41,7 +41,7 @@ import { ScheduleItem } from 'src/app/models/schedule-item.interface';
       *ngIf="section.workouts; else addWorkout"
       class="flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
       (click)="onSelect('workouts', section.workouts)">
-      <mat-icon color="primary" aria-hidden="false" aria-label="Meals section">fitness_center</mat-icon>
+      <mat-icon color="primary" aria-hidden="false" aria-label="Workouts section">fitness_center</mat-icon>
       <span class="margin-left-10">{{ section.workouts | join }}</span>
     </div>
     <ng-template #addWorkout>

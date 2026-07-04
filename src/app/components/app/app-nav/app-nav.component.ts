@@ -32,7 +32,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
       routerLink="/workouts"
       routerLinkActive="active-link">
-      <mat-icon aria-hidden="false" aria-label="Meals section">fitness_center</mat-icon>
+      <mat-icon aria-hidden="false" aria-label="Workouts section">fitness_center</mat-icon>
       <span class="margin-left-10">Workouts</span>
     </a>
 
