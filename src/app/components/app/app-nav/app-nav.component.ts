@@ -1,8 +1,11 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-nav',
+  imports: [RouterLink, RouterLinkActive, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div

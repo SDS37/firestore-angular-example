@@ -27,7 +27,7 @@ import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WorkoutsService {
 
   workouts$: Observable<Workout[]> = observeAuthState(this.auth).pipe(

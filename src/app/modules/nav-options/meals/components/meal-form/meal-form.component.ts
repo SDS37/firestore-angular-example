@@ -1,12 +1,16 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { NgIf, NgFor } from '@angular/common';
+import { ReactiveFormsModule, FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'meal-form',
+  imports: [ReactiveFormsModule, RouterLink, ...MATERIAL_IMPORTS, NgIf, NgFor],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <form [formGroup]="form">

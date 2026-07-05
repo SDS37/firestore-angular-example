@@ -32,7 +32,7 @@ import { ScheduleList } from 'src/app/models/schedule-list.interface';
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { DateRange } from 'src/app/models/date-range.interface';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ScheduleService {
 
   private date$ = new BehaviorSubject<Date>(new Date());

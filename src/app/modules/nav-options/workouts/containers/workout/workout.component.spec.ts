@@ -5,7 +5,7 @@ import { WorkoutComponent } from './workout.component';
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 import { WorkoutFormComponent } from '../../components/workout-form/workout-form.component';
 import { WorkoutTypeComponent } from '../../components/workout-type/workout-type.component';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Workout } from 'src/app/models/workout.interface';
@@ -22,8 +22,7 @@ describe('WorkoutComponent', () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ReactiveFormsModule, MaterialModule],
-      declarations: [WorkoutComponent, WorkoutFormComponent, WorkoutTypeComponent],
+      imports: [RouterTestingModule, ReactiveFormsModule, WorkoutComponent, WorkoutFormComponent, WorkoutTypeComponent, ...MATERIAL_IMPORTS],
       providers: [
         { provide: WorkoutsService, useValue: workoutsService },
         { provide: Router, useValue: router },

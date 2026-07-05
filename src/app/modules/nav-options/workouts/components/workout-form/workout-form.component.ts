@@ -1,12 +1,17 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { WorkoutTypeComponent } from '../workout-type/workout-type.component';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'workout-form',
+  imports: [ReactiveFormsModule, RouterLink, WorkoutTypeComponent, ...MATERIAL_IMPORTS, NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <form [formGroup]="form">

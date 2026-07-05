@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppHeaderComponent } from './app-header.component';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('AppHeaderComponent', () => {
   let fixture: ComponentFixture<AppHeaderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MaterialModule],
-      declarations: [AppHeaderComponent]
+      imports: [AppHeaderComponent, ...MATERIAL_IMPORTS]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppHeaderComponent);

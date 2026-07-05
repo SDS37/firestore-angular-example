@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MealFormComponent } from './meal-form.component';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { Meal } from 'src/app/models/meal.interface';
 
 describe('MealFormComponent', () => {
@@ -11,8 +11,7 @@ describe('MealFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, MaterialModule],
-      declarations: [MealFormComponent]
+      imports: [ReactiveFormsModule, RouterTestingModule, MealFormComponent, ...MATERIAL_IMPORTS]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MealFormComponent);

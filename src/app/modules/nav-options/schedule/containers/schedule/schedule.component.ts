@@ -1,4 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
+import { ScheduleCalendarComponent } from '../../components/schedule-calendar/schedule-calendar.component';
+import { ScheduleAssignComponent } from '../../components/schedule-assign/schedule-assign.component';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -18,8 +22,9 @@ import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'schedule',
+  imports: [AsyncPipe, NgIf, ...MATERIAL_IMPORTS, ScheduleCalendarComponent, ScheduleAssignComponent],
   template: `
   <div
     id="schedule"

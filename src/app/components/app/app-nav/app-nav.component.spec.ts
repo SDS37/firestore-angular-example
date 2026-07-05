@@ -1,15 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppNavComponent } from './app-nav.component';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('AppNavComponent', () => {
   let fixture: ComponentFixture<AppNavComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, MaterialModule],
-      declarations: [AppNavComponent]
+      imports: [RouterTestingModule, AppNavComponent, ...MATERIAL_IMPORTS]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppNavComponent);

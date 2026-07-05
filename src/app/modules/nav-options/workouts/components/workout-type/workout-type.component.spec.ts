@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkoutTypeComponent } from './workout-type.component';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('WorkoutTypeComponent', () => {
   let component: WorkoutTypeComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MaterialModule],
-      declarations: [WorkoutTypeComponent]
+      imports: [WorkoutTypeComponent, ...MATERIAL_IMPORTS]
     }).compileComponents();
 
     component = TestBed.createComponent(WorkoutTypeComponent).componentInstance;

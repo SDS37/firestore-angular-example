@@ -1,9 +1,17 @@
 import { Component, Input, Output, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { JoinPipe } from '../../pipes/join.pipe';
+import { WorkoutPipe } from '../../pipes/workout.pipe';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'list-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgIf, RouterLink, MatDividerModule, MatButtonModule, MatIconModule, JoinPipe, WorkoutPipe],
   template: `
     <div
       class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-2">
