@@ -1,4 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AsyncPipe, NgIf, NgFor } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ListItemComponent } from '../../../shared/components/list-item/list-item.component';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';
@@ -13,8 +17,9 @@ import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/
 import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'meals',
+  imports: [AsyncPipe, NgIf, NgFor, RouterLink, ListItemComponent, ...MATERIAL_IMPORTS],
   template: `
   <div
     id="meals"

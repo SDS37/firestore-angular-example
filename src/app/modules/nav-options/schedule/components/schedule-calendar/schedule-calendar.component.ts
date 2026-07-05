@@ -1,12 +1,17 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { ScheduleControlsComponent } from '../schedule-controls/schedule-controls.component';
+import { ScheduleDaysComponent } from '../schedule-days/schedule-days.component';
+import { ScheduleSectionComponent } from '../schedule-section/schedule-section.component';
 
 // interfaces
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'schedule-calendar',
+  imports: [NgFor, ScheduleControlsComponent, ScheduleDaysComponent, ScheduleSectionComponent],
   template: `
   <schedule-controls
     [selected]="selectedDay"

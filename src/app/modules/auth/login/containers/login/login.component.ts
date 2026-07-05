@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthFormComponent } from '../../../shared/components/auth-form/auth-form.component';
 
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'login',
+  imports: [AuthFormComponent, RouterLink, MatButtonModule, NgIf],
   template: `
   <auth-form (submitted)="loginUser($event)">
     <h1>login</h1>

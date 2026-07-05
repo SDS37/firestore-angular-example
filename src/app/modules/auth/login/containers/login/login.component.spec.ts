@@ -1,28 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { LoginComponent } from './login.component';
 import { AuthFormComponent } from 'src/app/modules/auth/shared/components/auth-form/auth-form.component';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
+import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let authService: jasmine.SpyObj<AuthService>;
-  let router: jasmine.SpyObj<Router>;
+  let router: Router;
 
   beforeEach(async () => {
     authService = jasmine.createSpyObj('AuthService', ['loginUser']);
-    router = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, MaterialModule],
-      declarations: [LoginComponent, AuthFormComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, LoginComponent, AuthFormComponent, ...MATERIAL_IMPORTS],
       providers: [
-        { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router }
+        { provide: AuthService, useValue: authService }
       ]
     }).compileComponents();
+
+    router = TestBed.inject(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
     const fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
