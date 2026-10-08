@@ -2,7 +2,7 @@
 
 The work is ordered so each milestone starts from a base that already passes `npm run verify`. A milestone is done when its checkpoint has an observation, not when the code compiles.
 
-**Today:** `master` is on Angular 22.0.5, `@angular/fire` 20.0.1, and TypeScript 6.0.3. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless 154 and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls firebase` is invalid: `@angular/fire` installs `firebase` 11.10.0 and the app installs `firebase` 12.15.0. `npm audit` reports 63 vulnerabilities: 6 critical, 33 high, 22 moderate, 2 low. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. Fifteen Dependabot security PRs and [#57](https://github.com/SDS37/firestore-angular-example/pull/57) are open. No CI check runs on any of them. The root README is two lines.
+**Today:** `master` is on Angular 22.0.5, `@angular/fire` 20.0.1, and TypeScript 6.0.3. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless 154 and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls firebase` is invalid: `@angular/fire` installs `firebase` 11.10.0 and the app installs `firebase` 12.15.0. `npm audit` reports 63 vulnerabilities: 6 critical, 33 high, 22 moderate, 2 low. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. Fifteen Dependabot security PRs and [#57](https://github.com/SDS37/firestore-angular-example/pull/57) are open. No CI check runs on any of them. The root README is a title, one sentence, and a 2019 audit image.
 
 | Milestone | Status | Goal | Stories | Checkpoint |
 |---|---|---|---|---|
@@ -17,7 +17,9 @@ The work is ordered so each milestone starts from a base that already passes `np
 
 ```mermaid
 flowchart LR
-  m0["M0 Docs"] --> m1["M1 Triage"]
+  m0["M0 Docs"] -.-> m1["M1 Triage"]
+  m0 -.-> m2
+  m0 -.-> m3
   m1 --> m2["M2 Dependencies"]
   m2 --> m3["M3 Toolchain"]
   m3 --> m4["M4 CI and rules tests"]
@@ -27,7 +29,7 @@ flowchart LR
   m6 --> m7
 ```
 
-M0 runs alongside M1–M3: each milestone updates the README **Today** paragraph and the documents it touches. M5 and M6 can run in parallel once CI exists.
+Dotted lines mean "runs alongside". M0 runs alongside M1–M3: each milestone updates the README **Today** paragraph and the documents it touches. M5 and M6 can run in parallel once CI exists.
 
 ## Stories inside the milestones
 
@@ -40,7 +42,7 @@ Use these ids in branch names, commits, and PR titles.
 | [FAE-003](https://github.com/SDS37/firestore-angular-example/issues/82) | M0 | Architecture and architecture decision records |
 | [FAE-004](https://github.com/SDS37/firestore-angular-example/issues/83) | M0 | Code standards and commit convention |
 | [FAE-005](https://github.com/SDS37/firestore-angular-example/issues/84) | M0 | Roadmap and Definition of Done |
-| [FAE-010](https://github.com/SDS37/firestore-angular-example/issues/86) | M1 | Review, rebase, and merge #57 (standalone components) |
+| [FAE-010](https://github.com/SDS37/firestore-angular-example/issues/86) | M1 | Review, rebase, and merge [#57](https://github.com/SDS37/firestore-angular-example/pull/57) (standalone components) |
 | [FAE-011](https://github.com/SDS37/firestore-angular-example/issues/87) | M1 | Remove dead configuration |
 | [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89) | M2 | One Firebase SDK version |
 | [FAE-021](https://github.com/SDS37/firestore-angular-example/issues/90) | M2 | Angular 22.2 |
@@ -101,7 +103,7 @@ At the end of every milestone, answer:
 
 ## Time-control rules
 
-- M2 does not start until #57 is merged or closed.
+- M2 does not start until [#57](https://github.com/SDS37/firestore-angular-example/pull/57) is merged or closed.
 - Angular packages move together, in one commit. Never merge a PR that bumps one `@angular/*` package alone.
 - Do not install `firebase` 13 until an AngularFire release accepts it. Do not install TypeScript 7 until `@angular/build` accepts it.
 - No `npm audit fix --force` and no `legacy-peer-deps`. A peer conflict is solved with an explicit `overrides` entry and an ADR.
