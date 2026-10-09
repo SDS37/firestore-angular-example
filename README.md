@@ -94,9 +94,11 @@ firestore-angular-example/
 From the repository root:
 
 ```
-nvm use
+nvm install
 npm ci
 ```
+
+`nvm install` reads `.nvmrc`, installs that Node version if it is missing, and switches to it. `nvm use` alone fails when the version is not installed yet.
 
 `.npmrc` sets `legacy-peer-deps=true` until [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89). Use `npm ci`, not `npm install`, so the lockfile is respected.
 

@@ -10,7 +10,7 @@ Every package is on the newest stable version that all of its peers accept. When
 
 ## Practice
 
-- **Node:** the version in `.nvmrc`, inside the `engines` range in `package.json`. Use `nvm use` before `npm ci`.
+- **Node:** the version in `.nvmrc`, inside the `engines` range in `package.json`. Use `nvm install` (installs the `.nvmrc` version if missing, then switches to it) before `npm ci`.
 - **Install:** `npm ci` for a clean tree. `npm install <pkg>` only when changing a dependency.
 - **Angular:** every `@angular/*` package moves together with `ng update`, in one commit. Never merge a PR that moves one Angular package alone.
 - **Peer conflicts:** solve them with an explicit `overrides` entry and an ADR. **Today:** `.npmrc` sets `legacy-peer-deps=true`, which hides peer conflicts; it let two Firebase SDKs (11.10.0 and 12.15.0) install side by side. [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89) removes it.
