@@ -86,6 +86,7 @@ firestore-angular-example/
 ## Prerequisites
 
 - Node in the `engines` range of `package.json`: 22.22.3 or newer on 22, 24.15.0 or newer on 24, or 26 and later. `.nvmrc` names 22.22.3; Node 24.20.0 is also tested. On older Node, npm only warns, and the Angular CLI then refuses to run.
+- [nvm](https://github.com/nvm-sh/nvm), or any Node version manager, to get that version. The install steps below use nvm.
 - Google Chrome, for `npm test`.
 - A Firebase project, only if you want your own data or your own deploy. The Firebase CLI comes with the dev dependencies as `npx firebase`.
 
@@ -98,7 +99,7 @@ nvm install
 npm ci
 ```
 
-`nvm install` reads `.nvmrc`, installs that Node version if it is missing, and switches to it. `nvm use` alone fails when the version is not installed yet.
+`nvm install` reads `.nvmrc`, installs that Node version if it is missing, and switches to it. `nvm use` alone fails when the version is not installed yet. nvm-windows does not read `.nvmrc`; there, run `nvm install 22.22.3` and `nvm use 22.22.3`.
 
 `.npmrc` sets `legacy-peer-deps=true` until [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89). Use `npm ci`, not `npm install`, so the lockfile is respected.
 
