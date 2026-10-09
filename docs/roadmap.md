@@ -6,7 +6,7 @@ The work is ordered so each milestone starts from a base that already passes `np
 
 | Milestone | Status | Goal | Stories | Checkpoint |
 |---|---|---|---|---|
-| [M0](https://github.com/SDS37/firestore-angular-example/issues/79) | In progress | Documentation a colleague can run from | FAE-001–FAE-005 | A colleague can install, run, test, and deploy from the docs without asking which file owns the Firebase config |
+| [M0](https://github.com/SDS37/firestore-angular-example/issues/79) | Done (2026-10-09) | Documentation a colleague can run from | FAE-001–FAE-005 | A colleague can install, run, test, and deploy from the docs without asking which file owns the Firebase config |
 | [M1](https://github.com/SDS37/firestore-angular-example/issues/85) | Not started | Repository triage | FAE-010–FAE-011 | The only open PRs are Dependabot PRs that M2 supersedes. No config for products the app does not use |
 | [M2](https://github.com/SDS37/firestore-angular-example/issues/88) | Not started | Dependencies on the latest stable versions that work together | FAE-020–FAE-023 | `npm ls` reports no invalid package. `npm audit --omit=dev` reports no critical or high. `npm run verify` passes |
 | [M3](https://github.com/SDS37/firestore-angular-example/issues/93) | Not started | Build and test toolchain | FAE-030–FAE-033 | No deprecated-builder or Sass warning. The app compiles with `strict` and `strictTemplates` |
