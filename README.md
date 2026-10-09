@@ -13,7 +13,7 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Auth | Email and password register, login, logout. A signed-out user is sent to `/auth/login` |
 | Meals and workouts | Create, edit, delete. Live lists from Firestore |
 | Schedule | Week view, four sections per day, assign meals and workouts. Entries store names, not ids ([FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106)) |
-| Security rules | `firestore.rules` restricts `users/{userId}/**` to that user. Not tested yet ([FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101)) |
+| Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. Not tested yet ([FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101)) |
 | Unit tests | 73 specs, Karma and Jasmine. Moving to Vitest ([FAE-031](https://github.com/SDS37/firestore-angular-example/issues/95)) |
 | Dependencies | Angular 22.0.5, `firebase` 12.15.0 and 11.10.0. One SDK and Angular 22.2 in [M2](https://github.com/SDS37/firestore-angular-example/issues/88) |
 | PWA | Manifest and service worker are built; the service worker is not registered |
@@ -30,7 +30,7 @@ flowchart LR
   rules["firestore.rules"] -.-> db
 ```
 
-Containers call data services. Only the services talk to Firebase, through small wrappers in `src/app/utils/`. Each service builds its query from the signed-in user, so the query changes when the user does. Services put results in a small RxJS store that components read. [Architecture](docs/architecture.md) has the layers, routes, data model, and flows.
+Containers call data services. Only the services and the auth guard talk to Firebase, through small wrappers in `src/app/utils/`. Each service builds its query from the signed-in user, so the query changes when the user does. Services put results in a small RxJS store that components read. [Architecture](docs/architecture.md) has the layers, routes, data model, and flows.
 
 ## Tech stack
 
@@ -50,7 +50,7 @@ firestore-angular-example/
 │   ├── app/
 │   │   ├── containers/app/      # root component
 │   │   ├── components/app/      # header and nav
-│   │   ├── models/              # Meal, Workout, ScheduleItem, User
+│   │   ├── models/              # Meal, Workout, ScheduleItem, ScheduleList, User
 │   │   ├── modules/
 │   │   │   ├── auth/            # login, register, guard, AuthService
 │   │   │   ├── nav-options/     # meals, workouts, schedule, data services
@@ -58,7 +58,8 @@ firestore-angular-example/
 │   │   │   └── shared/material/
 │   │   ├── store/               # Store and State
 │   │   ├── testing/             # Firebase spies for specs
-│   │   └── utils/               # the only AngularFire imports
+│   │   └── utils/               # wrappers around every AngularFire call
+│   ├── constants/               # Material module list
 │   ├── environments/            # Firebase web config
 │   └── styles/
 ├── docs/
