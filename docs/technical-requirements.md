@@ -31,7 +31,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 |---|---|---|---|
 | TR-3.1 | `firestore.rules` allows read and write under `users/{userId}` only when `request.auth.uid == userId`, and denies everything else | Read from `firestore.rules` | Observed (file) |
 | TR-3.2 | Emulator tests prove the owner is allowed, and another user and an anonymous client are denied | No rules tests exist | Not yet: [FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101) |
-| TR-3.3 | `npm run deploy:firebase` deploys the rules with hosting | `firebase.json` has `firestore.rules` and the hosting target; the script runs `firebase deploy --only firestore:rules,hosting` | Observed (config) |
+| TR-3.3 | `npm run deploy:firebase` deploys the rules with hosting | `firebase.json` has `firestore.rules` and the hosting target; the script runs `firebase deploy --only firestore:rules,hosting`. Run on 2026-10-09: rules and hosting released to `fir-example-app-5c3d3`, and anonymous reads of `users` return 403 | Observed |
 
 ## TR-4 Schedule
 
