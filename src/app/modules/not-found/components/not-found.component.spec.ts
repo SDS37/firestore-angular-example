@@ -4,7 +4,7 @@ import { NotFoundComponent } from './not-found.component';
 describe('NotFoundComponent', () => {
   it('should create', async () => {
     await TestBed.configureTestingModule({
-      declarations: [NotFoundComponent]
+      imports: [NotFoundComponent]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(NotFoundComponent);

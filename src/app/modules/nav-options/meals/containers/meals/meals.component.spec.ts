@@ -4,9 +4,6 @@ import { MealsComponent } from './meals.component';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 import { Store } from 'src/app/store/store';
 import { ListItemComponent } from 'src/app/modules/nav-options/shared/components/list-item/list-item.component';
-import { JoinPipe } from 'src/app/modules/nav-options/shared/pipes/join.pipe';
-import { WorkoutPipe } from 'src/app/modules/nav-options/shared/pipes/workout.pipe';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Meal } from 'src/app/models/meal.interface';
 
@@ -21,8 +18,7 @@ describe('MealsComponent', () => {
     mealsService.deleteMeal.and.returnValue(Promise.resolve());
 
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, MaterialModule],
-      declarations: [MealsComponent, ListItemComponent, JoinPipe, WorkoutPipe],
+      imports: [RouterTestingModule, MealsComponent, ListItemComponent],
       providers: [
         Store,
         { provide: MealsService, useValue: mealsService }

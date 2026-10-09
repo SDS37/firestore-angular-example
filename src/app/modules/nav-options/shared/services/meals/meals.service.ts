@@ -27,7 +27,7 @@ import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MealsService {
 
   meals$: Observable<Meal[]> = observeAuthState(this.auth).pipe(

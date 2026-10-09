@@ -1,3 +1,5 @@
+import { Injectable } from '@angular/core';
+
 // interfaces
 import { State } from './state';
 
@@ -15,6 +17,7 @@ const defaultState: State = {
   list: undefined
 };
 
+@Injectable({ providedIn: 'root' })
 export class Store {
 
   private behaviourSubject = new BehaviorSubject<State>(defaultState);

@@ -8,6 +8,7 @@
     "test": "ng test --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "verify": "npm run lint && npm run build && npm test",
+    "predeploy:firebase": "npm run build",
     "deploy:firebase": "firebase deploy --only firestore:rules,hosting"
   },
   "private": true,

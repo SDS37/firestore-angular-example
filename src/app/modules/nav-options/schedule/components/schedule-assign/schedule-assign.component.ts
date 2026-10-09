@@ -1,12 +1,17 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit, ViewEncapsulation } from '@angular/core';
+import { NgIf, NgFor } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'schedule-assign',
+  imports: [NgIf, NgFor, RouterLink, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,
   styleUrls: ['schedule-assign.component.scss'],

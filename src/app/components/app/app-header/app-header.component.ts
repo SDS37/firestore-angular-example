@@ -1,11 +1,14 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 // interfaces
 import { User } from 'src/app/models/user.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-header',
+  imports: [MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div

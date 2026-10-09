@@ -1,8 +1,12 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'schedule-controls',
+  imports: [DatePipe, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div class="flex-row-container flex-justify-content-space-between flex-align-items-center">

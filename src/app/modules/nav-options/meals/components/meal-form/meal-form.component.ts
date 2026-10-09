@@ -1,12 +1,19 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { NgIf, NgFor } from '@angular/common';
+import { ReactiveFormsModule, FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'meal-form',
+  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, NgIf, NgFor],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <form [formGroup]="form">

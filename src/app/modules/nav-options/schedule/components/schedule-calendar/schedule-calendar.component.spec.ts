@@ -3,8 +3,6 @@ import { ScheduleCalendarComponent } from './schedule-calendar.component';
 import { ScheduleControlsComponent } from '../schedule-controls/schedule-controls.component';
 import { ScheduleDaysComponent } from '../schedule-days/schedule-days.component';
 import { ScheduleSectionComponent } from '../schedule-section/schedule-section.component';
-import { JoinPipe } from 'src/app/modules/nav-options/shared/pipes/join.pipe';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
 
 describe('ScheduleCalendarComponent', () => {
@@ -12,13 +10,11 @@ describe('ScheduleCalendarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MaterialModule],
-      declarations: [
+      imports: [
         ScheduleCalendarComponent,
         ScheduleControlsComponent,
         ScheduleDaysComponent,
-        ScheduleSectionComponent,
-        JoinPipe
+        ScheduleSectionComponent
       ]
     }).compileComponents();
 
