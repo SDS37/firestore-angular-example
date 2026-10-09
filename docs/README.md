@@ -16,7 +16,7 @@ Read in this order if you are new. Dip in by topic if you are changing one area.
 
 ## Code standards
 
-Each file takes its rules from that technology's official documentation. Repo rules on top of those sources exist only to keep Firestore access inside the data services.
+Each file takes its rules from that technology's official documentation and adds only this repo's conventions. Where a file and its source disagree, the source wins. **Today** lines record where the code does not yet follow the file.
 
 | Standard | Applies to | Primary source |
 |---|---|---|
@@ -25,7 +25,7 @@ Each file takes its rules from that technology's official documentation. Repo ru
 | [RxJS](standards/rxjs.md) | Services, the store, composed streams | rxjs.dev |
 | [SCSS](standards/scss.md) | Global and component styles | sass-lang.com, MDN CSS |
 | [Firestore rules](standards/firestore-rules.md) | `firestore.rules`, `firestore.indexes.json` | Firebase Security Rules docs |
-| [Dependencies](standards/dependencies.md) | `package.json`, `.npmrc`, `.nvmrc` | npm docs, Angular update guide |
+| [Dependencies](standards/dependencies.md) | `package.json`, `package-lock.json`, `.npmrc`, `.nvmrc` | npm docs, Angular update guide |
 
 ## Status
 

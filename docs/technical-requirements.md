@@ -9,7 +9,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | Id | Requirement | Observation | Status |
 |---|---|---|---|
 | TR-1.1 | A user registers and logs in with email and password through Firebase Auth | `RegisterComponent` and `LoginComponent` specs: success navigates to `/`, failure shows the Firebase error message | Observed (specs) |
-| TR-1.2 | The auth form rejects an empty or malformed email and an empty password | `AuthFormComponent` spec: an invalid form does not emit | Observed (spec) |
+| TR-1.2 | The auth form rejects an empty or malformed email and an empty password | `AuthFormComponent` spec: an empty form does not emit, a valid form does. A malformed email is rejected by `Validators.email` in the form; no spec covers that case | Observed (spec and code) |
 | TR-1.3 | A signed-out user who opens a guarded route lands on `/auth/login` | `AuthGuard` spec: no user returns a `UrlTree` to `/auth/login` | Observed (spec) |
 | TR-1.4 | Logout signs out of Firebase and navigates to `/auth/login` | `AppComponent` spec | Observed (spec) |
 | TR-1.5 | Logout clears every store key, so the next user never sees the previous user's data | Today only `user` is reset | Not yet: [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) |
@@ -21,7 +21,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-2.1 | Every read and write path is under `users/{uid}` for the current Firebase user | Service specs load meals, workouts, and schedule for the authenticated user | Observed (specs) |
 | TR-2.2 | A new user gets a new query without a page reload | Data services build queries in `switchMap` on the auth state | Observed (code). End-to-end: [FAE-071](https://github.com/SDS37/firestore-angular-example/issues/113) |
 | TR-2.3 | Client-only fields (`$key`, `$exists`) never reach Firestore | `toFirestoreData` spec; meals and workouts service specs | Observed (specs) |
-| TR-2.4 | A new meal or workout gets a `timestamp`; an update keeps the existing one | Meals service specs | Observed (specs) |
+| TR-2.4 | A new meal or workout gets a `timestamp`; an update keeps the existing one | Meals and workouts service specs cover the timestamp on create; the meals spec covers the update. The workouts update uses the same code path, with no spec | Observed (specs) |
 | TR-2.5 | An unknown meal or workout id redirects to its list | `MealComponent` and `WorkoutComponent` specs | Observed (specs) |
 | TR-2.6 | A failed write shows a message and keeps the user on the form | Today the error goes to `console.error` | Not yet: [FAE-051](https://github.com/SDS37/firestore-angular-example/issues/105) |
 
@@ -60,9 +60,9 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.3 | `npm run build` succeeds | Succeeds; warns that Sass `@import` is deprecated | Observed |
 | TR-6.4 | `npm test` passes | 73 of 73 specs pass in ChromeHeadless 154 | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | `firebase` 11.10.0 and 12.15.0 both installed; `npm ls` exits with `ELSPROBLEMS` | Not yet: [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89) |
-| TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit` reports 63 (6 critical, 33 high) across all dependencies | Not yet: [FAE-023](https://github.com/SDS37/firestore-angular-example/issues/92) |
+| TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports 11 (7 high, 4 moderate). `npm audit` reports 63 (6 critical, 33 high) across all dependencies | Not yet: [FAE-023](https://github.com/SDS37/firestore-angular-example/issues/92) |
 | TR-6.7 | CI runs lint, build, and tests on every PR | No `.github/` folder | Not yet: [FAE-040](https://github.com/SDS37/firestore-angular-example/issues/99) |
 
 ## Beyond these requirements
 
-Ideas from the old README checklist are not requirements: NgRx, GraphQL, optimistic UI, translations, local storage. They come back only through a new roadmap.
+Ideas from the old README checklist (last present at `f3854fe`) are not requirements: NgRx, GraphQL, optimistic UI, translations, local storage. They come back only through a new roadmap.

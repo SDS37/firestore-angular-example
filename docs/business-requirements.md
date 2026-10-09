@@ -30,4 +30,4 @@ A colleague who has never seen the repo can follow the root README, run the app 
 
 ## Out of scope
 
-Social or passwordless login, sharing data between users, nutrition or calorie data, reminders and notifications, native apps, offline editing, translations, and any server of our own. Ideas from the old README checklist (NgRx, GraphQL, optimistic UI) are not requirements.
+Social or passwordless login, sharing data between users, nutrition or calorie data, reminders and notifications, native apps, offline editing, translations, and any server of our own. Ideas from the old README checklist (last present at `f3854fe`: NgRx, GraphQL, optimistic UI) are not requirements.
