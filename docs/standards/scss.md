@@ -8,8 +8,8 @@
 
 | File | Holds |
 |---|---|
-| `src/styles/variables.scss` | Colours, sizes, breakpoints |
-| `src/styles/mixins.scss` | Reusable mixins |
+| `src/styles/variables.scss` | Colours, the font stack, breakpoints, the Material button shadow |
+| `src/styles/mixins.scss` | Reusable mixins. **Today:** the file is empty |
 | `src/styles/fonts.scss` | `@font-face` rules for the fonts in `src/assets/fonts/` |
 | `src/styles.scss` | Global utility classes (`flex-row-container`, `margin-bottom-10`, ...) |
 | `*.component.scss` | Styles only that component uses |

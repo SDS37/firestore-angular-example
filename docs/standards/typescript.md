@@ -6,7 +6,7 @@
 
 ## Compiler
 
-- The compiler options live in `tsconfig.json`. `tsconfig.app.json` and `tsconfig.spec.json` only change `files`, `include`, and `types`.
+- The compiler options live in `tsconfig.json`. `tsconfig.app.json` and `tsconfig.spec.json` only change `outDir`, `files`, `include`, and `types`.
 - TypeScript stays on the 6.0 line until `@angular/build` accepts a newer one. See [ADR-005](../architecture-decision-records.md#adr-005-typescript-pinned-to-60).
 - **Target:** `strict: true`. **Today:** `strict` is `false`. [FAE-033](https://github.com/SDS37/firestore-angular-example/issues/97) turns it on. New code is written so it would compile under `strict`.
 
@@ -21,7 +21,7 @@
 ## Imports
 
 - Import from the package entry point the library documents (`@angular/fire/firestore`, not `@angular/fire/compat`).
-- Import app code with the `src/app/...` path, as every file does today. `./` is fine for a file in the same folder.
+- Import app code from another folder with the `src/app/...` path. `./` is fine for a file in the same folder. **Today:** both styles appear; module files such as `app.module.ts` import their children with `./modules/...`, and some specs reach up with `../`. Do not rewrite existing imports in a feature PR.
 - No unused imports. ESLint warns on them (`@typescript-eslint/no-unused-vars`).
 
 ## Async

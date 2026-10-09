@@ -13,7 +13,7 @@ The app splits each feature into containers and presentational components. Keep 
 | Container | `containers/` | Injects services and the `Store`, subscribes, handles route params, calls writes | Render complex markup |
 | Component | `components/` | Takes `@Input()`, emits `@Output()`, renders | Inject data services or call Firestore |
 
-- Presentational components use `ChangeDetectionStrategy.OnPush`.
+- Presentational components use `ChangeDetectionStrategy.OnPush`. **Today:** `auth-form`, `schedule-calendar`, and `not-found` still use the default strategy.
 - A container that subscribes in `ngOnInit` unsubscribes in `ngOnDestroy`. Prefer the `async` pipe when the template is the only reader.
 
 ## Services and Firestore

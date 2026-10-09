@@ -15,7 +15,7 @@
 ## Indexes
 
 - `firestore.indexes.json` holds composite indexes only. The schedule query (`orderBy('timestamp')` with `startAt` / `endAt` on one collection) uses the automatic single-field index, so the file is empty today.
-- When a new query needs a composite index, the index goes into the file in the same PR as the query.
+- When a new query needs a composite index, the index goes into the file in the same PR as the query. **Today:** `npm run deploy:firebase` deploys `firestore:rules` only, not `firestore:indexes`; the PR that adds the first composite index also adds `firestore:indexes` to the `--only` list.
 
 ## Tests
 

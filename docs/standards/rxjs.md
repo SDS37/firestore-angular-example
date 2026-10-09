@@ -8,7 +8,7 @@
 
 - Import operators from `rxjs/operators` or `rxjs`; never from `rxjs/internal`.
 - Use `switchMap` when a new source value makes the previous request irrelevant (auth user, selected date). This is how the data services drop the previous user's query.
-- Use `shareReplay({ bufferSize: 1, refCount: true })` when several subscribers read one Firestore listener. Put it after the operators whose work should be shared.
+- Use `shareReplay({ bufferSize: 1, refCount: true })` when several subscribers read one Firestore listener. Put it after the operators whose work should be shared. **Today:** `MealsService.meals$` and `WorkoutsService.workouts$` put `tap(store.set)` after `shareReplay`, so the store write runs once per subscriber.
 - Use `withLatestFrom` to read the current value of another stream without subscribing to it twice (see `ScheduleService.items$`).
 - Side effects belong in `tap`, and the only side effect a service performs in `tap` is `store.set(...)`.
 
