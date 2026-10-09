@@ -59,7 +59,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.2 | `npm run lint` reports no errors | 0 errors, 12 warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds; warns that Sass `@import` is deprecated | Observed |
 | TR-6.4 | `npm test` passes | 73 of 73 specs pass in ChromeHeadless 154 | Observed |
-| TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | `firebase` 11.10.0 and 12.15.0 both installed; `npm ls` exits with `ELSPROBLEMS` | Not yet: [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89) |
+| TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-09, after the `firebase` override: `npm ls` exits 0 and `npm ls firebase` shows 12.15.0 only. Before it, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
 | TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports 11 (7 high, 4 moderate). `npm audit` reports 63 (6 critical, 33 high) across all dependencies | Not yet: [FAE-023](https://github.com/SDS37/firestore-angular-example/issues/92) |
 | TR-6.7 | CI runs lint, build, and tests on every PR | No `.github/` folder | Not yet: [FAE-040](https://github.com/SDS37/firestore-angular-example/issues/99) |
 

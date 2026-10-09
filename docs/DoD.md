@@ -7,7 +7,7 @@ The roadmap is done when a colleague can follow the root README and every box be
 - [x] The root README is a runbook: with Node from `.nvmrc` and a Firebase project, a colleague can install, run, test, and deploy (M0)
 - [x] `docs/` holds the requirements, architecture, ADRs, standards, commit convention, roadmap, and this file (M0)
 - [ ] [#57](https://github.com/SDS37/firestore-angular-example/pull/57) is merged or closed, and no dead config remains: no tracked `.firebase/`, no Realtime Database rules, no Protractor folder (M1)
-- [ ] `npm ls` reports one `firebase` version and no invalid package (M2)
+- [x] `npm ls` reports one `firebase` version and no invalid package (M2)
 - [ ] Every dependency is on the newest stable version its peers accept. Each exception is in the roadmap dependency table and an ADR (M2)
 - [ ] `npm audit --omit=dev` reports no critical or high vulnerability (M2)
 - [ ] No open Dependabot PR is superseded by work already merged (M2)

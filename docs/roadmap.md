@@ -2,7 +2,7 @@
 
 The work is ordered so each milestone starts from a base that already passes `npm run verify`. A milestone is done when its checkpoint has an observation, not when the code compiles.
 
-**Today:** `master` is on Angular 22.0.5, `@angular/fire` 20.0.1, and TypeScript 6.0.3. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls firebase` is invalid: `@angular/fire` installs `firebase` 11.10.0 and the app installs `firebase` 12.15.0. `npm audit` reports 63 vulnerabilities: 6 critical, 33 high, 22 moderate, 2 low. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. Fifteen Dependabot security PRs and [#57](https://github.com/SDS37/firestore-angular-example/pull/57) are open. No CI check runs on any of them. The root README is a runbook, and `docs/` holds the requirements, architecture, ADRs, and standards. The hosted app serves `master` since the deploy of 2026-10-09; before that it served a 2019 build.
+**Today:** `master` is on Angular 22.0.5, `@angular/fire` 20.0.1, and TypeScript 6.0.3. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls` exits 0 with one `firebase` (12.15.0): an override maps AngularFire's `firebase` onto the root. Until that override, AngularFire's nested `firebase` 11.10.0 broke every live list query in the browser. `npm audit` reports 63 vulnerabilities: 6 critical, 33 high, 22 moderate, 2 low. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. Fifteen Dependabot security PRs and [#57](https://github.com/SDS37/firestore-angular-example/pull/57) are open. No CI check runs on any of them. The root README is a runbook, and `docs/` holds the requirements, architecture, ADRs, and standards. The hosted app serves `master` since the deploy of 2026-10-09; before that it served a 2019 build.
 
 | Milestone | Status | Goal | Stories | Checkpoint |
 |---|---|---|---|---|
@@ -76,7 +76,7 @@ The rule: every package moves to the newest stable version that all of its peers
 | `@angular/cdk`, `@angular/material` | 22.0.3 | 22.2.2 | Latest 22.x |
 | `@angular-devkit/build-angular` | 22.0.5 | removed | Replaced by `@angular/build` 22.2.2 (FAE-030) |
 | `@angular/fire` | 20.0.1 | 20.1.0 | Latest stable. Declares Angular `^20`; `overrides` map it onto Angular 22. `21.0.0-rc.1` declares Angular `^21.2` |
-| `firebase` | 12.15.0 and 11.10.0 | 12.19.x, one copy | `13.0.0` was published 2026-10-07. No AngularFire release accepts it. `@angular/fire` 20.1.0 depends on `^11.8.0`; `overrides` map it onto 12 |
+| `firebase` | 12.15.0, one copy | 12.19.x, one copy | `13.0.0` was published 2026-10-07. No AngularFire release accepts it. `@angular/fire` 20.1.0 depends on `^11.8.0`; `overrides` map it onto 12 |
 | `rxfire` | 6.1.0 | 6.2.0 | Peer accepts `firebase` `^9`–`^12` |
 | `rxjs` | 7.8.2 | 7.8.x | `@angular/fire` peer `~7.8.0` |
 | `zone.js` | 0.16.2 | 0.16.3 | `@angular/core` peer `~0.15.0 \|\| ~0.16.0` |
