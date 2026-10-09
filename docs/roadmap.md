@@ -2,11 +2,11 @@
 
 The work is ordered so each milestone starts from a base that already passes `npm run verify`. A milestone is done when its checkpoint has an observation, not when the code compiles.
 
-**Today:** `master` is on Angular 22.0.5, `@angular/fire` 20.0.1, and TypeScript 6.0.3. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless 154 and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls firebase` is invalid: `@angular/fire` installs `firebase` 11.10.0 and the app installs `firebase` 12.15.0. `npm audit` reports 63 vulnerabilities: 6 critical, 33 high, 22 moderate, 2 low. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. Fifteen Dependabot security PRs and [#57](https://github.com/SDS37/firestore-angular-example/pull/57) are open. No CI check runs on any of them. The root README is a title, one sentence, and a 2019 audit image.
+**Today:** `master` is on Angular 22.0.5, `@angular/fire` 20.0.1, and TypeScript 6.0.3. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls firebase` is invalid: `@angular/fire` installs `firebase` 11.10.0 and the app installs `firebase` 12.15.0. `npm audit` reports 63 vulnerabilities: 6 critical, 33 high, 22 moderate, 2 low. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. Fifteen Dependabot security PRs and [#57](https://github.com/SDS37/firestore-angular-example/pull/57) are open. No CI check runs on any of them. The root README is a runbook, and `docs/` holds the requirements, architecture, ADRs, and standards. The hosted app serves `master` since the deploy of 2026-10-09; before that it served a 2019 build.
 
 | Milestone | Status | Goal | Stories | Checkpoint |
 |---|---|---|---|---|
-| [M0](https://github.com/SDS37/firestore-angular-example/issues/79) | In progress | Documentation a colleague can run from | FAE-001–FAE-005 | A colleague can install, run, test, and deploy from the docs without asking which file owns the Firebase config |
+| [M0](https://github.com/SDS37/firestore-angular-example/issues/79) | Done (2026-10-09) | Documentation a colleague can run from | FAE-001–FAE-005 | A colleague can install, run, test, and deploy from the docs without asking which file owns the Firebase config |
 | [M1](https://github.com/SDS37/firestore-angular-example/issues/85) | Not started | Repository triage | FAE-010–FAE-011 | The only open PRs are Dependabot PRs that M2 supersedes. No config for products the app does not use |
 | [M2](https://github.com/SDS37/firestore-angular-example/issues/88) | Not started | Dependencies on the latest stable versions that work together | FAE-020–FAE-023 | `npm ls` reports no invalid package. `npm audit --omit=dev` reports no critical or high. `npm run verify` passes |
 | [M3](https://github.com/SDS37/firestore-angular-example/issues/93) | Not started | Build and test toolchain | FAE-030–FAE-033 | No deprecated-builder or Sass warning. The app compiles with `strict` and `strictTemplates` |
@@ -29,7 +29,7 @@ flowchart LR
   m6 --> m7
 ```
 
-Dotted lines mean "runs alongside". M0 runs alongside M1–M3: each milestone updates the README **Today** paragraph and the documents it touches. M5 and M6 can run in parallel once CI exists.
+Dotted lines mean "runs alongside". M0 is done, but its documents stay current: each of M1–M3 updates the README **Today** paragraph and the documents it touches. M5 and M6 can run in parallel once CI exists.
 
 ## Stories inside the milestones
 
