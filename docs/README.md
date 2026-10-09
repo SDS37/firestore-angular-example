@@ -29,4 +29,4 @@ Each file takes its rules from that technology's official documentation and adds
 
 ## Status
 
-M0 is in progress. The roadmap, the Definition of Done, the code standards, the architecture, the decision records, and the requirements are written. The root README runbook is [FAE-001](https://github.com/SDS37/firestore-angular-example/issues/80). Requirements that have no observation yet are marked **Not yet** in [technical-requirements.md](technical-requirements.md), with the story that closes each one.
+M0 is done ([#79](https://github.com/SDS37/firestore-angular-example/issues/79)). The roadmap, the Definition of Done, the code standards, the architecture, the decision records, the requirements, and the root README runbook are written, and the README was followed on a fresh clone through to a deploy. The next milestone is [M1](https://github.com/SDS37/firestore-angular-example/issues/85). Requirements that have no observation yet are marked **Not yet** in [technical-requirements.md](technical-requirements.md), with the story that closes each one.
