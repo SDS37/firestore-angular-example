@@ -29,7 +29,7 @@ flowchart LR
 | Presentational components | `*/components/` | Rendering, `@Input()`, `@Output()`, forms | Inject data services |
 | Data services | `modules/nav-options/shared/services/`, `modules/auth/shared/services/` | Firestore queries and writes, auth calls, writing to the store | Render UI |
 | Store | `src/app/store/` | The current state of the session, as one `BehaviorSubject` | Call Firebase |
-| Wrappers | `src/app/utils/` | The only imports of AngularFire functions (`collectionData`, `addDoc`, `authState`, ...) | Hold app logic |
+| Wrappers | `src/app/utils/` | The only imports of AngularFire and Firebase data and auth functions (`collectionData`, `addDoc`, `authState`, `onAuthStateChanged`, ...); other files import only the `Auth` and `Firestore` types and, in `AppModule`, the providers | Hold app logic |
 | Rules | `firestore.rules` | Who may read and write each document | — |
 
 The wrappers exist for tests. `src/app/testing/firebase-test-harness.ts` replaces `firebaseAuthApi` and `firestoreApi` with spies, so specs never reach Firebase.
@@ -39,6 +39,7 @@ The wrappers exist for tests. `src/app/testing/firebase-test-harness.ts` replace
 | Path | Loads | Guard |
 |---|---|---|
 | `/` | Redirects to `/schedule` | — |
+| `/auth` | Redirects to `/auth/login` | — |
 | `/auth/login` | `LoginModule` (lazy) | — |
 | `/auth/register` | `RegisterModule` (lazy) | — |
 | `/schedule` | `ScheduleModule` (lazy) | `AuthGuard` |
@@ -70,7 +71,7 @@ users/{uid}
 └── schedule/{scheduleId}  { section, timestamp, meals[] | null, workouts[] | null }
 ```
 
-- `timestamp` is milliseconds since the epoch (`Date.now()` on create).
+- `timestamp` is milliseconds since the epoch. Meals and workouts get `Date.now()` on create; a schedule document gets the selected day (`new Date(day).getTime()`).
 - `section` is one of `morning`, `lunch`, `evening`, `snacks`. The schedule for a day is the documents whose `timestamp` falls inside that local day.
 - `type` is `strength` or `endurance`. The form writes both groups; the UI reads the one that matches `type`.
 - **Today:** `schedule.meals` and `schedule.workouts` hold meal and workout **names**, not ids. Renaming or deleting a meal leaves the old name in the schedule. [FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106) changes this to ids.

@@ -5,7 +5,7 @@ Each record states the context, the decision, its consequences, and the conditio
 | ADR | Decision | Status |
 |---|---|---|
 | [ADR-001](#adr-001-cloud-firestore-not-realtime-database) | Cloud Firestore, not the Realtime Database | Accepted |
-| [ADR-002](#adr-002-angularfire-with-explicit-overrides) | AngularFire with explicit `overrides` | Accepted |
+| [ADR-002](#adr-002-angularfire-with-explicit-overrides) | AngularFire with explicit `overrides` | Accepted, not implemented (FAE-020) |
 | [ADR-003](#adr-003-an-rxjs-store-service) | An RxJS store service | Accepted, under review in FAE-050 |
 | [ADR-004](#adr-004-vitest-instead-of-karma) | Vitest instead of Karma and Jasmine | Accepted, not implemented (FAE-031) |
 | [ADR-005](#adr-005-typescript-pinned-to-60) | TypeScript pinned to 6.0 | Accepted |
@@ -29,7 +29,7 @@ Each record states the context, the decision, its consequences, and the conditio
 1. Keep AngularFire. Map its Angular peers and its `firebase` dependency onto the root versions with `overrides`.
 2. Drop AngularFire. Use the Firebase JS SDK and `rxfire` directly behind the existing `utils/` wrappers.
 
-**Decision.** Option 1. AngularFire stays at 20.1.0. `overrides` map `@angular/core`, `@angular/common`, `@angular/platform-browser`, and `firebase` onto the root versions, and `rxfire` resolves to 6.2.0. The root `firebase` is 12.19.x. `legacy-peer-deps` is removed so a new conflict fails the install. Implemented in [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89).
+**Decision.** Option 1. AngularFire moves from 20.0.1 to 20.1.0. `overrides` map `@angular/core`, `@angular/common`, `@angular/platform-browser`, and `firebase` onto the root versions, and `rxfire` resolves to 6.2.0. The current `@angular/platform-browser-dynamic` entry is dropped; it is not an AngularFire peer. The root `firebase` is 12.19.x. `legacy-peer-deps` is removed so a new conflict fails the install. Implemented in [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89).
 
 **Consequences.** One Firebase SDK in the tree. AngularFire runs on an Angular and a Firebase major it was not released against; the unit tests and the end-to-end tests ([M7](https://github.com/SDS37/firestore-angular-example/issues/111)) are the guard. `firebase` 13 waits until an AngularFire release accepts it. Option 2 stays cheap because every AngularFire call already goes through `src/app/utils/`.
 
@@ -61,6 +61,6 @@ Each record states the context, the decision, its consequences, and the conditio
 
 **Decision.** Stay on TypeScript 6.0.x.
 
-**Consequences.** `tsconfig.json` keeps `ignoreDeprecations: "6.0"`. Dependabot is configured to ignore TypeScript majors ([FAE-041](https://github.com/SDS37/firestore-angular-example/issues/100)).
+**Consequences.** `tsconfig.json` keeps `ignoreDeprecations: "6.0"`. [FAE-041](https://github.com/SDS37/firestore-angular-example/issues/100) configures Dependabot to ignore TypeScript majors; until then Dependabot can open a TypeScript 7 PR, and it is closed.
 
 **Reopen when.** Both `@angular/build` and `typescript-eslint` accept TypeScript 7.
