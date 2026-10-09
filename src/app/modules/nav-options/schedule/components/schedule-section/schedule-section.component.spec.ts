@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScheduleSectionComponent } from './schedule-section.component';
 import { JoinPipe } from 'src/app/modules/nav-options/shared/pipes/join.pipe';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 
 describe('ScheduleSectionComponent', () => {
@@ -9,7 +8,7 @@ describe('ScheduleSectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ScheduleSectionComponent, JoinPipe, ...MATERIAL_IMPORTS]
+      imports: [ScheduleSectionComponent, JoinPipe]
     }).compileComponents();
 
     component = TestBed.createComponent(ScheduleSectionComponent).componentInstance;

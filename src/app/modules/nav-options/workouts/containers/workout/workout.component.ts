@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { WorkoutFormComponent } from '../../components/workout-form/workout-form.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 // services
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
@@ -17,7 +18,7 @@ import { switchMap, tap } from 'rxjs/operators';
 @Component({
   standalone: true,
   selector: 'workout',
-  imports: [AsyncPipe, NgIf, WorkoutFormComponent, ...MATERIAL_IMPORTS],
+  imports: [AsyncPipe, NgIf, WorkoutFormComponent, MatCardModule, MatProgressBarModule],
   template: `
   <div
     id="workout"

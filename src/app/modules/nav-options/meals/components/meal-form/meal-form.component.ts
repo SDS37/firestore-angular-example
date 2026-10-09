@@ -2,7 +2,10 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChan
 import { NgIf, NgFor } from '@angular/common';
 import { ReactiveFormsModule, FormArray, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
@@ -10,7 +13,7 @@ import { Meal } from 'src/app/models/meal.interface';
 @Component({
   standalone: true,
   selector: 'meal-form',
-  imports: [ReactiveFormsModule, RouterLink, ...MATERIAL_IMPORTS, NgIf, NgFor],
+  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, NgIf, NgFor],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <form [formGroup]="form">

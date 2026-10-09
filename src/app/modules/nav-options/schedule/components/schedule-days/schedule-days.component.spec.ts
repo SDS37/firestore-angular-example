@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScheduleDaysComponent } from './schedule-days.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('ScheduleDaysComponent', () => {
   let component: ScheduleDaysComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ScheduleDaysComponent, ...MATERIAL_IMPORTS]
+      imports: [ScheduleDaysComponent]
     }).compileComponents();
 
     component = TestBed.createComponent(ScheduleDaysComponent).componentInstance;

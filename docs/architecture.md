@@ -2,8 +2,6 @@
 
 The app is an Angular single-page app that talks directly to Firebase Authentication and Cloud Firestore. There is no server of our own. Firebase Hosting serves the built files, and `firestore.rules` is the only thing between one user and another user's data.
 
-**Today:** this describes `master` at the NgModule layout. [#57](https://github.com/SDS37/firestore-angular-example/pull/57) moves it to standalone components; when it merges, the module names below change and the layers do not.
-
 ```mermaid
 flowchart LR
   browser["Browser"] --> hosting["Firebase Hosting<br/>dist/firebase-example-app/browser"]
@@ -24,12 +22,12 @@ flowchart LR
 
 | Layer | Lives in | Owns | Must not |
 |---|---|---|---|
-| Bootstrap | `src/main.ts`, `src/app/app.module.ts` | Firebase providers, root routes, the `Store` provider | Hold feature logic |
+| Bootstrap | `src/main.ts`, `src/app/app.config.ts`, `src/app/app.routes.ts` | `bootstrapApplication`, the router, animations, Firebase providers, root routes | Hold feature logic |
 | Containers | `*/containers/` | Route params, subscriptions, calling writes, navigation | Call Firestore directly |
 | Presentational components | `*/components/` | Rendering, `@Input()`, `@Output()`, forms | Inject data services |
 | Data services | `modules/nav-options/shared/services/`, `modules/auth/shared/services/` | Firestore queries and writes, auth calls, writing to the store | Render UI |
 | Store | `src/app/store/` | The current state of the session, as one `BehaviorSubject` | Call Firebase |
-| Wrappers | `src/app/utils/` | The only imports of AngularFire and Firebase data and auth functions (`collectionData`, `addDoc`, `authState`, `onAuthStateChanged`, ...); other files import only the `Auth` and `Firestore` types and, in `AppModule`, the providers | Hold app logic |
+| Wrappers | `src/app/utils/` | The only imports of AngularFire and Firebase data and auth functions (`collectionData`, `addDoc`, `authState`, `onAuthStateChanged`, ...); other files import only the `Auth` and `Firestore` types and, in `app.config.ts`, the providers | Hold app logic |
 | Rules | `firestore.rules` | Who may read and write each document | — |
 
 The wrappers exist for tests. `src/app/testing/firebase-test-harness.ts` replaces `firebaseAuthApi` and `firestoreApi` with spies, so specs never reach Firebase.
@@ -40,25 +38,29 @@ The wrappers exist for tests. `src/app/testing/firebase-test-harness.ts` replace
 |---|---|---|
 | `/` | Redirects to `/schedule` | — |
 | `/auth` | Redirects to `/auth/login` | — |
-| `/auth/login` | `LoginModule` (lazy) | — |
-| `/auth/register` | `RegisterModule` (lazy) | — |
-| `/schedule` | `ScheduleModule` (lazy) | `AuthGuard` |
-| `/meals`, `/meals/new`, `/meals/:id` | `MealsModule` (lazy) | `AuthGuard` |
-| `/workouts`, `/workouts/new`, `/workouts/:id` | `WorkoutsModule` (lazy) | `AuthGuard` |
-| `**` | `NotFoundComponent` | — |
+| `/auth/login` | `loginRoutes` (lazy): `LoginComponent` | — |
+| `/auth/register` | `registerRoutes` (lazy): `RegisterComponent` | — |
+| `/schedule` | `scheduleRoutes` (lazy): `ScheduleComponent` | `AuthGuard` |
+| `/meals`, `/meals/new`, `/meals/:id` | `mealsRoutes` (lazy): `MealsComponent`, `MealComponent` | `AuthGuard` |
+| `/workouts`, `/workouts/new`, `/workouts/:id` | `workoutsRoutes` (lazy): `WorkoutsComponent`, `WorkoutComponent` | `AuthGuard` |
+| `**` | `NotFoundComponent` (lazy, `loadComponent`) | — |
+
+Each `*Routes` array lives in the feature's `*.routes.ts` file next to its containers.
 
 `AuthGuard` waits for the first `onAuthStateChanged` value. A signed-out user gets a `UrlTree` to `/auth/login`.
 
-## Modules
+## Components and providers
 
-| Module | Holds |
+There are no NgModules. Every component and pipe is standalone and lists what its template uses in `imports`, including the Material modules.
+
+| Folder under `src/app/` | Holds |
 |---|---|
-| `AppModule` | `AppComponent`, `AppHeaderComponent`, `AppNavComponent`, Firebase providers, `Store` |
-| `AuthModule` | `/auth` routes; imports auth `SharedModule.forRoot()` (`AuthService`, `AuthGuard`, `AuthFormComponent`) |
-| `NavOptionsModule` | `/schedule`, `/meals`, `/workouts` routes; imports nav-options `SharedModule.forRoot()` (`MealsService`, `WorkoutsService`, `ScheduleService`, `ListItemComponent`, `JoinPipe`, `WorkoutPipe`) |
-| `MealsModule`, `WorkoutsModule`, `ScheduleModule` | One feature each, lazy |
-| `NotFoundModule` | `NotFoundComponent` |
-| `MaterialModule` | The Angular Material modules listed in `src/constants/constants.ts` |
+| `containers/app/`, `components/app/` | `AppComponent`, `AppHeaderComponent`, `AppNavComponent` |
+| `modules/auth/` | `LoginComponent`, `RegisterComponent`, `AuthFormComponent`, `AuthService`, `AuthGuard` |
+| `modules/nav-options/` | The meals, workouts, and schedule features; `shared/` holds `MealsService`, `WorkoutsService`, `ScheduleService`, `ListItemComponent`, `JoinPipe`, `WorkoutPipe` |
+| `modules/not-found/` | `NotFoundComponent` |
+
+Services, `AuthGuard`, and `Store` use `@Injectable({ providedIn: 'root' })`, so the app has one instance of each.
 
 ## Data model
 
@@ -115,6 +117,7 @@ Services write in `tap`. A container must subscribe to the service stream for th
 
 - `ng build` uses `@angular-devkit/build-angular:application` and writes `dist/firebase-example-app/browser`. The production configuration replaces `environment.ts` with `environment.prod.ts` and writes `ngsw-worker.js` from `ngsw-config.json`. **Today:** nothing in `src/` registers that service worker ([TR-5.2](technical-requirements.md#tr-5-pwa-and-accessibility)).
 - `firebase.json` serves that folder from the hosting target `firebase-example-app`, rewrites every path to `/index.html`, and points Firestore at `firestore.rules` and `firestore.indexes.json`.
+- `npm run deploy:firebase` runs `predeploy:firebase` (`npm run build`) first, then deploys the rules and hosting together.
 - `.firebaserc` maps the default project and the hosting target to `fir-example-app-5c3d3`.
 - Both environment files hold the same Firebase project. A local `npm start` reads and writes the same data as the hosted app.
 

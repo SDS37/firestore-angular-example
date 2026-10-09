@@ -3,7 +3,6 @@ import { ScheduleCalendarComponent } from './schedule-calendar.component';
 import { ScheduleControlsComponent } from '../schedule-controls/schedule-controls.component';
 import { ScheduleDaysComponent } from '../schedule-days/schedule-days.component';
 import { ScheduleSectionComponent } from '../schedule-section/schedule-section.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
 
 describe('ScheduleCalendarComponent', () => {
@@ -15,8 +14,7 @@ describe('ScheduleCalendarComponent', () => {
         ScheduleCalendarComponent,
         ScheduleControlsComponent,
         ScheduleDaysComponent,
-        ScheduleSectionComponent,
-        ...MATERIAL_IMPORTS
+        ScheduleSectionComponent
       ]
     }).compileComponents();
 

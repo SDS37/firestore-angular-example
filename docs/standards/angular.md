@@ -24,20 +24,22 @@ The app splits each feature into containers and presentational components. Keep 
 
 ## Providers
 
-- **Target:** `@Injectable({ providedIn: 'root' })` for services and guards. **Today:** services are provided through `SharedModule.forRoot()` in the auth and nav-options modules. [FAE-053](https://github.com/SDS37/firestore-angular-example/issues/107) moves them, unless [#57](https://github.com/SDS37/firestore-angular-example/pull/57) already did.
-- Firebase is provided once, in `AppModule`, with `provideFirebaseApp`, `provideAuth`, and `provideFirestore`.
+- Services, guards, and the `Store` use `@Injectable({ providedIn: 'root' })`. Do not add a provider to a component or a route for a service the whole app shares.
+- Firebase is provided once, in `src/app/app.config.ts`, with `provideFirebaseApp`, `provideAuth`, and `provideFirestore`.
 
-## Components and modules
+## Components and routes
 
-- **Today:** components are declared in NgModules (`standalone: false`). [#57](https://github.com/SDS37/firestore-angular-example/pull/57) migrates them to standalone components. New code follows whichever style `master` uses when the PR opens.
-- Features are lazy-loaded with `loadChildren` and a dynamic `import()`.
+- Components and pipes are standalone. There are no NgModules; do not add one.
+- A component's `imports` lists exactly what its template uses: Angular directives and pipes, child components, `ReactiveFormsModule`, `RouterLink`, and Material modules.
+- `src/main.ts` calls `bootstrapApplication(AppComponent, appConfig)`. Root routes live in `src/app/app.routes.ts`.
+- Features are lazy-loaded with `loadChildren` and a dynamic `import()` of the feature's `*.routes.ts` file.
 - Routes that need a user use `canActivate: [AuthGuard]`.
 
 ## Templates
 
 - Inline templates are the convention in this repo. Move a template to an `.html` file when it passes about 100 lines.
 - **Today:** templates use `*ngIf` and `*ngFor`; the ESLint rule `prefer-control-flow` is off. A migration to `@if` / `@for` is a separate PR, not part of a feature change.
-- Use Angular Material components through `MaterialModule`; do not import a Material module directly into a feature.
+- Import each Material module from its own entry point (`@angular/material/button`) into the component that uses it. A missing `MatButtonModule` or `MatInputModule` does not fail the build: the button renders unstyled, or the form field throws at runtime.
 - Forms are reactive (`FormBuilder`). Validation messages use `mat-error`.
 
 ## Selectors

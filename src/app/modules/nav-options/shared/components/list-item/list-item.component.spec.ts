@@ -3,14 +3,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ListItemComponent } from './list-item.component';
 import { JoinPipe } from '../../pipes/join.pipe';
 import { WorkoutPipe } from '../../pipes/workout.pipe';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('ListItemComponent', () => {
   let fixture: ComponentFixture<ListItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ListItemComponent, JoinPipe, WorkoutPipe, ...MATERIAL_IMPORTS]
+      imports: [RouterTestingModule, ListItemComponent, JoinPipe, WorkoutPipe]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListItemComponent);

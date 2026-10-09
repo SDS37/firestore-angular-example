@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RegisterComponent } from './register.component';
 import { AuthFormComponent } from 'src/app/modules/auth/shared/components/auth-form/auth-form.component';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -16,7 +15,7 @@ describe('RegisterComponent', () => {
     authService = jasmine.createSpyObj('AuthService', ['createUser']);
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, RegisterComponent, AuthFormComponent, ...MATERIAL_IMPORTS],
+      imports: [ReactiveFormsModule, RouterTestingModule, RegisterComponent, AuthFormComponent],
       providers: [
         { provide: AuthService, useValue: authService }
       ]

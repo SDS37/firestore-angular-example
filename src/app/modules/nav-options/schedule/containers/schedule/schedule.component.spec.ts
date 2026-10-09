@@ -10,7 +10,6 @@ import { ScheduleAssignComponent } from '../../components/schedule-assign/schedu
 import { ScheduleControlsComponent } from '../../components/schedule-controls/schedule-controls.component';
 import { ScheduleDaysComponent } from '../../components/schedule-days/schedule-days.component';
 import { ScheduleSectionComponent } from '../../components/schedule-section/schedule-section.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ScheduleComponent', () => {
@@ -37,8 +36,7 @@ describe('ScheduleComponent', () => {
         ScheduleAssignComponent,
         ScheduleControlsComponent,
         ScheduleDaysComponent,
-        ScheduleSectionComponent,
-        ...MATERIAL_IMPORTS
+        ScheduleSectionComponent
       ],
       providers: [
         Store,

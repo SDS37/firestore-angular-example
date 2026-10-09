@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScheduleAssignComponent } from './schedule-assign.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ScheduleAssignComponent', () => {
@@ -8,7 +7,7 @@ describe('ScheduleAssignComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ScheduleAssignComponent, ...MATERIAL_IMPORTS]
+      imports: [RouterTestingModule, ScheduleAssignComponent]
     }).compileComponents();
 
     component = TestBed.createComponent(ScheduleAssignComponent).componentInstance;

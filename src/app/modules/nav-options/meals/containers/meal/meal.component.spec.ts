@@ -4,7 +4,6 @@ import { of, EMPTY } from 'rxjs';
 import { MealComponent } from './meal.component';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 import { MealFormComponent } from '../../components/meal-form/meal-form.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Meal } from 'src/app/models/meal.interface';
@@ -21,7 +20,7 @@ describe('MealComponent', () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ReactiveFormsModule, MealComponent, MealFormComponent, ...MATERIAL_IMPORTS],
+      imports: [RouterTestingModule, ReactiveFormsModule, MealComponent, MealFormComponent],
       providers: [
         { provide: MealsService, useValue: mealsService },
         { provide: Router, useValue: router },

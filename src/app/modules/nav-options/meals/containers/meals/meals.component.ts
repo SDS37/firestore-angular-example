@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AsyncPipe, NgIf, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ListItemComponent } from '../../../shared/components/list-item/list-item.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';
@@ -19,7 +21,7 @@ import { Meal } from 'src/app/models/meal.interface';
 @Component({
   standalone: true,
   selector: 'meals',
-  imports: [AsyncPipe, NgIf, NgFor, RouterLink, ListItemComponent, ...MATERIAL_IMPORTS],
+  imports: [AsyncPipe, NgIf, NgFor, RouterLink, ListItemComponent, MatCardModule, MatIconModule, MatProgressBarModule],
   template: `
   <div
     id="meals"

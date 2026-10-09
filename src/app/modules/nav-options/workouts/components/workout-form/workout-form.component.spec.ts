@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WorkoutFormComponent } from './workout-form.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
 
 describe('WorkoutFormComponent', () => {
   let component: WorkoutFormComponent;
@@ -10,7 +9,7 @@ describe('WorkoutFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, WorkoutFormComponent, ...MATERIAL_IMPORTS]
+      imports: [ReactiveFormsModule, RouterTestingModule, WorkoutFormComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkoutFormComponent);

@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MealFormComponent } from '../../components/meal-form/meal-form.component';
-import { MATERIAL_IMPORTS } from 'src/app/shared/material-imports';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 // services
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
@@ -17,7 +18,7 @@ import { switchMap, tap } from 'rxjs/operators';
 @Component({
   standalone: true,
   selector: 'meal',
-  imports: [AsyncPipe, NgIf, MealFormComponent, ...MATERIAL_IMPORTS],
+  imports: [AsyncPipe, NgIf, MealFormComponent, MatCardModule, MatProgressBarModule],
   template: `
   <div
     id="meal"
