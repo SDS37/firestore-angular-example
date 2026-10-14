@@ -9,6 +9,7 @@ Each record states the context, the decision, its consequences, and the conditio
 | [ADR-003](#adr-003-an-rxjs-store-service) | An RxJS store service | Accepted, under review in FAE-050 |
 | [ADR-004](#adr-004-vitest-instead-of-karma) | Vitest instead of Karma and Jasmine | Accepted, not implemented (FAE-031) |
 | [ADR-005](#adr-005-typescript-pinned-to-60) | TypeScript pinned to 6.0 | Accepted |
+| [ADR-006](#adr-006-grpc-js-pinned-to-1146) | `@grpc/grpc-js` pinned to 1.14.6 | Accepted |
 
 ## ADR-001: Cloud Firestore, not Realtime Database
 
@@ -64,3 +65,13 @@ Each record states the context, the decision, its consequences, and the conditio
 **Consequences.** `tsconfig.json` keeps `ignoreDeprecations: "6.0"`. [FAE-041](https://github.com/SDS37/firestore-angular-example/issues/100) configures Dependabot to ignore TypeScript majors; until then Dependabot can open a TypeScript 7 PR, and it is closed.
 
 **Reopen when.** Both `@angular/build` and `typescript-eslint` accept TypeScript 7.
+
+## ADR-006: @grpc/grpc-js pinned to 1.14.6
+
+**Context.** `npm audit --omit=dev` reported a high advisory, [GHSA-m9gg-hp2v-232j](https://github.com/advisories/GHSA-m9gg-hp2v-232j), in `@grpc/grpc-js` `<=1.13.5` and `1.14.0`–`1.14.4`. `@firebase/firestore` 4.17.2, which `firebase` 12.19.0 depends on, depends on `@grpc/grpc-js` `~1.9.0`. `firebase-tools` 15.33.0 reached `1.14.4` through `google-gax`. `npm audit fix` will not move either copy. `npm audit fix --force` would install `firebase` 9.14.0. No `firebase` 12 release depends on a patched `@grpc/grpc-js`. `firebase` 13 stays out until AngularFire accepts it ([ADR-002](#adr-002-angularfire-with-explicit-overrides)).
+
+**Decision.** `overrides` pins `@grpc/grpc-js` to 1.14.6. The browser build of Firestore does not load that package. Implemented in [FAE-023](https://github.com/SDS37/firestore-angular-example/issues/92).
+
+**Consequences.** `npm audit --omit=dev` reports no critical or high finding. The Node entry point of Firestore runs on a grpc version newer than `~1.9.0`.
+
+**Reopen when.** A `firebase` 12 release depends on `@grpc/grpc-js` `>=1.14.5`, or a stable AngularFire accepts `firebase` 13 and that release does. Remove the override then.

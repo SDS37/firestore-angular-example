@@ -65,6 +65,7 @@
     },
     "rxfire": {
       "firebase": "$firebase"
-    }
+    },
+    "@grpc/grpc-js": "1.14.6"
   }
 }
