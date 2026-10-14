@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { WorkoutsComponent } from './workouts.component';
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';

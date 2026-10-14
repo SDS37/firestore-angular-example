@@ -55,8 +55,8 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 
 | Id | Requirement | Observation | Status |
 |---|---|---|---|
-| TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.20.0. Node 14.19.1 is outside `engines` | Observed |
-| TR-6.2 | `npm run lint` reports no errors | 0 errors, 12 warnings | Observed |
+| TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
+| TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds; warns that Sass `@import` is deprecated | Observed |
 | TR-6.4 | `npm test` passes | 73 of 73 specs pass in ChromeHeadless 154 | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
