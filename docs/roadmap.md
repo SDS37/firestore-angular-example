@@ -2,7 +2,7 @@
 
 The work is ordered so each milestone starts from a base that already passes `npm run verify`. A milestone is done when its checkpoint has an observation, not when the code compiles.
 
-**Today:** `master` is on Angular 22.2.2, `@angular/fire` 20.1.1, and TypeScript 6.0.3. CDK and Material are 22.2.3. `@angular/animations` and `@angular/platform-browser-dynamic` are not installed. On Node 24.20.0, `npm ci` installs the tree. `npm run lint` reports 0 errors and 12 warnings. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls` exits 0 with one `firebase` (12.19.0) and `rxfire` 6.2.0. Overrides map AngularFire's `firebase` and `rxfire` onto that SDK, and `.npmrc` no longer sets `legacy-peer-deps`. Until the `firebase` override, AngularFire's nested `firebase` 11.10.0 broke every live list query in the browser. `npm audit` reports 31 vulnerabilities: 20 high, 10 moderate, 1 low. `npm audit --omit=dev` reports 6: 5 high and 1 moderate. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. The app uses standalone components since [#57](https://github.com/SDS37/firestore-angular-example/pull/57). [M1](https://github.com/SDS37/firestore-angular-example/issues/85) is done: `.firebase/` is gitignored, and `database.rules.json` and the Protractor `e2e/` folder are gone. Dependabot security updates are off, and no pull requests are open. No CI check runs. The root README is a runbook, and `docs/` holds the requirements, architecture, ADRs, and standards. The hosted app was last deployed on 2026-10-14 from the standalone merge; dependency commits after that deploy are not live yet. Before 2026-10-09 it served a 2019 build.
+**Today:** `master` is on Angular 22.2.2, `@angular/fire` 20.1.1, and TypeScript 6.0.3. CDK and Material are 22.2.3. `@angular/animations` and `@angular/platform-browser-dynamic` are not installed. On Node 24.22.0, `npm ci` installs the tree. `npm run lint` reports no problems. `npm run build` writes `dist/firebase-example-app` and warns that Sass `@import` is deprecated. `npm test` runs 73 specs in ChromeHeadless and all 73 pass. `ng test` warns that the `@angular-devkit/build-angular:karma` builder is deprecated. `npm ls` exits 0 with one `firebase` (12.19.0) and `rxfire` 6.2.0. Overrides map AngularFire's `firebase` and `rxfire` onto that SDK, and `.npmrc` no longer sets `legacy-peer-deps`. Until the `firebase` override, AngularFire's nested `firebase` 11.10.0 broke every live list query in the browser. `npm audit` reports 31 vulnerabilities: 20 high, 10 moderate, 1 low. `npm audit --omit=dev` reports 6: 5 high and 1 moderate. `firestore.rules` limits every path under `users/{userId}` to that user, and no test proves it. The app uses standalone components since [#57](https://github.com/SDS37/firestore-angular-example/pull/57). [M1](https://github.com/SDS37/firestore-angular-example/issues/85) is done: `.firebase/` is gitignored, and `database.rules.json` and the Protractor `e2e/` folder are gone. Dependabot security updates are off, and no pull requests are open. No CI check runs. The root README is a runbook, and `docs/` holds the requirements, architecture, ADRs, and standards. The hosted app was last deployed on 2026-10-14 from the standalone merge; dependency commits after that deploy are not live yet. Before 2026-10-09 it served a 2019 build.
 
 | Milestone | Status | Goal | Stories | Checkpoint |
 |---|---|---|---|---|
@@ -79,14 +79,14 @@ The rule: every package moves to the newest stable version that all of its peers
 | `firebase` | 12.19.0, one copy | 12.19.x, one copy | `13.0.0` was published 2026-10-07. No AngularFire release accepts it. `@angular/fire` 20.1.1 depends on `^11.8.0`; `overrides` map it onto 12 |
 | `rxfire` | 6.2.0 | 6.2.0 | Peer accepts `firebase` `^9`–`^12` |
 | `rxjs` | 7.8.2 | 7.8.x | `@angular/fire` peer `~7.8.0` |
-| `zone.js` | 0.16.2 | 0.16.3 | `@angular/core` peer `~0.15.0 \|\| ~0.16.0` |
-| `typescript` | 6.0.3 | 6.0.x | `7.0.2` is latest. `@angular/build` accepts `>=6.0 <6.1`; `typescript-eslint` accepts `<6.1.0` |
-| `eslint` | 9.39.4 | 10.x | `angular-eslint` 22.5.0 and `typescript-eslint` 8.71.1 accept `^10`. Fall back to 9.39.x if a plugin rejects it |
-| `angular-eslint` and `@angular-eslint/*` | 22.0.0 | 22.5.0 | Latest |
-| `typescript-eslint` | 8.62.1 | 8.71.1 | Latest |
-| `firebase-tools` | 14.27.0 | 15.x | `@angular/fire` peer `^14.0.0 \|\| ^15.0.0` |
-| `@types/node` | 22.20.0 | 24.x | Matches the Node major in `.nvmrc` |
-| Node (`.nvmrc`) | 22.22.3 | 24 | `engines` already allows `^24.15.0` |
+| `zone.js` | 0.16.3 | 0.16.3 | `@angular/core` peer `~0.15.0 \|\| ~0.16.0` |
+| `typescript` | 6.0.3 | 6.0.x | `7.0.2` is latest. `@angular/build` accepts `>=6.0 <6.1`; `typescript-eslint` 8.71.2 accepts `<6.1.0` |
+| `eslint` | 10.12.0 | 10.x | `angular-eslint` 22.6.0 and `typescript-eslint` 8.71.2 accept `^10` |
+| `angular-eslint` and `@angular-eslint/*` | 22.6.0 | 22.5.0 | Latest |
+| `typescript-eslint` | 8.71.2 | 8.71.1 | Latest |
+| `firebase-tools` | 15.33.0 | 15.x | `@angular/fire` peer `^14.0.0 \|\| ^15.0.0` |
+| `@types/node` | 24.19.2 | 24.x | Matches the Node major in `.nvmrc` |
+| Node (`.nvmrc`) | 24.22.0 | 24 | `engines` already allows `^24.15.0` |
 | `karma`, `karma-*`, `jasmine-core`, `@types/jasmine` | 6.4.4, 5.6.0, 5.1.15 | removed | Replaced by Vitest (FAE-031) |
 | `vitest` | — | 5.x | `@angular/build` 22.2.2 peer `^4.0.8 \|\| ^5.0.0` |
 | `jsdom` | — | 30.x | Vitest test environment |

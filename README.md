@@ -4,7 +4,7 @@ A meal and workout planner with a weekly schedule. Cloud Firestore is the reacti
 
 License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-app-5c3d3.web.app)
 
-**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.20.0, `npm ci` installs the tree, `npm run lint` reports 0 errors and 12 warnings, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs in ChromeHeadless. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit` reports 31 vulnerabilities, and no CI runs on pull requests. The [roadmap](docs/roadmap.md) fixes those in order.
+**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs in ChromeHeadless. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit` reports 31 vulnerabilities, and no CI runs on pull requests. The [roadmap](docs/roadmap.md) fixes those in order.
 
 ## Current status
 
@@ -15,7 +15,7 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Schedule | Week view, four sections per day, assign meals and workouts. Entries store names, not ids ([FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106)) |
 | Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. Not tested yet ([FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101)) |
 | Unit tests | 73 specs, Karma and Jasmine. Moving to Vitest ([FAE-031](https://github.com/SDS37/firestore-angular-example/issues/95)) |
-| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, one `firebase` (12.19.0), `rxfire` 6.2.0. Tooling and the audit remain in [M2](https://github.com/SDS37/firestore-angular-example/issues/88) |
+| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). The audit remains in [M2](https://github.com/SDS37/firestore-angular-example/issues/88) |
 | PWA | Manifest and service worker are built; the service worker is not registered |
 | CI and deploy | None. Manual deploy with `npm run deploy:firebase`. Automated in [M4](https://github.com/SDS37/firestore-angular-example/issues/98) |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
@@ -85,7 +85,7 @@ firestore-angular-example/
 
 ## Prerequisites
 
-- Node in the `engines` range of `package.json`: 22.22.3 or newer on 22, 24.15.0 or newer on 24, or 26 and later. `.nvmrc` names 22.22.3; Node 24.20.0 is also tested. On older Node, npm only warns, and the Angular CLI then refuses to run.
+- Node in the `engines` range of `package.json`: 22.22.3 or newer on 22, 24.15.0 or newer on 24, or 26 and later. `.nvmrc` names 24.22.0. On older Node, npm only warns, and the Angular CLI then refuses to run.
 - [nvm](https://github.com/nvm-sh/nvm), or any Node version manager, to get that version. The install steps below use nvm.
 - Google Chrome, for `npm test`.
 - A Firebase project, only if you want your own data or your own deploy. The Firebase CLI comes with the dev dependencies as `npx firebase`.
@@ -99,7 +99,7 @@ nvm install
 npm ci
 ```
 
-`nvm install` reads `.nvmrc`, installs that Node version if it is missing, and switches to it. `nvm use` alone fails when the version is not installed yet. nvm-windows does not read `.nvmrc`; there, run `nvm install 22.22.3` and `nvm use 22.22.3`.
+`nvm install` reads `.nvmrc`, installs that Node version if it is missing, and switches to it. `nvm use` alone fails when the version is not installed yet. nvm-windows does not read `.nvmrc`; there, run `nvm install 24.22.0` and `nvm use 24.22.0`.
 
 Use `npm ci`, not `npm install`, so the lockfile is respected. Peer conflicts are solved with `overrides` in `package.json`, recorded in [ADR-002](docs/architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides).
 

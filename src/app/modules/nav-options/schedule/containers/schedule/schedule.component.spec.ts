@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ScheduleComponent } from './schedule.component';
 import { ScheduleService } from 'src/app/modules/nav-options/shared/services/schedule/schedule.service';

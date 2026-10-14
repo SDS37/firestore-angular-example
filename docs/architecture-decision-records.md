@@ -57,7 +57,7 @@ Each record states the context, the decision, its consequences, and the conditio
 
 ## ADR-005: TypeScript pinned to 6.0
 
-**Context.** TypeScript 7.0.2 is the latest release. `@angular/build` 22.2.2 accepts `typescript >=6.0 <6.1`, and `typescript-eslint` 8.71.1 accepts `<6.1.0`.
+**Context.** TypeScript 7.0.2 is the latest release. `@angular/build` 22.2.2 accepts `typescript >=6.0 <6.1`, and `typescript-eslint` 8.71.2 accepts `<6.1.0`.
 
 **Decision.** Stay on TypeScript 6.0.x.
 

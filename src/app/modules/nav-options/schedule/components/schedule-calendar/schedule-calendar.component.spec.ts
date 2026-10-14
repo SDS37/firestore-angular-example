@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ScheduleCalendarComponent } from './schedule-calendar.component';
 import { ScheduleControlsComponent } from '../schedule-controls/schedule-controls.component';
 import { ScheduleDaysComponent } from '../schedule-days/schedule-days.component';

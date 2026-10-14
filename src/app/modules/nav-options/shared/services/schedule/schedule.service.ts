@@ -24,7 +24,7 @@ import {
 } from 'src/app/utils/firestore.utils';
 
 // rxjs
-import { BehaviorSubject, Subject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Subject, from } from 'rxjs';
 import { tap, map, switchMap, withLatestFrom, filter } from 'rxjs/operators';
 
 // interfaces

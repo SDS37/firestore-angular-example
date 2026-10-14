@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { WorkoutTypeComponent } from './workout-type.component';
 
 describe('WorkoutTypeComponent', () => {
