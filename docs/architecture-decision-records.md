@@ -12,11 +12,11 @@ Each record states the context, the decision, its consequences, and the conditio
 
 ## ADR-001: Cloud Firestore, not Realtime Database
 
-**Context.** The repo still holds `database.rules.json`, which is written for the Realtime Database. The data services now read and write Cloud Firestore through `@angular/fire/firestore`, and `firebase.json` has a `firestore` section and no `database` section.
+**Context.** The repo used to hold `database.rules.json`, which is written for the Realtime Database. The data services read and write Cloud Firestore through `@angular/fire/firestore`, and `firebase.json` has a `firestore` section and no `database` section.
 
 **Decision.** Cloud Firestore is the only database. Documents live under `users/{uid}/meals`, `users/{uid}/workouts`, and `users/{uid}/schedule`.
 
-**Consequences.** Security lives in `firestore.rules`. `database.rules.json` protects nothing and is removed in [FAE-011](https://github.com/SDS37/firestore-angular-example/issues/87). The schedule's day query relies on Firestore's automatic single-field index on `timestamp`.
+**Consequences.** Security lives in `firestore.rules`. `database.rules.json` protected nothing and was removed in [FAE-011](https://github.com/SDS37/firestore-angular-example/issues/87). The schedule's day query relies on Firestore's automatic single-field index on `timestamp`.
 
 **Reopen when.** Never for this app. A second database would be a new record.
 

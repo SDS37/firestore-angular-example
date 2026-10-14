@@ -10,7 +10,7 @@
 - Every user document lives under `users/{userId}`. Access is granted only when `request.auth.uid == userId`, through the `isOwner(userId)` function.
 - Deny by default. A collection with no `match` block is not readable or writable. Adding a collection means adding its `match` block in the same PR.
 - No `allow read, write: if true;`, not even temporarily.
-- The Realtime Database is not used. `database.rules.json` does not protect Firestore and is removed in [FAE-011](https://github.com/SDS37/firestore-angular-example/issues/87).
+- The Realtime Database is not used. There is no `database.rules.json`; [FAE-011](https://github.com/SDS37/firestore-angular-example/issues/87) removed it.
 
 ## Indexes
 
