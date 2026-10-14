@@ -15,7 +15,6 @@
         ".editorconfig",
         "firestore.rules",
         "firestore.indexes.json",
-        "database.rules.json",
         "package.json",
         "README.md",
         "tsconfig.json",
