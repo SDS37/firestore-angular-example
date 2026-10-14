@@ -19,7 +19,7 @@ import { tap } from 'rxjs/operators';
 // interfaces
 import { User as AppUser } from 'src/app/models/user.interface';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
   auth$: Observable<User | null> = observeAuthState(this.auth).pipe(

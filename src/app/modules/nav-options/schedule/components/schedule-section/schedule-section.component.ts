@@ -1,11 +1,16 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 
 // interfaces
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
+import { JoinPipe } from '../../../shared/pipes/join.pipe';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'schedule-section',
+  imports: [NgIf, MatIconModule, MatDividerModule, JoinPipe],
   styleUrls: ['schedule-section.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthFormComponent } from './auth-form.component';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 
 describe('AuthFormComponent', () => {
   let component: AuthFormComponent;
@@ -9,8 +8,7 @@ describe('AuthFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, MaterialModule],
-      declarations: [AuthFormComponent]
+      imports: [ReactiveFormsModule, AuthFormComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthFormComponent);

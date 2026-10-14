@@ -1,8 +1,11 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'schedule-days',
+  imports: [NgFor, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,
   styleUrls: ['schedule-days.component.scss'],

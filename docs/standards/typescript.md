@@ -21,7 +21,7 @@
 ## Imports
 
 - Import from the package entry point the library documents (`@angular/fire/firestore`, not `@angular/fire/compat`).
-- Import app code from another folder with the `src/app/...` path. `./` is fine for a file in the same folder. **Today:** both styles appear; module files such as `app.module.ts` import their children with `./modules/...`, and some specs reach up with `../`. Do not rewrite existing imports in a feature PR.
+- Import app code from another folder with the `src/app/...` path. `./` is fine for a file in the same folder. **Today:** both styles appear; `app.routes.ts` loads features with `./modules/...`, and many components and specs reach up with `../`. Do not rewrite existing imports in a feature PR.
 - No unused imports. ESLint warns on them (`@typescript-eslint/no-unused-vars`).
 
 ## Async

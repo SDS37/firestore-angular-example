@@ -4,7 +4,7 @@ A meal and workout planner with a weekly schedule. Cloud Firestore is the reacti
 
 License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-app-5c3d3.web.app)
 
-**Today:** `master` runs Angular 22.0.5 with `@angular/fire` 20.0.1 and the Firebase JS SDK. On Node 24.20.0, `npm ci` installs the tree, `npm run lint` reports 0 errors and 12 warnings, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs in ChromeHeadless. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.15.0) is installed: `overrides` maps AngularFire's `firebase` onto the root version. `npm audit` reports 63 vulnerabilities, and no CI runs on pull requests. The [roadmap](docs/roadmap.md) fixes those in order.
+**Today:** `master` runs Angular 22.0.5 with `@angular/fire` 20.0.1 and the Firebase JS SDK. On Node 24.20.0, `npm ci` installs the tree, `npm run lint` reports 0 errors and 12 warnings, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs in ChromeHeadless. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.15.0) is installed: `overrides` maps AngularFire's `firebase` onto the root version. `npm audit` reports 63 vulnerabilities, and no CI runs on pull requests. The [roadmap](docs/roadmap.md) fixes those in order.
 
 ## Current status
 
@@ -54,12 +54,12 @@ firestore-angular-example/
 │   │   ├── modules/
 │   │   │   ├── auth/            # login, register, guard, AuthService
 │   │   │   ├── nav-options/     # meals, workouts, schedule, data services
-│   │   │   ├── not-found/
-│   │   │   └── shared/material/
+│   │   │   └── not-found/
+│   │   ├── app.config.ts        # router, animations, Firebase providers
+│   │   ├── app.routes.ts        # root routes; features load lazily
 │   │   ├── store/               # Store and State
 │   │   ├── testing/             # Firebase spies for specs
 │   │   └── utils/               # wrappers around every AngularFire call
-│   ├── constants/               # Material module list
 │   ├── environments/            # Firebase web config
 │   └── styles/
 ├── docs/
@@ -145,7 +145,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 | `npm test` | `ng test` once, headless, in ChromeHeadless |
 | `npm run lint` | ESLint over `src/**/*.ts` and `src/**/*.html` |
 | `npm run verify` | `lint`, then `build`, then `test`. Run it before every PR |
-| `npm run deploy:firebase` | `firebase deploy --only firestore:rules,hosting` |
+| `npm run deploy:firebase` | `npm run build`, then `firebase deploy --only firestore:rules,hosting` |
 
 ## Test
 
@@ -160,11 +160,10 @@ Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces 
 Requires `npx firebase login` and a project set up as above.
 
 ```
-npm run build
 npm run deploy:firebase
 ```
 
-That deploys `dist/firebase-example-app/browser` to the hosting target `firebase-example-app` and `firestore.rules` to Firestore, together. Hosting rewrites every path to `/index.html`, so deep links work. Preview channels and deploy on merge come with [FAE-043](https://github.com/SDS37/firestore-angular-example/issues/102).
+`predeploy:firebase` runs `npm run build` first, so every deploy ships the current code. That deploys `dist/firebase-example-app/browser` to the hosting target `firebase-example-app` and `firestore.rules` to Firestore, together. Hosting rewrites every path to `/index.html`, so deep links work. Preview channels and deploy on merge come with [FAE-043](https://github.com/SDS37/firestore-angular-example/issues/102).
 
 ## Commit convention
 

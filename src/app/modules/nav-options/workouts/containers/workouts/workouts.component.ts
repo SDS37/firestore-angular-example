@@ -1,4 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AsyncPipe, NgIf, NgFor } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ListItemComponent } from '../../../shared/components/list-item/list-item.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';
@@ -13,8 +19,9 @@ import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/wor
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'workouts',
+  imports: [AsyncPipe, NgIf, NgFor, RouterLink, ListItemComponent, MatCardModule, MatIconModule, MatProgressBarModule],
   template: `
   <div
     id="workouts"

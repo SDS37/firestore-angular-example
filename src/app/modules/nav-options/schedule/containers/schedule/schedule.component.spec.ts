@@ -10,8 +10,6 @@ import { ScheduleAssignComponent } from '../../components/schedule-assign/schedu
 import { ScheduleControlsComponent } from '../../components/schedule-controls/schedule-controls.component';
 import { ScheduleDaysComponent } from '../../components/schedule-days/schedule-days.component';
 import { ScheduleSectionComponent } from '../../components/schedule-section/schedule-section.component';
-import { JoinPipe } from 'src/app/modules/nav-options/shared/pipes/join.pipe';
-import { MaterialModule } from 'src/app/modules/shared/material/material.module';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ScheduleComponent', () => {
@@ -31,15 +29,14 @@ describe('ScheduleComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, MaterialModule],
-      declarations: [
+      imports: [
+        RouterTestingModule,
         ScheduleComponent,
         ScheduleCalendarComponent,
         ScheduleAssignComponent,
         ScheduleControlsComponent,
         ScheduleDaysComponent,
-        ScheduleSectionComponent,
-        JoinPipe
+        ScheduleSectionComponent
       ],
       providers: [
         Store,

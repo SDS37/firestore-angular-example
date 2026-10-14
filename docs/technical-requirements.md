@@ -49,7 +49,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-5.1 | The production build writes a service worker and a manifest | `dist/firebase-example-app/browser` contains `ngsw-worker.js`, `ngsw.json`, and `manifest.webmanifest` | Observed |
 | TR-5.2 | The app registers that service worker in production | No code in `src/` registers it; the registration was removed in `0cdcfcf` | Not yet: no story covers it |
 | TR-5.3 | Pinch zoom works and a keyboard-only user can assign a meal | `index.html` sets `maximum-scale=1.0`; the assign list is clickable `div`s | Not yet: [FAE-060](https://github.com/SDS37/firestore-angular-example/issues/109) |
-| TR-5.4 | An unknown URL renders the not-found page | The `**` route in `app-routing.module.ts`; `NotFoundComponent` spec | Observed (code and spec) |
+| TR-5.4 | An unknown URL renders the not-found page | The `**` route in `app.routes.ts`; `NotFoundComponent` spec | Observed (code and spec) |
 
 ## TR-6 Tooling
 

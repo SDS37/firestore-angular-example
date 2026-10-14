@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { AppHeaderComponent } from '../../components/app/app-header/app-header.component';
+import { AppNavComponent } from '../../components/app/app-nav/app-nav.component';
 
 // rxjs
 import { Subscription, Observable } from 'rxjs';
@@ -15,8 +18,9 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 import { User } from 'src/app/models/user.interface';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-root',
+  imports: [AsyncPipe, NgClass, NgIf, RouterOutlet, AppHeaderComponent, AppNavComponent],
   templateUrl: './app.component.html'
 })
 

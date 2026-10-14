@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy, forwardRef, ViewEncapsulation } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 export const TYPE_CONTROL_ACCESOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -8,12 +10,13 @@ export const TYPE_CONTROL_ACCESOR = {
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'workout-type',
   providers: [ TYPE_CONTROL_ACCESOR ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./workout-type.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
+  imports: [NgFor, MatIconModule],
   template: `
     <div
       *ngFor="let selector of selectors"
