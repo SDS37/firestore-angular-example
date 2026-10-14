@@ -5,7 +5,7 @@ Each record states the context, the decision, its consequences, and the conditio
 | ADR | Decision | Status |
 |---|---|---|
 | [ADR-001](#adr-001-cloud-firestore-not-realtime-database) | Cloud Firestore, not the Realtime Database | Accepted |
-| [ADR-002](#adr-002-angularfire-with-explicit-overrides) | AngularFire with explicit `overrides` | Accepted, not implemented (FAE-020) |
+| [ADR-002](#adr-002-angularfire-with-explicit-overrides) | AngularFire with explicit `overrides` | Accepted |
 | [ADR-003](#adr-003-an-rxjs-store-service) | An RxJS store service | Accepted, under review in FAE-050 |
 | [ADR-004](#adr-004-vitest-instead-of-karma) | Vitest instead of Karma and Jasmine | Accepted, not implemented (FAE-031) |
 | [ADR-005](#adr-005-typescript-pinned-to-60) | TypeScript pinned to 6.0 | Accepted |
@@ -22,16 +22,16 @@ Each record states the context, the decision, its consequences, and the conditio
 
 ## ADR-002: AngularFire with explicit overrides
 
-**Context.** The app uses Angular 22. The newest stable `@angular/fire` (20.1.0) declares Angular `^20` and depends on `firebase ^11.8.0`. `21.0.0-rc.1` declares Angular `^21.2`. No stable AngularFire declares Angular 22. Today `package.json` maps AngularFire's Angular peers onto the root Angular with `overrides`, and `.npmrc` sets `legacy-peer-deps=true`. That combination installed two Firebase SDKs: 11.10.0 under AngularFire and 12.15.0 at the root.
+**Context.** The app uses Angular 22. The newest stable `@angular/fire` (20.1.1) declares Angular `^20` and depends on `firebase ^11.8.0`. `21.0.0-rc.1` declares Angular `^21.2`. No stable AngularFire declares Angular 22. Before [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89), `.npmrc` set `legacy-peer-deps=true`, and the tree held two Firebase SDKs: 11.10.0 under AngularFire and 12.15.0 at the root.
 
 **Options.**
 
 1. Keep AngularFire. Map its Angular peers and its `firebase` dependency onto the root versions with `overrides`.
 2. Drop AngularFire. Use the Firebase JS SDK and `rxfire` directly behind the existing `utils/` wrappers.
 
-**Decision.** Option 1. AngularFire moves from 20.0.1 to 20.1.0. `overrides` map `@angular/core`, `@angular/common`, `@angular/platform-browser`, and `firebase` onto the root versions, and `rxfire` resolves to 6.2.0. The current `@angular/platform-browser-dynamic` entry is dropped; it is not an AngularFire peer. The root `firebase` is 12.19.x. `legacy-peer-deps` is removed so a new conflict fails the install. Implemented in [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89).
+**Decision.** Option 1. `@angular/fire` stays on 20.1.1, the newest stable 20.1 release. `overrides` map `@angular/core`, `@angular/common`, `@angular/platform-browser`, and `firebase` onto the root versions, and `rxfire` resolves to 6.2.0. The `@angular/platform-browser-dynamic` override is dropped; it is not an AngularFire peer. The root `firebase` is 12.19.0. `legacy-peer-deps` is removed, so a new conflict fails the install. Implemented in [FAE-020](https://github.com/SDS37/firestore-angular-example/issues/89).
 
-**Consequences.** One Firebase SDK in the tree. AngularFire runs on an Angular and a Firebase major it was not released against; the unit tests and the end-to-end tests ([M7](https://github.com/SDS37/firestore-angular-example/issues/111)) are the guard. `firebase` 13 waits until an AngularFire release accepts it. Option 2 stays cheap because every AngularFire call already goes through `src/app/utils/`.
+**Consequences.** One Firebase SDK in the tree. AngularFire runs on an Angular and a Firebase major it was not released against; the unit tests and the end-to-end tests ([M7](https://github.com/SDS37/firestore-angular-example/issues/111)) are the guard. `firebase` 12.19 references `Temporal.Instant`, which TypeScript 6.0 does not ship, so `src/temporal.d.ts` declares that namespace. `firebase` 13 waits until an AngularFire release accepts it. Option 2 stays cheap because every AngularFire call already goes through `src/app/utils/`.
 
 **Reopen when.** A stable `@angular/fire` declares the Angular major in use (remove the overrides), or AngularFire falls two Angular majors behind (move to option 2).
 
