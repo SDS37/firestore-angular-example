@@ -17,7 +17,7 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Unit tests | 73 specs, Vitest 5.0.4 and jsdom 30.1.2 |
 | Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M4](https://github.com/SDS37/firestore-angular-example/issues/98) |
 | PWA | Manifest and service worker are built; the service worker is not registered |
-| CI and deploy | GitHub Actions runs lint, build, unit tests, and rules tests on every pull request and on `master`. Deploy is still manual: `npm run deploy:firebase`. Preview channels and deploy on merge are [FAE-043](https://github.com/SDS37/firestore-angular-example/issues/102) |
+| CI and deploy | GitHub Actions runs lint, build, unit tests, and rules tests on every pull request and on `master`. A pull request deploys a Hosting preview and comments the URL. A push to `master` deploys hosting and `firestore.rules`. The credential is the `FIREBASE_SERVICE_ACCOUNT` GitHub secret |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
 
 ## How it works
@@ -170,7 +170,14 @@ Requires `npx firebase login` and a project set up as above.
 npm run deploy:firebase
 ```
 
-`predeploy:firebase` runs `npm run build` first, so every deploy ships the current code. That deploys `dist/firebase-example-app/browser` to the hosting target `firebase-example-app` and `firestore.rules` to Firestore, together. Hosting rewrites every path to `/index.html`, so deep links work. Preview channels and deploy on merge come with [FAE-043](https://github.com/SDS37/firestore-angular-example/issues/102).
+`predeploy:firebase` runs `npm run build` first, so every deploy ships the current code. That deploys `dist/firebase-example-app/browser` to the hosting target `firebase-example-app` and `firestore.rules` to Firestore, together. Hosting rewrites every path to `/index.html`, so deep links work.
+
+GitHub Actions does the same two releases without a laptop. `.github/workflows/deploy.yml` builds, then:
+
+- On a pull request, `firebase hosting:channel:deploy` publishes a preview channel that expires after 7 days and comments the URL on the pull request.
+- On a push to `master`, `firebase deploy --only firestore:rules,hosting` releases hosting and the rules.
+
+The workflow reads `FIREBASE_SERVICE_ACCOUNT`, a GitHub secret holding the JSON key for `github-actions-deploy@fir-example-app-5c3d3.iam.gserviceaccount.com`. The key is not in the repository. Dependabot pull requests do not receive that secret, so they do not deploy a preview. `npm run deploy:firebase` remains the manual path when you are logged in with `npx firebase login`.
 
 ## Commit convention
 

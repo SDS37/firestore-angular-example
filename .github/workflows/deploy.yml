@@ -1,0 +1,63 @@
+name: deploy
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: deploy
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Write the service account
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          test -n "$FIREBASE_SERVICE_ACCOUNT"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-sa.json" >> "$GITHUB_ENV"
+      - name: Deploy hosting and rules
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: npx firebase deploy --only firestore:rules,hosting --project fir-example-app-5c3d3 --non-interactive
+      - name: Deploy the preview channel
+        if: github.event_name == 'pull_request'
+        id: preview
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          output=$(npx firebase hosting:channel:deploy "pr${PR_NUMBER}" --only hosting:firebase-example-app --expires 7d --project fir-example-app-5c3d3 --non-interactive)
+          printf '%s\n' "$output"
+          url=$(printf '%s\n' "$output" | grep -oE 'https://[^ ]+\.web\.app' | head -1)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          test -n "$url"
+      - name: Comment the preview URL
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          body="Preview: ${PREVIEW_URL}"
+          comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("Preview:"))) | .id' | head -1)
+          if [ -n "$comment_id" ]; then
+            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" -f body="$body"
+          else
+            gh pr comment "$PR_NUMBER" --body "$body"
+          fi
