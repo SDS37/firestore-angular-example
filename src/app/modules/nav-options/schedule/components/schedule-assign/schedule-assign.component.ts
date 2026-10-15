@@ -24,17 +24,14 @@ import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.inte
       <div class="flex-row-container flex-justify-content-space-between flex-align-items-center margin-bottom-10">
         <div class="flex-row-container flex-justify-content-center flex-align-items-center">
           <h1>assign</h1>
-          <mat-icon
-            class="margin-left-10"
-            aria-hidden="false"
-            aria-label="Meals/Workouts icon">
+          <mat-icon class="margin-left-10" aria-hidden="true">
             {{ section?.type === 'workouts' ? 'fitness_center' : 'fastfood' }}
           </mat-icon>
         </div>
         <a
           class="flex-row-container flex-justify-content-center flex-align-items-center"
           [routerLink]="getRoute(section?.type)">
-          <mat-icon aria-hidden="false" aria-label="Go to create meal/workout">add</mat-icon>
+          <mat-icon aria-hidden="true">add</mat-icon>
           <span class="margin-left-10">New</span>
         </a>
       </div>
@@ -45,28 +42,29 @@ import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.inte
           *ngIf="!list?.length">
           nothing here to assign
         </span>
-        <div
-          id="clickable-div-list"
+        <button
+          type="button"
           *ngFor="let item of list"
-          class="flex-row-container flex-justify-content-stretch flex-align-items-center padding-10 margin-bottom-10 cursor-pointer"
+          class="assign-item flex-row-container flex-justify-content-stretch flex-align-items-center padding-10 margin-bottom-10 cursor-pointer"
           [class.active]="exists(item)"
+          [attr.aria-pressed]="exists(item)"
           (click)="toggleItem(item)">
-          <mat-icon aria-hidden="false" aria-label="Meals/Workouts icon">playlist_add</mat-icon>
+          <mat-icon aria-hidden="true">playlist_add</mat-icon>
           <span class="margin-left-10">{{ item.name }}</span>
-        </div>
+        </button>
       </div>
 
       <div class="flex-row-container flex-justify-content-space-between flex-align-items-center">
         <button
           mat-button
           (click)="updateAssign()">
-          <mat-icon color="primary" aria-hidden="false" aria-label="Update assign">update</mat-icon>
+          <mat-icon color="primary" aria-hidden="true">update</mat-icon>
           <span class="padding-left-10">Update</span>
         </button>
         <button
           mat-button
           (click)="cancelAssign()">
-          <mat-icon color="warn" aria-hidden="false" aria-label="Cancel assign">cancel</mat-icon>
+          <mat-icon color="warn" aria-hidden="true">cancel</mat-icon>
           <span class="padding-left-10">Cancel</span>
         </button>
       </div>

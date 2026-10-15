@@ -18,8 +18,10 @@ describe('AppNavComponent', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should expose workouts navigation with the correct aria label', () => {
-    const workoutsLink = fixture.nativeElement.querySelector('a[routerLink="/workouts"] mat-icon');
-    expect(workoutsLink.getAttribute('aria-label')).toBe('Workouts section');
+  it('should name the workouts link from its text and hide the icon', () => {
+    const workoutsLink = fixture.nativeElement.querySelector('a[routerLink="/workouts"]');
+    const icon = workoutsLink.querySelector('mat-icon');
+    expect(workoutsLink.textContent).toContain('Workouts');
+    expect(icon.getAttribute('aria-hidden')).toBe('true');
   });
 });

@@ -14,14 +14,16 @@ import { MatInputModule } from '@angular/material/input';
       <ng-content select="h1"></ng-content>
 
       <mat-form-field class="margin-bottom-10">
-        <input matInput type="email" placeholder="Email address" formControlName="email">
+        <mat-label>Email address</mat-label>
+        <input matInput type="email" formControlName="email">
         <mat-error *ngIf="emailFormat">
         invalid email format
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="margin-bottom-10">
-        <input matInput type="password" placeholder="password" formControlName="password">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password">
         <mat-error *ngIf="passwordInvalid">
         Password <strong>required</strong>
         </mat-error>

@@ -41,7 +41,7 @@ import { Meal } from 'src/app/models/meal.interface';
         <a
           class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
           [routerLink]="['../meals/new']">
-          <mat-icon aria-hidden="false" aria-label="Add meal">add</mat-icon>
+          <mat-icon aria-hidden="true">add</mat-icon>
           <span>New</span>
         </a>
       </div>
@@ -53,7 +53,7 @@ import { Meal } from 'src/app/models/meal.interface';
       <div
         *ngIf="!meals.length"
         class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-1">
-        <mat-icon color="warn" aria-hidden="false" aria-label="No meals">error_outline</mat-icon>
+        <mat-icon color="warn" aria-hidden="true">error_outline</mat-icon>
         <span>No meals, add a new meal to start</span>
       </div>
       <list-item

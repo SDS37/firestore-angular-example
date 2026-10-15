@@ -41,7 +41,7 @@ import { Workout } from 'src/app/models/workout.interface';
         <a
           class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
           [routerLink]="['../workouts/new']">
-          <mat-icon aria-hidden="false" aria-label="Add workout">add</mat-icon>
+          <mat-icon aria-hidden="true">add</mat-icon>
           <span>New</span>
         </a>
       </div>
@@ -53,7 +53,7 @@ import { Workout } from 'src/app/models/workout.interface';
       <div
         *ngIf="!workouts.length"
         class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-1">
-        <mat-icon color="warn" aria-hidden="false" aria-label="Logout">error_outline</mat-icon>
+        <mat-icon color="warn" aria-hidden="true">error_outline</mat-icon>
         <span>No workouts, add a new workout to start</span>
       </div>
       <list-item

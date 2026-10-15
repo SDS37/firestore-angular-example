@@ -11,6 +11,13 @@ span {
     color: $color-black-2;
 }
 
+.type-option {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+}
+
 .active {
     background-color: $color-green-1;
     mat-icon {

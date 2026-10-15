@@ -48,7 +48,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 |---|---|---|---|
 | TR-5.1 | The production build writes a service worker and a manifest | `dist/firebase-example-app/browser` contains `ngsw-worker.js`, `ngsw.json`, and `manifest.webmanifest` | Observed |
 | TR-5.2 | The app registers that service worker in production | No code in `src/` registers it; the registration was removed in `0cdcfcf` | Not yet: no story covers it |
-| TR-5.3 | Pinch zoom works and a keyboard-only user can assign a meal | `index.html` sets `maximum-scale=1.0`; the assign list is clickable `div`s | Not yet: [FAE-060](https://github.com/SDS37/firestore-angular-example/issues/109) |
+| TR-5.3 | Pinch zoom works and a keyboard-only user can assign a meal | The viewport meta has no `maximum-scale`. Schedule sections and the assign list are `button` elements, covered by the section and assign specs | Observed (code and specs) |
 | TR-5.4 | An unknown URL renders the not-found page | The `**` route in `app.routes.ts`; `NotFoundComponent` spec | Observed (code and spec) |
 
 ## TR-6 Tooling
@@ -58,7 +58,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
 | TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds. The stylesheet is `styles-KH4XGI3E.css` (109.39 kB), the same file as before the Sass module change. No Sass deprecation warning | Observed |
-| TR-6.4 | `npm test` passes | 86 of 86 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
+| TR-6.4 | `npm test` passes | 88 of 88 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
 | TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 11 (7 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
 | TR-6.7 | CI runs lint, build, and tests on every PR | `.github/workflows/verify.yml` runs on `pull_request` and on push to `master`: Node from `.nvmrc`, `npm ci` with the npm cache, then `npm run lint`, `npm run build`, `npm test`, and `npm run test:rules` | Observed |

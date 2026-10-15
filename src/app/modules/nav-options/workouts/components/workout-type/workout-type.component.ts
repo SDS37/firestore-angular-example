@@ -18,17 +18,18 @@ export const TYPE_CONTROL_ACCESOR = {
   encapsulation: ViewEncapsulation.Emulated,
   imports: [NgFor, MatIconModule],
   template: `
-    <div
+    <button
+      type="button"
       *ngFor="let selector of selectors"
-      class="flex-row-container flex-justify-content-center flex-align-items-center padding-10 border-radius-10 cursor-pointer"
-      [class.active]="selector === value" (click)="setSelected(selector)">
-      <mat-icon
-        aria-hidden="false"
-        attr.aria-label="{{selector === 'strength' ? 'strength ': 'endurance '}} exercises">
+      class="type-option flex-row-container flex-justify-content-center flex-align-items-center padding-10 border-radius-10 cursor-pointer"
+      [class.active]="selector === value"
+      [attr.aria-pressed]="selector === value"
+      (click)="setSelected(selector)">
+      <mat-icon aria-hidden="true">
         {{ selector === 'strength' ? 'fitness_center': 'directions_run' }}
       </mat-icon>
       <span class="margin-left-10">{{ selector }}</span>
-    </div>
+    </button>
   `
 })
 

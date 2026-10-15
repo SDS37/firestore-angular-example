@@ -22,4 +22,4 @@ The Material theme is the prebuilt `deeppurple-amber.css`, listed in `angular.js
 - Reuse a global utility class before writing a new rule. Add a new utility class only when two or more components need it.
 - Component styles stay under the `anyComponentStyle` budget in `angular.json`: warning at 6 kB, error at 10 kB.
 - Do not use `::ng-deep`. Do not set `ViewEncapsulation.None` to reach into a Material component.
-- Do not block zoom or remove focus outlines. Accessibility fixes are tracked in [FAE-060](https://github.com/SDS37/firestore-angular-example/issues/109).
+- Do not block zoom or remove focus outlines. The viewport meta does not set `maximum-scale`.

@@ -20,9 +20,8 @@ import { Meal } from 'src/app/models/meal.interface';
 
     <div class="margin-bottom-10 border-radius-5 padding-10 background-color-gray-1">
 
-      <label>
-        <h3>Meal name:</h3>
-        <mat-form-field class="width-100-100">
+      <mat-form-field class="width-100-100">
+          <mat-label>Meal name</mat-label>
           <input
             matInput
             type="text"
@@ -32,7 +31,6 @@ import { Meal } from 'src/app/models/meal.interface';
           Meal name is <strong>required</strong>
           </mat-error>
         </mat-form-field>
-      </label>
 
     </div>
 
@@ -54,6 +52,7 @@ import { Meal } from 'src/app/models/meal.interface';
           class="flex-row-container flex-justify-content-start flex-align-items-center"
           *ngFor="let c of ingredients.controls; index as ind">
           <mat-form-field class="width-100-100">
+            <mat-label>Ingredient</mat-label>
             <input matInput [formControlName]="ind">
             <mat-hint>e.g. eggs</mat-hint>
           </mat-form-field>

@@ -22,7 +22,7 @@ The app is an example first. Its features stay small so the Firestore and Angula
 
 - **Privacy.** A user's meals, workouts, and schedule are visible only to that user, and only while signed in.
 - **Honesty about failures.** A save or delete that fails opens a snackbar and leaves the user on the form.
-- **Access.** The app works with a keyboard and allows zoom. (Not yet: [FAE-060](https://github.com/SDS37/firestore-angular-example/issues/109).)
+- **Access.** The app works with a keyboard and allows zoom. Schedule rows and the assign list are buttons, and the viewport does not cap the scale.
 
 ## What "done" means
 

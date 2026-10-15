@@ -1,17 +1,19 @@
 import { vi } from 'vitest';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScheduleAssignComponent } from './schedule-assign.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ScheduleAssignComponent', () => {
   let component: ScheduleAssignComponent;
+  let fixture: ComponentFixture<ScheduleAssignComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, ScheduleAssignComponent]
     }).compileComponents();
 
-    component = TestBed.createComponent(ScheduleAssignComponent).componentInstance;
+    fixture = TestBed.createComponent(ScheduleAssignComponent);
+    component = fixture.componentInstance;
     component.section = {
       type: 'meals',
       assigned: ['Soup'],
@@ -51,6 +53,13 @@ describe('ScheduleAssignComponent', () => {
     component.updateAssign();
 
     expect(component.updatingItems.emit).toHaveBeenCalledWith({ meals: ['1'] });
+  });
+
+  it('should render each meal as a button', () => {
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('button.assign-item');
+    expect(button?.textContent).toContain('Soup');
+    expect(button?.getAttribute('aria-pressed')).toBe('true');
   });
 
   it('should build create routes from section type', () => {

@@ -25,42 +25,42 @@ import { scheduleEntryLabel } from 'src/app/utils/schedule-labels';
       {{ name.toUpperCase() }}
     </div>
 
-    <div
-      id="div-as-button"
+    <button
+      type="button"
       *ngIf="section.meals; else addMeal"
-      class="flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
+      class="section-action flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
       (click)="onSelect('meals', section.meals)">
-      <mat-icon color="primary" aria-hidden="false" aria-label="Meals section">fastfood</mat-icon>
+      <mat-icon color="primary" aria-hidden="true">fastfood</mat-icon>
       <span class="margin-left-10">{{ labelsFor('meals') | join }}</span>
-    </div>
+    </button>
     <ng-template #addMeal>
-      <div
-        id="div-as-button"
-        class="flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
+      <button
+        type="button"
+        class="section-action flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
         (click)="onSelect('meals')">
-        <mat-icon color="primary" aria-hidden="false" aria-label="Assign meal">control_point</mat-icon>
+        <mat-icon color="primary" aria-hidden="true">control_point</mat-icon>
         <span class="margin-left-10">Assign meal</span>
-      </div>
+      </button>
     </ng-template>
 
     <mat-divider></mat-divider>
 
-    <div
-      id="div-as-button"
+    <button
+      type="button"
       *ngIf="section.workouts; else addWorkout"
-      class="flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
+      class="section-action flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
       (click)="onSelect('workouts', section.workouts)">
-      <mat-icon color="primary" aria-hidden="false" aria-label="Workouts section">fitness_center</mat-icon>
+      <mat-icon color="primary" aria-hidden="true">fitness_center</mat-icon>
       <span class="margin-left-10">{{ labelsFor('workouts') | join }}</span>
-    </div>
+    </button>
     <ng-template #addWorkout>
-      <div
-        id="div-as-button"
-        class="flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
+      <button
+        type="button"
+        class="section-action flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
         (click)="onSelect('workouts')">
-        <mat-icon color="primary" aria-hidden="false" aria-label="Assign workout">control_point</mat-icon>
+        <mat-icon color="primary" aria-hidden="true">control_point</mat-icon>
         <span class="margin-left-10">Assign workout</span>
-      </div>
+      </button>
     </ng-template>
 
   </div>

@@ -21,9 +21,8 @@ import { Workout } from 'src/app/models/workout.interface';
 
     <div class="margin-bottom-10 border-radius-5 padding-10 background-color-gray-1">
 
-      <label>
-        <h3>Workout name:</h3>
-        <mat-form-field class="width-100-100">
+      <mat-form-field class="width-100-100">
+          <mat-label>Workout name</mat-label>
           <input
             matInput
             type="text"
@@ -33,16 +32,13 @@ import { Workout } from 'src/app/models/workout.interface';
             Workout name is <strong>required</strong>
           </mat-error>
         </mat-form-field>
-      </label>
 
-      <label>
-        <h3>Type:</h3>
+      <h3>Type:</h3>
         <workout-type
           id="workout-type"
           class="flex-row-container flex-justify-content-space-around flex-align-items-center margin-bottom-10"
           formControlName="type">
         </workout-type>
-      </label>
 
     </div>
 
@@ -56,21 +52,21 @@ import { Workout } from 'src/app/models/workout.interface';
         formGroupName="strength">
         <label>
           <mat-form-field>
-            <h3>Reps</h3>
+            <mat-label>Reps</mat-label>
             <input matInput type="number" formControlName="reps"/>
             <mat-hint>how many repetitions?</mat-hint>
           </mat-form-field>
         </label>
         <label>
           <mat-form-field>
-            <h3>Sets</h3>
+            <mat-label>Sets</mat-label>
             <input matInput type="number" formControlName="sets"/>
             <mat-hint>how many sets?</mat-hint>
           </mat-form-field>
         </label>
         <label>
           <mat-form-field>
-            <h3>Weight <span>(kg)</span></h3>
+            <mat-label>Weight (kg)</mat-label>
             <input matInput type="number" formControlName="weight"/>
             <mat-hint>how much weight?</mat-hint>
           </mat-form-field>
@@ -83,14 +79,14 @@ import { Workout } from 'src/app/models/workout.interface';
         formGroupName="endurance">
         <label>
           <mat-form-field>
-            <h3>Distance <span>(km)</span></h3>
+            <mat-label>Distance (km)</mat-label>
             <input matInput type="number" formControlName="distance"/>
             <mat-hint>how many kilometers?</mat-hint>
           </mat-form-field>
         </label>
         <label>
           <mat-form-field>
-          <h3>Duration <span>(minutes)</span></h3>
+            <mat-label>Duration (minutes)</mat-label>
             <input matInput type="number" formControlName="duration"/>
             <mat-hint>for how long?</mat-hint>
             </mat-form-field>

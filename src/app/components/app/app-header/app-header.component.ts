@@ -28,7 +28,7 @@ import { User } from 'src/app/models/user.interface';
     <button
       mat-button
       (click)="logoutUser()">
-      <mat-icon color="warn" aria-hidden="false" aria-label="Logout">power_settings_new</mat-icon>
+      <mat-icon color="warn" aria-hidden="true">power_settings_new</mat-icon>
       <span class="padding-left-10">Logout</span>
     </button>
   </div>

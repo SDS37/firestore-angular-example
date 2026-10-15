@@ -21,21 +21,21 @@ import { MatIconModule } from '@angular/material/icon';
     <a
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
       routerLink="/schedule" routerLinkActive="active-link">
-      <mat-icon aria-hidden="false" aria-label="Schedule section">schedule</mat-icon>
+      <mat-icon aria-hidden="true">schedule</mat-icon>
       <span class="margin-left-10">Schedule</span>
     </a>
     <a
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
       routerLink="/meals"
       routerLinkActive="active-link">
-      <mat-icon aria-hidden="false" aria-label="Meals section">fastfood</mat-icon>
+      <mat-icon aria-hidden="true">fastfood</mat-icon>
       <span class="margin-left-10">Meals</span>
     </a>
     <a
       class="flex-row-container flex-justify-content-center flex-align-items-center border-radius-5"
       routerLink="/workouts"
       routerLinkActive="active-link">
-      <mat-icon aria-hidden="false" aria-label="Workouts section">fitness_center</mat-icon>
+      <mat-icon aria-hidden="true">fitness_center</mat-icon>
       <span class="margin-left-10">Workouts</span>
     </a>
 

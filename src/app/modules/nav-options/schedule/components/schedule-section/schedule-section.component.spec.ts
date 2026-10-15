@@ -1,18 +1,21 @@
 import { vi } from 'vitest';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScheduleSectionComponent } from './schedule-section.component';
 import { JoinPipe } from 'src/app/modules/nav-options/shared/pipes/join.pipe';
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 
 describe('ScheduleSectionComponent', () => {
   let component: ScheduleSectionComponent;
+  let fixture: ComponentFixture<ScheduleSectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ScheduleSectionComponent, JoinPipe]
     }).compileComponents();
 
-    component = TestBed.createComponent(ScheduleSectionComponent).componentInstance;
+    fixture = TestBed.createComponent(ScheduleSectionComponent);
+    component = fixture.componentInstance;
+    component.name = 'Morning';
     component.section = {
       meals: ['Omelette'],
       workouts: null,
@@ -47,5 +50,17 @@ describe('ScheduleSectionComponent', () => {
     };
 
     expect(component.labelsFor('meals')).toEqual(['Omelette', 'Deleted']);
+  });
+
+  it('should offer assign meal as a button', () => {
+    component.section = {
+      meals: null,
+      workouts: null,
+      section: 'morning',
+      timestamp: 1
+    };
+    fixture.detectChanges();
+    const buttons = fixture.nativeElement.querySelectorAll('button.section-action');
+    expect(buttons[0].textContent).toContain('Assign meal');
   });
 });
