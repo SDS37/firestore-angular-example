@@ -4,7 +4,7 @@ A meal and workout planner with a weekly schedule. Cloud Firestore is the reacti
 
 License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-app-5c3d3.web.app)
 
-**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 88 of 88 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies. GitHub Actions runs lint, build, the unit tests, and the rules tests on every pull request and on `master`. The [roadmap](docs/roadmap.md) fixes those in order.
+**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 88 of 88 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies. GitHub Actions runs lint, build, the unit tests, the rules tests, and Playwright on every pull request and on `master`. The [roadmap](docs/roadmap.md) fixes those in order.
 
 ## Current status
 
@@ -17,7 +17,7 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Unit tests | 88 specs, Vitest 5.0.4 and jsdom 30.1.2 |
 | Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M7](https://github.com/SDS37/firestore-angular-example/issues/111) |
 | PWA | Manifest name is “Meal and workout planner”. `robots.txt` is served. The service worker is built and not registered. Scores are in [Lighthouse](#lighthouse) |
-| CI and deploy | GitHub Actions runs lint, build, unit tests, and rules tests on every pull request and on `master`. A pull request deploys a Hosting preview and comments the URL. A push to `master` deploys hosting and `firestore.rules`. The credential is the `FIREBASE_SERVICE_ACCOUNT` GitHub secret |
+| CI and deploy | GitHub Actions runs lint, build, unit tests, rules tests, and the Playwright suite on every pull request and on `master`. A pull request deploys a Hosting preview and comments the URL. A push to `master` deploys hosting and `firestore.rules`. The credential is the `FIREBASE_SERVICE_ACCOUNT` GitHub secret |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
 
 ## Lighthouse
@@ -132,6 +132,8 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 
 `npm run test:rules` starts the same emulators, runs the rules specs against the demo project `demo-fir-example-app`, and shuts the emulators down. That command does not need a Firebase login and does not touch the hosted project.
 
+`npm run e2e` starts those emulators, serves the app with `useEmulators: true` from `src/environments/environment.e2e.ts`, and runs Playwright against that server. `environment.ts` and the production build stay on `useEmulators: false`. Java 21 is required, the same as the rules tests.
+
 ## Use your own Firebase project
 
 1. In the [Firebase console](https://console.firebase.google.com/), create a project.
@@ -166,6 +168,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 | `npm run verify` | `lint`, then `build`, then `test`. Run it before every PR |
 | `npm run emulators` | Auth and Firestore emulators |
 | `npm run test:rules` | Rules specs on the emulators, then the emulators stop |
+| `npm run e2e` | Playwright against `ng serve` and the Auth and Firestore emulators, then the emulators stop |
 | `npm run deploy:firebase` | `npm run build`, then `firebase deploy --only firestore:rules,hosting` |
 
 ## Test
@@ -174,7 +177,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 npm test
 ```
 
-Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 13 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. There are no end-to-end tests yet ([M7](https://github.com/SDS37/firestore-angular-example/issues/111)).
+Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 13 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. `npm run e2e` is Playwright on Chromium: it registers, logs in, creates a meal and a workout, assigns both to today, and logs out, against the Auth and Firestore emulators.
 
 ## Deploy
 

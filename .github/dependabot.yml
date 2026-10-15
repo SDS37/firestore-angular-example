@@ -32,6 +32,7 @@ updates:
           - "@vitest/*"
           - "jsdom"
           - "@firebase/rules-unit-testing"
+          - "@playwright/test"
     ignore:
       # firebase 13 until an AngularFire release accepts it. See ADR-002.
       - dependency-name: "firebase"
