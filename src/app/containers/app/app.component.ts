@@ -26,10 +26,10 @@ import { User } from 'src/app/models/user.interface';
 
 export class AppComponent implements OnInit, OnDestroy {
 
-  user$: Observable<User | null>;
+  user$!: Observable<User | null>;
   private subscriptions = new Subscription();
 
-  currentUrl: string = null;
+  currentUrl: string | null = null;
   isAuthUrl = false;
 
   constructor(
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   onRouterChange(): void {
     this.subscriptions.add(
       this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd)
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd)
       ).subscribe((navigationEnd: NavigationEnd) => {
         this.currentUrl = navigationEnd.url;
         this.isAuthUrl = this.currentUrl.includes('login') || this.currentUrl.includes('register');

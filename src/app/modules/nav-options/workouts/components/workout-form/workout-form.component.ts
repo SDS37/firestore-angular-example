@@ -51,7 +51,7 @@ import { Workout } from 'src/app/models/workout.interface';
       class="margin-bottom-10 border-radius-5 padding-10 background-color-gray-1">
 
       <div
-        *ngIf="form.get('type').value === 'strength'"
+        *ngIf="form.get('type')?.value === 'strength'"
         class="flex-row-container flex-justify-content-space-around flex-align-items-center margin-bottom-10"
         formGroupName="strength">
         <label>
@@ -78,7 +78,7 @@ import { Workout } from 'src/app/models/workout.interface';
       </div>
 
       <div
-        *ngIf="form.get('type').value === 'endurance'"
+        *ngIf="form.get('type')?.value === 'endurance'"
         class="flex-row-container flex-justify-content-space-around flex-align-items-center margin-bottom-10"
         formGroupName="endurance">
         <label>
@@ -165,7 +165,7 @@ import { Workout } from 'src/app/models/workout.interface';
 
 export class WorkoutFormComponent implements OnChanges {
 
-  @Input() workout: Workout;
+  @Input() workout!: Workout;
   @Output() create = new EventEmitter<Workout>();
   @Output() update = new EventEmitter<Workout>();
   @Output() delete = new EventEmitter<Workout>();
@@ -200,11 +200,12 @@ export class WorkoutFormComponent implements OnChanges {
   }
 
   get hint(): string {
-    return `e.g. ${this.form.get('type').value === 'strength' ? 'benchpress' : 'treadmill'}`;
+    return `e.g. ${this.form.get('type')?.value === 'strength' ? 'benchpress' : 'treadmill'}`;
   }
 
   get required(): boolean {
-    return (this.form.get('name').hasError('required') && this.form.get('name').touched);
+    const name = this.form.get('name');
+    return !!name && name.hasError('required') && name.touched;
   }
 
   createWorkout(): void {

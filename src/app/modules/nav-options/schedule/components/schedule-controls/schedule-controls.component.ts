@@ -28,7 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ScheduleControlsComponent {
 
-  @Input() selected: Date;
+  @Input() selected!: Date;
 
   @Output() movingDate = new EventEmitter<number>();
 

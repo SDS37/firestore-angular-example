@@ -25,7 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class ScheduleDaysComponent {
 
-  @Input() selected: number;
+  @Input() selected!: number;
 
   @Output() selectingDay = new EventEmitter<number>();
 

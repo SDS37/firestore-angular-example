@@ -131,7 +131,7 @@ import { Meal } from 'src/app/models/meal.interface';
 
 export class MealFormComponent implements OnChanges {
 
-  @Input() meal: Meal;
+  @Input() meal!: Meal;
   @Output() create = new EventEmitter<Meal>();
   @Output() update = new EventEmitter<Meal>();
   @Output() delete = new EventEmitter<Meal>();
@@ -173,7 +173,8 @@ export class MealFormComponent implements OnChanges {
   }
 
   get required(): boolean {
-    return (this.form.get('name').hasError('required') && this.form.get('name').touched);
+    const name = this.form.get('name');
+    return !!name && name.hasError('required') && name.touched;
   }
 
   get ingredients(): FormArray {

@@ -8,12 +8,12 @@
 
 - The compiler options live in `tsconfig.json`. `tsconfig.app.json` and `tsconfig.spec.json` only change `outDir`, `files`, `include`, and `types`.
 - TypeScript stays on the 6.0 line until `@angular/build` accepts a newer one. See [ADR-005](../architecture-decision-records.md#adr-005-typescript-pinned-to-60).
-- **Target:** `strict: true`. **Today:** `strict` is `false`. [FAE-033](https://github.com/SDS37/firestore-angular-example/issues/97) turns it on. New code is written so it would compile under `strict`.
+- **Today:** `strict` and `strictTemplates` are `true` in `tsconfig.json` ([FAE-033](https://github.com/SDS37/firestore-angular-example/issues/97)). `npm run verify` compiles the app and the specs under both.
 
 ## Types
 
 - Model shapes live in `src/app/models/*.interface.ts`, one interface per file.
-- Prefer `unknown` to `any`. A new `any` needs a comment that says why the type cannot be known. **Today:** non-spec code has 14 `any` uses, for example `Workout.strength` and `ScheduleList`'s index signature. [FAE-033](https://github.com/SDS37/firestore-angular-example/issues/97) removes them.
+- Prefer `unknown` to `any`. A new `any` needs a comment that says why the type cannot be known. **Today:** non-spec code has no `any`. Specs still use `Observable<any>` for service doubles and `expect.any` for matchers.
 - Use `satisfies` when a literal has to match a type but keep its own narrower type (see `environment.firebase satisfies FirebaseOptions`).
 - Use type guards for narrowing a stream, as the data services do: `filter((user): user is NonNullable<typeof user> => !!user)`.
 - `$key` and `$exists` are client-side fields. They never go to Firestore: writes pass through `toFirestoreData()`.

@@ -59,12 +59,12 @@ export class AuthFormComponent {
 
   get passwordInvalid(): boolean {
     const control = this.form.get('password');
-    return control.hasError('required') && control.touched;
+    return !!control && control.hasError('required') && control.touched;
   }
 
   get emailFormat(): boolean {
     const control = this.form.get('email');
-    return control.hasError('email') && control.touched;
+    return !!control && control.hasError('email') && control.touched;
   }
 
 }

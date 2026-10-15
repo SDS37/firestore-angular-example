@@ -43,7 +43,7 @@ describe('ScheduleCalendarComponent', () => {
     component.selectSection({
       type: 'meals',
       assigned: ['Omelette'],
-      data: component.items.morning
+      data: component.items!.morning!
     }, 'morning');
 
     expect(component.selectedSection.emit).toHaveBeenCalledWith(expect.objectContaining({

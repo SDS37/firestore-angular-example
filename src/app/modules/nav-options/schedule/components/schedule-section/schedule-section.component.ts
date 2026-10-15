@@ -5,6 +5,7 @@ import { MatDividerModule } from '@angular/material/divider';
 
 // interfaces
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
+import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 import { JoinPipe } from '../../../shared/pipes/join.pipe';
 
 @Component({
@@ -67,10 +68,10 @@ import { JoinPipe } from '../../../shared/pipes/join.pipe';
 
 export class ScheduleSectionComponent {
 
-  @Input() name: string;
-  @Input() section: ScheduleItem;
+  @Input() name!: string;
+  @Input() section!: ScheduleItem;
 
-  @Output() selectingSection = new EventEmitter<any>();
+  @Output() selectingSection = new EventEmitter<Pick<ScheduleSectionEvent, 'type' | 'assigned' | 'data'>>();
 
   // constructor() {}
 

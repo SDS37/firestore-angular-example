@@ -12,7 +12,13 @@ describe('ScheduleAssignComponent', () => {
     }).compileComponents();
 
     component = TestBed.createComponent(ScheduleAssignComponent).componentInstance;
-    component.section = { type: 'meals', assigned: ['Soup'] };
+    component.section = {
+      type: 'meals',
+      assigned: ['Soup'],
+      data: { meals: ['Soup'], workouts: null, section: 'morning', timestamp: 1 },
+      section: 'morning',
+      day: new Date('2026-07-02T12:00:00')
+    };
     component.list = [{
       name: 'Soup',
       ingredients: ['water'],

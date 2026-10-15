@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
+import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 
 @Component({
   standalone: true,
@@ -27,12 +28,12 @@ import { Workout } from 'src/app/models/workout.interface';
             class="margin-left-10"
             aria-hidden="false"
             aria-label="Meals/Workouts icon">
-            {{ section.type === 'workouts' ? 'fitness_center' : 'fastfood' }}
+            {{ section?.type === 'workouts' ? 'fitness_center' : 'fastfood' }}
           </mat-icon>
         </div>
         <a
           class="flex-row-container flex-justify-content-center flex-align-items-center"
-          [routerLink]="getRoute(section.type)">
+          [routerLink]="getRoute(section?.type)">
           <mat-icon aria-hidden="false" aria-label="Go to create meal/workout">add</mat-icon>
           <span class="margin-left-10">New</span>
         </a>
@@ -77,11 +78,11 @@ import { Workout } from 'src/app/models/workout.interface';
 })
 export class ScheduleAssignComponent implements OnInit {
 
-  @Input() section: any;
-  @Input() list: Meal[] | Workout[];
+  @Input() section: ScheduleSectionEvent | null | undefined = null;
+  @Input() list: (Meal | Workout)[] | null | undefined = null;
 
-  @Output() updatingItems = new EventEmitter<any>();
-  @Output() closingAssign = new EventEmitter<any>();
+  @Output() updatingItems = new EventEmitter<Record<string, string[]>>();
+  @Output() closingAssign = new EventEmitter<void>();
 
   private selected: string [] = [];
 
@@ -99,7 +100,7 @@ export class ScheduleAssignComponent implements OnInit {
     }
   }
 
-  getRoute(name: string): string[] {
+  getRoute(name: string | undefined): string[] {
     return [`../${name}/new`];
   }
 
@@ -110,6 +111,9 @@ export class ScheduleAssignComponent implements OnInit {
   }
 
   updateAssign(): void {
+    if (!this.section) {
+      return;
+    }
     this.updatingItems.emit({
       // creating property type dynamically: meals or workouts
       [this.section.type]: this.selected

@@ -53,8 +53,8 @@ import { switchMap, tap } from 'rxjs/operators';
 
 export class MealComponent implements OnInit, OnDestroy {
 
-  meal$: Observable<Meal>;
-  subscription: Subscription;
+  meal$!: Observable<Meal | undefined>;
+  subscription!: Subscription;
 
   constructor(
     private mealsService: MealsService,

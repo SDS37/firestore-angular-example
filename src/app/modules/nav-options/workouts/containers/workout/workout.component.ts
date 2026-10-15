@@ -53,8 +53,8 @@ import { switchMap, tap } from 'rxjs/operators';
 
 export class WorkoutComponent implements OnInit, OnDestroy {
 
-  workout$: Observable<Workout>;
-  subscription: Subscription;
+  workout$!: Observable<Workout | undefined>;
+  subscription!: Subscription;
 
   constructor(
     private workoutsService: WorkoutsService,

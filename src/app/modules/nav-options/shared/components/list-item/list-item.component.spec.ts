@@ -20,7 +20,9 @@ describe('ListItemComponent', () => {
     fixture.componentInstance.item = {
       name: 'Soup',
       ingredients: ['water'],
-      $key: 'meal-1'
+      timestamp: 1,
+      $key: 'meal-1',
+      $exists: () => true
     };
 
     expect(fixture.componentInstance.getRoute(fixture.componentInstance.item)).toEqual(['../meals', 'meal-1']);
@@ -30,14 +32,18 @@ describe('ListItemComponent', () => {
     fixture.componentInstance.item = {
       name: 'Run',
       type: 'endurance',
-      $key: 'workout-1'
+      strength: {},
+      endurance: {},
+      timestamp: 1,
+      $key: 'workout-1',
+      $exists: () => true
     };
 
     expect(fixture.componentInstance.getRoute(fixture.componentInstance.item)).toEqual(['../workouts', 'workout-1']);
   });
 
   it('should emit remove events', () => {
-    const item = { name: 'Soup', ingredients: ['water'], $key: 'meal-1' };
+    const item = { name: 'Soup', ingredients: ['water'], timestamp: 1, $key: 'meal-1', $exists: () => true };
     fixture.componentInstance.item = item;
     vi.spyOn(fixture.componentInstance.remove, 'emit');
 
@@ -47,7 +53,15 @@ describe('ListItemComponent', () => {
   });
 
   it('should use workout delete labels for workout items', () => {
-    fixture.componentInstance.item = { name: 'Run', type: 'endurance', $key: 'workout-1' };
+    fixture.componentInstance.item = {
+      name: 'Run',
+      type: 'endurance',
+      strength: {},
+      endurance: {},
+      timestamp: 1,
+      $key: 'workout-1',
+      $exists: () => true
+    };
     expect(fixture.componentInstance.deleteLabel).toBe('Delete workout');
     expect(fixture.componentInstance.cancelDeleteLabel).toBe('Cancel delete workout');
   });

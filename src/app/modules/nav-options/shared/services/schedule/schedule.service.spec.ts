@@ -72,7 +72,7 @@ describe('ScheduleService', () => {
     const duplicateService = TestBed.inject(ScheduleService);
     const duplicateStore = TestBed.inject(Store);
     await firstValueFrom(duplicateService.schedule$);
-    expect(duplicateStore.value.schedule.morning.meals).toEqual(['Omelette']);
+    expect(duplicateStore.value.schedule?.morning?.meals).toEqual(['Omelette']);
   });
 
   it('should create a new schedule section when assigning without an existing id', async () => {

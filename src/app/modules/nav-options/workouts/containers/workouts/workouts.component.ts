@@ -76,8 +76,8 @@ import { Workout } from 'src/app/models/workout.interface';
 
 export class WorkoutsComponent implements OnInit, OnDestroy {
 
-  workouts$: Observable<Workout[]>;
-  subscription: Subscription;
+  workouts$!: Observable<Workout[] | undefined>;
+  subscription!: Subscription;
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -93,7 +93,7 @@ export class WorkoutsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  async removeWorkout(event: Workout): Promise<void> {
+  async removeWorkout(event: { $key: string }): Promise<void> {
     try {
       await this.workoutsService.deleteWorkout(event.$key);
     } catch (error) {

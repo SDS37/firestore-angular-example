@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JoinPipe } from '../../pipes/join.pipe';
 import { WorkoutPipe } from '../../pipes/workout.pipe';
+import { Meal } from 'src/app/models/meal.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
   standalone: true,
@@ -21,10 +23,10 @@ import { WorkoutPipe } from '../../pipes/workout.pipe';
         [routerLink]="getRoute(item)">
         <p>{{ item.name }}</p>
         <p class="font-italic-small">
-          <span *ngIf="item.ingredients; else showWorkout">{{ item.ingredients | join }}</span>
+          <span *ngIf="isMeal(item); else showWorkout">{{ item.ingredients | join }}</span>
         </p>
         <ng-template #showWorkout>
-          {{ item | workout }}
+          {{ asWorkout(item) | workout }}
         </ng-template>
       </a>
 
@@ -65,8 +67,8 @@ import { WorkoutPipe } from '../../pipes/workout.pipe';
 
 export class ListItemComponent {
 
-  @Input() item: any;
-  @Output() remove = new EventEmitter<any>();
+  @Input() item!: Meal | Workout;
+  @Output() remove = new EventEmitter<Meal | Workout>();
 
   toggled = false;
 
@@ -79,16 +81,24 @@ export class ListItemComponent {
   }
 
   get deleteLabel(): string {
-    return this.item.ingredients ? 'Delete meal' : 'Delete workout';
+    return this.isMeal(this.item) ? 'Delete meal' : 'Delete workout';
   }
 
   get cancelDeleteLabel(): string {
-    return this.item.ingredients ? 'Cancel delete meal' : 'Cancel delete workout';
+    return this.isMeal(this.item) ? 'Cancel delete meal' : 'Cancel delete workout';
   }
 
-  getRoute(item: any): any[] {
+  isMeal(item: Meal | Workout): item is Meal {
+    return 'ingredients' in item;
+  }
+
+  asWorkout(item: Meal | Workout): Workout {
+    return item as Workout;
+  }
+
+  getRoute(item: Meal | Workout): string[] {
     return [
-      `../${ item.ingredients ? 'meals' : 'workouts'}`,
+      `../${ this.isMeal(item) ? 'meals' : 'workouts'}`,
       item.$key];
   }
 

@@ -78,8 +78,8 @@ describe('MealsService', () => {
 
   it('should return a blank meal template when no id is provided', async () => {
     const value = await firstValueFrom(service.getMeal(''));
-    expect(value.name).toBe('');
-    expect(value.$exists()).toBe(false);
+    expect(value?.name).toBe('');
+    expect(value?.$exists()).toBe(false);
   });
 
   it('should find a meal from the store by key', async () => {

@@ -26,7 +26,7 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 export class LoginComponent {
 
-  error: string;
+  error = '';
 
   constructor(
     private authService: AuthService,

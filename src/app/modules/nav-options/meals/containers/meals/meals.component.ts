@@ -76,8 +76,8 @@ import { Meal } from 'src/app/models/meal.interface';
 
 export class MealsComponent implements OnInit, OnDestroy {
 
-  meals$: Observable<Meal[]>;
-  subscription: Subscription;
+  meals$!: Observable<Meal[] | undefined>;
+  subscription!: Subscription;
 
   constructor(
     private mealsService: MealsService,
@@ -93,7 +93,7 @@ export class MealsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  async removeMeal(event: Meal): Promise<void> {
+  async removeMeal(event: { $key: string }): Promise<void> {
     try {
       await this.mealsService.deleteMeal(event.$key);
     } catch (error) {

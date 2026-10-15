@@ -24,7 +24,7 @@ import { User } from 'src/app/models/user.interface';
       max-width-900
       border-radius-5
       background-color-gray-1">
-    <div id="user-name">{{ user.email }}</div>
+    <div id="user-name">{{ user?.email }}</div>
     <button
       mat-button
       (click)="logoutUser()">
@@ -36,8 +36,8 @@ import { User } from 'src/app/models/user.interface';
 })
 export class AppHeaderComponent {
 
-  @Input() user: User;
-  @Output() logout = new EventEmitter<any>();
+  @Input() user: User | null = null;
+  @Output() logout = new EventEmitter<void>();
 
   logoutUser(): void {
     this.logout.emit();

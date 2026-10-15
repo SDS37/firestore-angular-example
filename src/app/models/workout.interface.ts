@@ -1,9 +1,12 @@
+import { WorkoutStrength } from './workout-strength.interface';
+import { WorkoutEndurance } from './workout-endurance.interface';
+
 export interface Workout {
   name: string;
   type: string;
-  strength: any;
-  endurance: any;
-  timestamp: number;
+  strength: WorkoutStrength;
+  endurance: WorkoutEndurance;
+  timestamp: number | null;
   $key: string;
   $exists: () => boolean;
 }

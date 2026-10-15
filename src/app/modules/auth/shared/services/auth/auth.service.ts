@@ -29,7 +29,7 @@ export class AuthService {
         return;
       }
       const user: AppUser = {
-        email: next.email,
+        email: next.email ?? '',
         uid: next.uid,
         authenticated: true
       };

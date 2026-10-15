@@ -7,6 +7,7 @@ import { ScheduleSectionComponent } from '../schedule-section/schedule-section.c
 // interfaces
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
+import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 
 @Component({
   standalone: true,
@@ -39,20 +40,14 @@ export class ScheduleCalendarComponent implements OnChanges {
       this.selectedDay = new Date();
     }
   }
-  @Input() items: ScheduleList;
+  @Input() items: ScheduleList | null | undefined = null;
 
   @Output() changingDate = new EventEmitter<Date>();
-  @Output() selectedSection = new EventEmitter<{
-    type: string;
-    assigned: string[];
-    data: ScheduleItem;
-    section: string;
-    day: Date;
-  }>();
+  @Output() selectedSection = new EventEmitter<ScheduleSectionEvent>();
 
-  selectedDayIndex: number;
+  selectedDayIndex!: number;
   selectedDay: Date = new Date();
-  selectedWeek: Date;
+  selectedWeek!: Date;
 
   sections = [
     { key: 'morning', name: 'Morning' },
@@ -73,7 +68,7 @@ export class ScheduleCalendarComponent implements OnChanges {
   }
 
   selectSection(
-    { type, assigned, data }: { type: string; assigned: string[]; data: ScheduleItem },
+    { type, assigned, data }: Pick<ScheduleSectionEvent, 'type' | 'assigned' | 'data'>,
     section: string
   ): void {
     this.selectedSection.emit({

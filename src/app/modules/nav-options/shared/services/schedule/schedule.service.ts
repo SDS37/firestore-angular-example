@@ -30,19 +30,14 @@ import { tap, map, switchMap, withLatestFrom, filter } from 'rxjs/operators';
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
+import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 import { DateRange } from 'src/app/models/date-range.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
 
   private date$ = new BehaviorSubject<Date>(new Date());
-  private section$ = new Subject<{
-    type: string;
-    assigned: string[];
-    data: ScheduleItem;
-    section: string;
-    day: Date;
-  }>();
+  private section$ = new Subject<ScheduleSectionEvent>();
   private itemList$ = new Subject<Record<string, string[]>>();
 
   items$ = this.itemList$.pipe(
@@ -132,13 +127,7 @@ export class ScheduleService {
     this.date$.next(date);
   }
 
-  selectSection(event: {
-    type: string;
-    assigned: string[];
-    data: ScheduleItem;
-    section: string;
-    day: Date;
-  }): void {
+  selectSection(event: ScheduleSectionEvent): void {
     this.section$.next(event);
   }
 

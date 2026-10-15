@@ -17,7 +17,7 @@ import { Observable, Subscription } from 'rxjs';
 
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
-import { ScheduleItem } from 'src/app/models/schedule-item.interface';
+import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
@@ -62,10 +62,10 @@ import { Workout } from 'src/app/models/workout.interface';
 
 export class ScheduleComponent implements OnInit, OnDestroy {
 
-  date$: Observable<Date>;
-  selected$: Observable<unknown>;
-  list$: Observable<Meal[] | Workout[]>;
-  schedule$: Observable<ScheduleList>;
+  date$!: Observable<Date | undefined>;
+  selected$!: Observable<ScheduleSectionEvent | undefined>;
+  list$!: Observable<(Meal | Workout)[] | undefined>;
+  schedule$!: Observable<ScheduleList | undefined>;
   subscriptions: Subscription[] = [];
 
   open = false;
@@ -96,13 +96,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  changeSection(event: {
-    type: string;
-    assigned: string[];
-    data: ScheduleItem;
-    section: string;
-    day: Date;
-  }): void {
+  changeSection(event: ScheduleSectionEvent): void {
     this.open = true;
     this.scheduleService.selectSection(event);
   }

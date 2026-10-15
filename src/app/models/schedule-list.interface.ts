@@ -5,6 +5,5 @@ export interface ScheduleList {
   lunch?: ScheduleItem;
   evening?: ScheduleItem;
   snacks?: ScheduleItem;
-  [key: string]: any;
+  [key: string]: ScheduleItem | undefined;
 }
-// [key: string]: any; access by index lookup

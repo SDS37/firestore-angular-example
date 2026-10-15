@@ -35,16 +35,16 @@ export const TYPE_CONTROL_ACCESOR = {
 export class WorkoutTypeComponent implements ControlValueAccessor {
 
   selectors = ['strength', 'endurance'];
-  value: string;
+  value!: string;
 
-  private onTouch: Function;
-  private onModelChange: Function;
+  private onTouch!: () => void;
+  private onModelChange!: (value: string) => void;
 
-  registerOnTouched(fn: Function): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouch = fn;
   }
 
-  registerOnChange(fn: Function): void {
+  registerOnChange(fn: (value: string) => void): void {
     this.onModelChange = fn;
   }
 

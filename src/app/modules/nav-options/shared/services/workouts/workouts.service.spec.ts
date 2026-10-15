@@ -65,6 +65,6 @@ describe('WorkoutsService', () => {
 
   it('should return a blank workout template when no id is provided', async () => {
     const value = await firstValueFrom(service.getWorkout(''));
-    expect(value.type).toBe('strength');
+    expect(value?.type).toBe('strength');
   });
 });
