@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, inject, signal, viewChild } from '@angular/core';
+
 import { FormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,18 +9,21 @@ import { AuthFormComponent } from '../../../shared/components/auth-form/auth-for
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
 @Component({
-  standalone: true,
   selector: 'login',
-  imports: [AuthFormComponent, RouterLink, MatButtonModule, NgIf],
+  imports: [AuthFormComponent, RouterLink, MatButtonModule],
   template: `
   <auth-form (submitted)="loginUser($event)">
     <h1>login</h1>
-    <div class="error" *ngIf="error">
-      {{ error }}
-    </div>
-    <div class="notice" *ngIf="notice">
-      {{ notice }}
-    </div>
+    @if (error()) {
+      <div class="error">
+        {{ error() }}
+      </div>
+    }
+    @if (notice()) {
+      <div class="notice">
+        {{ notice() }}
+      </div>
+    }
     <a routerLink="/auth/register">Not registered ?</a>
     <button class="auth-reset" mat-button type="button" (click)="sendReset()">Forgot password?</button>
     <button mat-raised-button color="primary" type="submit">login</button>
@@ -29,20 +32,16 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 })
 
 export class LoginComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  @ViewChild(AuthFormComponent) private authForm?: AuthFormComponent;
+  private readonly authForm = viewChild(AuthFormComponent);
 
-  error = '';
-  notice = '';
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private changeDetector: ChangeDetectorRef
-  ) {}
+  readonly error = signal('');
+  readonly notice = signal('');
 
   async sendReset(): Promise<void> {
-    const email = this.authForm?.form.get('email');
+    const email = this.authForm()?.form.get('email');
     if (!email || email.invalid) {
       email?.markAsTouched();
       this.showReset('', 'Enter the email address for the account.');
@@ -63,9 +62,8 @@ export class LoginComponent {
   }
 
   private showReset(notice: string, error: string): void {
-    this.notice = notice;
-    this.error = error;
-    this.changeDetector.detectChanges();
+    this.notice.set(notice);
+    this.error.set(error);
   }
 
   async loginUser(event: FormGroup): Promise<void> {
@@ -76,7 +74,7 @@ export class LoginComponent {
       await this.authService.loginUser(email, password);
       this.router.navigate(['/']);
     } catch (error: unknown) {
-      this.error = error instanceof Error ? error.message : 'Login failed';
+      this.error.set(error instanceof Error ? error.message : 'Login failed');
     }
   }
 

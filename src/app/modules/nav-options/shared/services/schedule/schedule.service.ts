@@ -1,4 +1,4 @@
-import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
+import { EnvironmentInjector, inject, runInInjectionContext, Service } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
@@ -34,8 +34,13 @@ import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 import { DateRange } from 'src/app/models/date-range.interface';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ScheduleService {
+  private firestore = inject(Firestore);
+  private auth = inject(Auth);
+  private store = inject(Store);
+  private authService = inject(AuthService);
+
 
   private readonly environmentInjector = inject(EnvironmentInjector);
 
@@ -91,13 +96,6 @@ export class ScheduleService {
     );
     })
   );
-
-  constructor(
-    private firestore: Firestore,
-    private auth: Auth,
-    private store: Store,
-    private authService: AuthService
-  ) {}
 
   get uid(): string {
     const user = this.authService.user;

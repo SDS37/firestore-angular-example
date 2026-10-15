@@ -34,7 +34,8 @@ describe('AppComponent', () => {
           provide: Router,
           useValue: {
             events: routerEvents$.asObservable(),
-            navigate: navigateSpy
+            navigate: navigateSpy,
+            url: '/schedule'
           }
         }
       ]
@@ -51,10 +52,10 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     routerEvents$.next(new NavigationEnd(1, '/auth/login', '/auth/login'));
-    expect(fixture.componentInstance.isAuthUrl).toBe(true);
+    expect(fixture.componentInstance.isAuthUrl()).toBe(true);
 
     routerEvents$.next(new NavigationEnd(2, '/schedule', '/schedule'));
-    expect(fixture.componentInstance.isAuthUrl).toBe(false);
+    expect(fixture.componentInstance.isAuthUrl()).toBe(false);
   });
 
   it('should logout and navigate to login', async () => {

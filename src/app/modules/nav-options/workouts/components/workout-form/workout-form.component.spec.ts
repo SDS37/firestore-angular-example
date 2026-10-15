@@ -15,6 +15,15 @@ describe('WorkoutFormComponent', () => {
 
     fixture = TestBed.createComponent(WorkoutFormComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('workout', {
+      name: '',
+      type: 'strength',
+      strength: { reps: 0, sets: 0, weight: 0 },
+      endurance: { distance: 0, duration: 0 },
+      timestamp: null,
+      $key: '',
+      $exists: () => false
+    });
     fixture.detectChanges();
   });
 

@@ -16,7 +16,13 @@ describe('MealFormComponent', () => {
 
     fixture = TestBed.createComponent(MealFormComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    fixture.componentRef.setInput('meal', {
+      name: '',
+      ingredients: [''],
+      timestamp: null,
+      $key: '',
+      $exists: () => false
+    });
   });
 
   it('should emit create events for valid new meals', () => {
@@ -40,17 +46,10 @@ describe('MealFormComponent', () => {
       $exists: () => true
     };
 
-    component.meal = meal;
-    component.ngOnChanges({
-      meal: {
-        currentValue: meal,
-        previousValue: undefined,
-        firstChange: true,
-        isFirstChange: () => true
-      }
-    });
+    fixture.componentRef.setInput('meal', meal);
+    fixture.detectChanges();
 
-    expect(component.exists).toBe(true);
+    expect(component.exists()).toBe(true);
     expect(component.form.get('name')?.value).toBe('Omelette');
     expect(component.ingredients.length).toBe(2);
   });
@@ -69,6 +68,7 @@ describe('MealFormComponent', () => {
     component.form.setValue({ name: 'Toast', ingredients: ['bread'] });
 
     component.createMeal();
+    fixture.componentRef.setInput('pending', true);
     component.createMeal();
 
     expect(component.create.emit).toHaveBeenCalledTimes(1);

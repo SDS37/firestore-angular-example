@@ -57,7 +57,6 @@ describe('ScheduleComponent', () => {
     }).compileComponents();
 
     component = TestBed.createComponent(ScheduleComponent).componentInstance;
-    component.ngOnInit();
   });
 
   it('should open the assign dialog when a section is selected', () => {
@@ -76,27 +75,27 @@ describe('ScheduleComponent', () => {
 
     component.changeSection(event);
 
-    expect(component.open).toBe(true);
+    expect(component.open()).toBe(true);
     expect(scheduleService.selectSection).toHaveBeenCalledWith(event);
   });
 
   it('should close the assign dialog after updating items', async () => {
-    component.open = true;
+    component.open.set(true);
     scheduleService.updateItems.mockResolvedValue(undefined);
 
     await component.updateItems({ meals: ['Soup'] });
 
     expect(scheduleService.updateItems).toHaveBeenCalledWith({ meals: ['Soup'] });
-    expect(component.open).toBe(false);
+    expect(component.open()).toBe(false);
   });
 
   it('should keep the assign dialog open and show a message when the write is rejected', async () => {
-    component.open = true;
+    component.open.set(true);
     scheduleService.updateItems.mockRejectedValue(new Error('permission denied'));
 
     await component.updateItems({ meals: ['Soup'] });
 
-    expect(component.open).toBe(true);
+    expect(component.open()).toBe(true);
     expect(snackBar.open).toHaveBeenCalledWith('Could not update the schedule.', 'Dismiss', { duration: 8000 });
   });
 

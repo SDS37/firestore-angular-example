@@ -1,4 +1,4 @@
-import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
+import { EnvironmentInjector, inject, runInInjectionContext, Service } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
@@ -30,8 +30,14 @@ import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MealsService {
+  private firestore = inject(Firestore);
+  private auth = inject(Auth);
+  private store = inject(Store);
+  private authService = inject(AuthService);
+  private scheduleService = inject(ScheduleService);
+
 
   private readonly environmentInjector = inject(EnvironmentInjector);
 
@@ -50,14 +56,6 @@ export class MealsService {
       this.store.set('meals', next);
     })
   );
-
-  constructor(
-    private firestore: Firestore,
-    private auth: Auth,
-    private store: Store,
-    private authService: AuthService,
-    private scheduleService: ScheduleService
-  ) {}
 
   get uid(): string {
     const user = this.authService.user;

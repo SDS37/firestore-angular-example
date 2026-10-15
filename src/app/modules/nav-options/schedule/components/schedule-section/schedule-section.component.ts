@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, ViewEncapsulation, input, output } from '@angular/core';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 
@@ -12,28 +12,28 @@ import { Workout } from 'src/app/models/workout.interface';
 import { scheduleEntryLabel } from 'src/app/utils/schedule-labels';
 
 @Component({
-  standalone: true,
   selector: 'schedule-section',
-  imports: [NgIf, MatIconModule, MatDividerModule, JoinPipe],
+  imports: [MatIconModule, MatDividerModule, JoinPipe],
   styleUrls: ['schedule-section.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,
   template: `
   <div class="flex-column-container flex-justify-content-center flex-align-items-stretch">
 
     <div class="flex-column-container flex-align-items-center padding-10 background-color-blue-1 color-white">
-      {{ name.toUpperCase() }}
+      {{ name().toUpperCase() }}
     </div>
 
-    <button
+    @if (section().meals) {
+<button
       type="button"
-      *ngIf="section.meals; else addMeal"
+     
       class="section-action flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
-      (click)="onSelect('meals', section.meals)">
+      (click)="onSelect('meals', section().meals ?? [])">
       <mat-icon color="primary" aria-hidden="true">fastfood</mat-icon>
       <span class="margin-left-10">{{ labelsFor('meals') | join }}</span>
     </button>
-    <ng-template #addMeal>
+} @else {
+
       <button
         type="button"
         class="section-action flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
@@ -41,19 +41,23 @@ import { scheduleEntryLabel } from 'src/app/utils/schedule-labels';
         <mat-icon color="primary" aria-hidden="true">control_point</mat-icon>
         <span class="margin-left-10">Assign meal</span>
       </button>
-    </ng-template>
+    
+}
+    
 
     <mat-divider></mat-divider>
 
-    <button
+    @if (section().workouts) {
+<button
       type="button"
-      *ngIf="section.workouts; else addWorkout"
+     
       class="section-action flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
-      (click)="onSelect('workouts', section.workouts)">
+      (click)="onSelect('workouts', section().workouts ?? [])">
       <mat-icon color="primary" aria-hidden="true">fitness_center</mat-icon>
       <span class="margin-left-10">{{ labelsFor('workouts') | join }}</span>
     </button>
-    <ng-template #addWorkout>
+} @else {
+
       <button
         type="button"
         class="section-action flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
@@ -61,7 +65,9 @@ import { scheduleEntryLabel } from 'src/app/utils/schedule-labels';
         <mat-icon color="primary" aria-hidden="true">control_point</mat-icon>
         <span class="margin-left-10">Assign workout</span>
       </button>
-    </ng-template>
+    
+}
+    
 
   </div>
   `
@@ -71,23 +77,21 @@ import { scheduleEntryLabel } from 'src/app/utils/schedule-labels';
 
 export class ScheduleSectionComponent {
 
-  @Input() name!: string;
-  @Input() section!: ScheduleItem;
-  @Input() meals: Meal[] | null | undefined = null;
-  @Input() workouts: Workout[] | null | undefined = null;
+  readonly name = input.required<string>();
+  readonly section = input.required<ScheduleItem>();
+  readonly meals = input<Meal[] | null | undefined>(null);
+  readonly workouts = input<Workout[] | null | undefined>(null);
 
-  @Output() selectingSection = new EventEmitter<Pick<ScheduleSectionEvent, 'type' | 'assigned' | 'data'>>();
-
-  // constructor() {}
+  readonly selectingSection = output<Pick<ScheduleSectionEvent, 'type' | 'assigned' | 'data'>>();
 
   labelsFor(kind: 'meals' | 'workouts'): string[] {
-    const values = this.section[kind] ?? [];
-    const catalog = kind === 'meals' ? this.meals : this.workouts;
+    const values = this.section()[kind] ?? [];
+    const catalog = kind === 'meals' ? this.meals() : this.workouts();
     return values.map(value => scheduleEntryLabel(value, catalog));
   }
 
   onSelect(type: string, assigned: string[] = []): void {
-    const data: ScheduleItem = this.section;
+    const data: ScheduleItem = this.section();
     this.selectingSection.emit({
       type,
       assigned,

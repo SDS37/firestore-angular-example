@@ -14,8 +14,7 @@
 
 ## Subscriptions
 
-- A `Subscription` taken in a component is released in `ngOnDestroy`.
-- Prefer the `async` pipe in templates.
+- A component reads an observable with `toSignal`. That subscription ends when the component is destroyed.
 - Do not nest `subscribe` calls. Compose with an operator instead.
 
 ## Subjects
@@ -26,4 +25,4 @@
 
 ## The Store
 
-`src/app/store/store.ts` holds one `BehaviorSubject<State>`. `select(key)` reads a slice. `set(key, value)` replaces one slice and keeps the others. Both are typed by `keyof State`. Components read from the store; services write to it.
+`src/app/store/store.ts` holds one `BehaviorSubject<State>`. `select(key)` reads a slice. `set(key, value)` replaces one slice and keeps the others. Both are typed by `keyof State`. Components read a slice with `toSignal`; services write to the store.

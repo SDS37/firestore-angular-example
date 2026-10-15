@@ -1,7 +1,7 @@
 import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, of, EMPTY } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { WorkoutComponent } from './workout.component';
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 import { WorkoutFormComponent } from '../../components/workout-form/workout-form.component';
@@ -28,7 +28,15 @@ describe('WorkoutComponent', () => {
       addWorkout: vi.fn(),
       updateWorkout: vi.fn(),
       deleteWorkout: vi.fn(),
-      getWorkout: vi.fn(),
+      getWorkout: vi.fn().mockReturnValue(of({
+        name: '',
+        type: 'strength',
+        strength: { reps: 0, sets: 0, weight: 0 },
+        endurance: { distance: 0, duration: 0 },
+        timestamp: null,
+        $key: '',
+        $exists: () => false
+      })),
       workouts$: of([])
     };
     router = { navigate: vi.fn() };
@@ -55,17 +63,13 @@ describe('WorkoutComponent', () => {
 
   it('should redirect to workouts when an unknown id is requested', () => {
     workoutsService.getWorkout.mockReturnValue(of(undefined));
-
-    component.ngOnInit();
-    component.workout$.subscribe();
+    TestBed.createComponent(WorkoutComponent);
 
     expect(router.navigate).toHaveBeenCalledWith(['/workouts']);
   });
 
   it('should create workouts and navigate back to the list', async () => {
-    workoutsService.getWorkout.mockReturnValue(EMPTY);
     workoutsService.addWorkout.mockReturnValue(Promise.resolve({ id: 'new-workout' } as never));
-    component.ngOnInit();
 
     const workout: Workout = {
       name: 'Run',
@@ -84,9 +88,7 @@ describe('WorkoutComponent', () => {
   });
 
   it('should stay on the form and show a message when the save is rejected', async () => {
-    workoutsService.getWorkout.mockReturnValue(EMPTY);
     workoutsService.addWorkout.mockRejectedValue(new Error('permission denied'));
-    component.ngOnInit();
 
     await component.addWorkout({
       name: 'Run',

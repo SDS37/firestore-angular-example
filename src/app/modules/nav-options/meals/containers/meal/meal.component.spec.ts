@@ -1,7 +1,7 @@
 import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, of, EMPTY } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { MealComponent } from './meal.component';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 import { MealFormComponent } from '../../components/meal-form/meal-form.component';
@@ -27,7 +27,13 @@ describe('MealComponent', () => {
       addMeal: vi.fn(),
       updateMeal: vi.fn(),
       deleteMeal: vi.fn(),
-      getMeal: vi.fn(),
+      getMeal: vi.fn().mockReturnValue(of({
+        name: '',
+        ingredients: [''],
+        timestamp: null,
+        $key: '',
+        $exists: () => false
+      })),
       meals$: of([])
     };
     router = { navigate: vi.fn() };
@@ -54,17 +60,13 @@ describe('MealComponent', () => {
 
   it('should redirect to meals when an unknown id is requested', () => {
     mealsService.getMeal.mockReturnValue(of(undefined));
-
-    component.ngOnInit();
-    component.meal$.subscribe();
+    TestBed.createComponent(MealComponent);
 
     expect(router.navigate).toHaveBeenCalledWith(['/meals']);
   });
 
   it('should create meals and navigate back to the list', async () => {
-    mealsService.getMeal.mockReturnValue(EMPTY);
     mealsService.addMeal.mockReturnValue(Promise.resolve({ id: 'new-meal' } as never));
-    component.ngOnInit();
 
     const meal: Meal = {
       name: 'Toast',
@@ -81,9 +83,7 @@ describe('MealComponent', () => {
   });
 
   it('should stay on the form and show a message when the save is rejected', async () => {
-    mealsService.getMeal.mockReturnValue(EMPTY);
     mealsService.addMeal.mockRejectedValue(new Error('permission denied'));
-    component.ngOnInit();
 
     await component.addMeal({
       name: 'Toast',
@@ -99,11 +99,9 @@ describe('MealComponent', () => {
 
   it('should ignore a second create while the first write is in flight', async () => {
     let resolveAdd: (value: { id: string }) => void = () => undefined;
-    mealsService.getMeal.mockReturnValue(EMPTY);
     mealsService.addMeal.mockReturnValue(new Promise(resolve => {
       resolveAdd = resolve;
     }));
-    component.ngOnInit();
     const meal: Meal = {
       name: 'Toast',
       ingredients: ['bread'],

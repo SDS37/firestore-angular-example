@@ -1,14 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AsyncPipe, NgIf, NgFor } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ListItemComponent } from '../../../shared/components/list-item/list-item.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-// rxjs
-import { Observable, Subscription } from 'rxjs';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -21,9 +18,8 @@ import { Meal } from 'src/app/models/meal.interface';
 import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 @Component({
-  standalone: true,
   selector: 'meals',
-  imports: [AsyncPipe, NgIf, NgFor, RouterLink, ListItemComponent, MatCardModule, MatIconModule, MatProgressBarModule],
+  imports: [RouterLink, ListItemComponent, MatCardModule, MatIconModule, MatProgressBarModule],
   template: `
   <div
     id="meals"
@@ -48,53 +44,50 @@ import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
       </div>
     </mat-card>
 
-    <div
-      *ngIf="meals$ | async as meals; else loading;"
+    @if (meals(); as meals) {
+<div
+     
       class="flex-column-container flex-1-1-auto overflow-y-scroll scrollbar-width-none">
-      <div
-        *ngIf="!meals.length"
+      @if (!meals.length) {
+<div
+       
         class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-1">
         <mat-icon color="warn" aria-hidden="true">error_outline</mat-icon>
         <span>No meals, add a new meal to start</span>
       </div>
-      <list-item
-        *ngFor="let meal of meals"
+}
+      @for (meal of meals; track meal.$key) {
+<list-item
+       
         [item]="meal"
         (remove)="removeMeal($event)">
       </list-item>
+}
     </div>
+} @else {
 
-    <ng-template #loading>
       <div class="padding-10 background-color-gray-1">
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       </div>
-    </ng-template>
+    
+}
+
+    
 
   </div>
   `
 })
 
-// <pre>{{ meals$ | async | json }}</pre>
+export class MealsComponent {
+  private mealsService = inject(MealsService);
+  private store = inject(Store);
+  private snackBar = inject(MatSnackBar);
 
-export class MealsComponent implements OnInit, OnDestroy {
-
-  meals$!: Observable<Meal[] | undefined>;
-  subscription!: Subscription;
+  readonly meals = toSignal(this.store.select('meals'), { requireSync: true });
   private deleting = new Set<string>();
 
-  constructor(
-    private mealsService: MealsService,
-    private store: Store,
-    private snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit(): void {
-    this.meals$ = this.store.select('meals');
-    this.subscription = this.mealsService.meals$.subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  constructor() {
+    toSignal(this.mealsService.meals$);
   }
 
   async removeMeal(meal: Meal): Promise<void> {

@@ -1,5 +1,5 @@
-import { Component, Input, Output, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, input, output, signal } from '@angular/core';
+
 import { RouterLink } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,30 +10,31 @@ import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
-  standalone: true,
   selector: 'list-item',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, RouterLink, MatDividerModule, MatButtonModule, MatIconModule, JoinPipe, WorkoutPipe],
+  imports: [RouterLink, MatDividerModule, MatButtonModule, MatIconModule, JoinPipe, WorkoutPipe],
   template: `
     <div
       class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-2">
 
       <a
         class="padding-0"
-        [routerLink]="getRoute(item)">
-        <p>{{ item.name }}</p>
+        [routerLink]="getRoute(item())">
+        <p>{{ item().name }}</p>
         <p class="font-italic-small">
-          <span *ngIf="isMeal(item); else showWorkout">{{ item.ingredients | join }}</span>
+          @let current = item();
+          @if (isMeal(current)) {
+            <span>{{ current.ingredients | join }}</span>
+          } @else {
+            {{ asWorkout(current) | workout }}
+          }
         </p>
-        <ng-template #showWorkout>
-          {{ asWorkout(item) | workout }}
-        </ng-template>
       </a>
 
       <div class="flex-row-container flex-justify-content-space-between flex-align-items-center">
 
-        <div
-          *ngIf="toggled"
+        @if (toggled()) {
+<div
+         
           class="flex-row-container flex-justify-content-space-between flex-align-items-center">
           <button
             mat-icon-button
@@ -48,6 +49,7 @@ import { Workout } from 'src/app/models/workout.interface';
             <mat-icon aria-hidden="false" [attr.aria-label]="cancelDeleteLabel">cancel</mat-icon>
           </button>
         </div>
+}
 
         <button
           mat-raised-button
@@ -67,25 +69,25 @@ import { Workout } from 'src/app/models/workout.interface';
 
 export class ListItemComponent<T extends Meal | Workout = Meal | Workout> {
 
-  @Input() item!: T;
-  @Output() remove = new EventEmitter<T>();
+  readonly item = input.required<T>();
+  readonly remove = output<T>();
 
-  toggled = false;
+  readonly toggled = signal(false);
 
   toggle(): void {
-    this.toggled = !this.toggled;
+    this.toggled.update(value => !value);
   }
 
   removeItem(): void {
-    this.remove.emit(this.item);
+    this.remove.emit(this.item());
   }
 
   get deleteLabel(): string {
-    return this.isMeal(this.item) ? 'Delete meal' : 'Delete workout';
+    return this.isMeal(this.item()) ? 'Delete meal' : 'Delete workout';
   }
 
   get cancelDeleteLabel(): string {
-    return this.isMeal(this.item) ? 'Cancel delete meal' : 'Cancel delete workout';
+    return this.isMeal(this.item()) ? 'Cancel delete meal' : 'Cancel delete workout';
   }
 
   isMeal(item: Meal | Workout): item is Meal {

@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, forwardRef, ViewEncapsulation } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { Component, forwardRef, ViewEncapsulation } from '@angular/core';
+
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -10,17 +10,16 @@ export const TYPE_CONTROL_ACCESOR = {
 };
 
 @Component({
-  standalone: true,
   selector: 'workout-type',
   providers: [ TYPE_CONTROL_ACCESOR ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./workout-type.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
-  imports: [NgFor, MatIconModule],
+  imports: [MatIconModule],
   template: `
-    <button
+    @for (selector of selectors; track selector) {
+<button
       type="button"
-      *ngFor="let selector of selectors"
+     
       class="type-option flex-row-container flex-justify-content-center flex-align-items-center padding-10 border-radius-10 cursor-pointer"
       [class.active]="selector === value"
       [attr.aria-pressed]="selector === value"
@@ -30,6 +29,7 @@ export const TYPE_CONTROL_ACCESOR = {
       </mat-icon>
       <span class="margin-left-10">{{ selector }}</span>
     </button>
+}
   `
 })
 

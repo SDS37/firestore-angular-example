@@ -1,11 +1,15 @@
 <div class="flex-column-container flex-justify-content-stretch flex-align-items-stretch full-width-height">
 
-    <app-header *ngIf="(user$ | async)?.authenticated" class="flex-1-1-auto width-100-100 margin-bottom-10" [user]="user$ | async" (logout)="onLogout()"></app-header>
+  @if (user()?.authenticated) {
+    <app-header class="flex-1-1-auto width-100-100 margin-bottom-10" [user]="user()" (logout)="onLogout()"></app-header>
+  }
 
-    <app-nav *ngIf="(user$ | async)?.authenticated" class="flex-1-1-auto width-100-100 margin-bottom-10"></app-nav>
+  @if (user()?.authenticated) {
+    <app-nav class="flex-1-1-auto width-100-100 margin-bottom-10"></app-nav>
+  }
 
-    <main class="flex-1-1-auto width-100-100 height-calc" [ngClass]="{ 'flex-row-container flex-align-items-center flex-justify-content-center height-100-100' : isAuthUrl }">
-        <router-outlet (activate)=onActivate($event) (deactivate)=onDeactivate($event)></router-outlet>
-    </main>
+  <main class="flex-1-1-auto width-100-100 height-calc" [ngClass]="{ 'flex-row-container flex-align-items-center flex-justify-content-center height-100-100' : isAuthUrl() }">
+    <router-outlet (activate)=onActivate($event) (deactivate)=onDeactivate($event)></router-outlet>
+  </main>
 
 </div>

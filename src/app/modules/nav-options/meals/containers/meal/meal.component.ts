@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MealFormComponent } from '../../components/meal-form/meal-form.component';
 import { MatCardModule } from '@angular/material/card';
@@ -14,62 +14,61 @@ import { Meal } from 'src/app/models/meal.interface';
 import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 // rxjs
-import { Observable, Subscription, of, EMPTY } from 'rxjs';
+import { of, EMPTY } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
-  standalone: true,
   selector: 'meal',
-  imports: [AsyncPipe, NgIf, MealFormComponent, MatCardModule, MatProgressBarModule],
+  imports: [MealFormComponent, MatCardModule, MatProgressBarModule],
   template: `
   <div
     id="meal"
     class="flex-column-container flex-justify-content-stretch flex-align-items-stretch margin-0-auto height-100-100 max-width-600">
 
     <mat-card class="margin-bottom-10">
-      <h1 *ngIf="meal$ | async as meal; else title;">
+      @if (meal(); as meal) {
+<h1>
         {{ meal.name ? 'Edit' : 'Create' }} meal
       </h1>
-      <ng-template #title>
+} @else {
+
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </ng-template>
+      
+}
+      
     </mat-card>
 
     <mat-card class="margin-bottom-10">
-      <div *ngIf="meal$ | async as meal; else loading;">
+      @if (meal(); as meal) {
+<div>
         <meal-form
           [meal]="meal"
-          [pending]="saving"
+          [pending]="saving()"
           (create)="addMeal($event)"
           (update)="updateMeal($event)"
           (delete)="deleteMeal($event)">
         </meal-form>
       </div>
-      <ng-template #loading>
+} @else {
+
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </ng-template>
+      
+}
+      
     </mat-card>
 
   </div>
   `
 })
 
-export class MealComponent implements OnInit, OnDestroy {
+export class MealComponent {
+  private mealsService = inject(MealsService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private snackBar = inject(MatSnackBar);
 
-  meal$!: Observable<Meal | undefined>;
-  subscription!: Subscription;
-  saving = false;
-
-  constructor(
-    private mealsService: MealsService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit(): void {
-    this.subscription = this.mealsService.meals$.subscribe();
-    this.meal$ = this.activatedRoute.params.pipe(
+  readonly meal = toSignal(
+    this.activatedRoute.params.pipe(
       switchMap(param => this.mealsService.getMeal(param.id).pipe(
         tap(meal => {
           if (param.id && meal === undefined) {
@@ -78,38 +77,40 @@ export class MealComponent implements OnInit, OnDestroy {
         }),
         switchMap(meal => meal ? of(meal) : EMPTY)
       ))
-    );
-  }
+    ),
+    { initialValue: undefined }
+  );
+  readonly saving = signal(false);
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  constructor() {
+    toSignal(this.mealsService.meals$);
   }
 
   async addMeal(event: Meal): Promise<void> {
-    if (this.saving) {
+    if (this.saving()) {
       return;
     }
-    this.saving = true;
+    this.saving.set(true);
     try {
       await this.mealsService.addMeal(event);
       this.backToMeals();
     } catch {
-      this.saving = false;
+      this.saving.set(false);
       this.reportFailure('Could not save the meal.');
     }
   }
 
   async updateMeal(event: Meal): Promise<void> {
-    if (this.saving) {
+    if (this.saving()) {
       return;
     }
-    this.saving = true;
+    this.saving.set(true);
     try {
       const key = this.activatedRoute.snapshot.params.id;
       await this.mealsService.updateMeal(key, event);
       this.backToMeals();
     } catch {
-      this.saving = false;
+      this.saving.set(false);
       this.reportFailure('Could not save the meal.');
     }
   }

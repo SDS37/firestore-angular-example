@@ -17,19 +17,19 @@ describe('ListItemComponent', () => {
   });
 
   it('should build a meal route when ingredients exist', () => {
-    fixture.componentInstance.item = {
+    fixture.componentRef.setInput('item', {
       name: 'Soup',
       ingredients: ['water'],
       timestamp: 1,
       $key: 'meal-1',
       $exists: () => true
-    };
+    });
 
-    expect(fixture.componentInstance.getRoute(fixture.componentInstance.item)).toEqual(['../meals', 'meal-1']);
+    expect(fixture.componentInstance.getRoute(fixture.componentInstance.item())).toEqual(['../meals', 'meal-1']);
   });
 
   it('should build a workout route when ingredients are absent', () => {
-    fixture.componentInstance.item = {
+    fixture.componentRef.setInput('item', {
       name: 'Run',
       type: 'endurance',
       strength: {},
@@ -37,14 +37,14 @@ describe('ListItemComponent', () => {
       timestamp: 1,
       $key: 'workout-1',
       $exists: () => true
-    };
+    });
 
-    expect(fixture.componentInstance.getRoute(fixture.componentInstance.item)).toEqual(['../workouts', 'workout-1']);
+    expect(fixture.componentInstance.getRoute(fixture.componentInstance.item())).toEqual(['../workouts', 'workout-1']);
   });
 
   it('should emit remove events', () => {
     const item = { name: 'Soup', ingredients: ['water'], timestamp: 1, $key: 'meal-1', $exists: () => true };
-    fixture.componentInstance.item = item;
+    fixture.componentRef.setInput('item', item);
     vi.spyOn(fixture.componentInstance.remove, 'emit');
 
     fixture.componentInstance.removeItem();
@@ -53,7 +53,7 @@ describe('ListItemComponent', () => {
   });
 
   it('should use workout delete labels for workout items', () => {
-    fixture.componentInstance.item = {
+    fixture.componentRef.setInput('item', {
       name: 'Run',
       type: 'endurance',
       strength: {},
@@ -61,7 +61,7 @@ describe('ListItemComponent', () => {
       timestamp: 1,
       $key: 'workout-1',
       $exists: () => true
-    };
+    });
     expect(fixture.componentInstance.deleteLabel).toBe('Delete workout');
     expect(fixture.componentInstance.cancelDeleteLabel).toBe('Cancel delete workout');
   });

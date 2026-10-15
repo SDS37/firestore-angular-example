@@ -23,8 +23,8 @@ flowchart LR
 | Layer | Lives in | Owns | Must not |
 |---|---|---|---|
 | Bootstrap | `src/main.ts`, `src/app/app.config.ts`, `src/app/app.routes.ts` | `bootstrapApplication`, the router, animations, Firebase providers, root routes | Hold feature logic |
-| Containers | `*/containers/` | Route params, subscriptions, calling writes, navigation | Call Firestore directly |
-| Presentational components | `*/components/` | Rendering, `@Input()`, `@Output()`, forms | Inject data services |
+| Containers | `*/containers/` | Route params, reading the store with `toSignal`, calling writes, navigation | Call Firestore directly |
+| Presentational components | `*/components/` | Rendering, `input()`, `output()`, forms | Inject data services |
 | Data services | `modules/nav-options/shared/services/`, `modules/auth/shared/services/` | Firestore queries and writes, auth calls, writing to the store | Render UI |
 | Store | `src/app/store/` | The current state of the session, as one `BehaviorSubject` | Call Firebase |
 | Wrappers | `src/app/utils/` | The only imports of AngularFire and Firebase data and auth functions (`collectionData`, `addDoc`, `authState`, `onAuthStateChanged`, ...); other files import only the `Auth` and `Firestore` types and, in `app.config.ts`, the providers | Hold app logic |
@@ -51,7 +51,7 @@ Each `*Routes` array lives in the feature's `*.routes.ts` file next to its conta
 
 ## Components and providers
 
-There are no NgModules. Every component and pipe is standalone and lists what its template uses in `imports`, including the Material modules.
+There are no NgModules. Every component and pipe is standalone. The `standalone` flag is omitted because that is the default. Each component lists what its template uses in `imports`, including the Material modules.
 
 | Folder under `src/app/` | Holds |
 |---|---|
@@ -60,7 +60,7 @@ There are no NgModules. Every component and pipe is standalone and lists what it
 | `modules/nav-options/` | The meals, workouts, and schedule features; `shared/` holds `MealsService`, `WorkoutsService`, `ScheduleService`, `ListItemComponent`, `JoinPipe`, `WorkoutPipe` |
 | `modules/not-found/` | `NotFoundComponent` |
 
-Services, `AuthGuard`, and `Store` use `@Injectable({ providedIn: 'root' })`, so the app has one instance of each.
+Services, `AuthGuard`, and `Store` use `@Service()`, so the app has one instance of each.
 
 ## Data model
 

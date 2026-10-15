@@ -40,7 +40,7 @@ Each record states the context, the decision, its consequences, and the conditio
 
 **Context.** Several screens share the user's meals, workouts, and the schedule. The app has a small `Store` class: one `BehaviorSubject<State>`, `select(key)`, and `set(key, value)`. The old README listed "change store to NgRx" as an idea.
 
-**Decision.** Keep the RxJS store service. Do not add NgRx, and do not move the store to Angular signals. Services write to the store in `tap`; components read from it. [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) reviewed signals and kept this service: the store is one `BehaviorSubject`, `select` and `set` are typed by `keyof State`, and `reset()` clears every key on logout. A signals store would rewrite every reader for no new capability this app needs.
+**Decision.** Keep the RxJS store service. Do not add NgRx, and do not move the store to Angular signals. Services write to the store in `tap`. Components read a slice with `toSignal(store.select(...))`, so a template binds a signal while the store stays a `BehaviorSubject`. [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) reviewed signals and kept this service: the store is one `BehaviorSubject`, `select` and `set` are typed by `keyof State`, and `reset()` clears every key on logout. A signals store would rewrite every writer for no new capability this app needs.
 
 **Consequences.** No extra dependency and very little code. Nothing enforces who writes which key, so the table in [architecture.md](architecture.md#state) is the contract. Logout calls `reset()` so the next user never reads the previous user's slices.
 

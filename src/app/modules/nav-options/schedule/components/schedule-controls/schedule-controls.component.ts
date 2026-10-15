@@ -1,13 +1,11 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  standalone: true,
   selector: 'schedule-controls',
   imports: [DatePipe, MatButtonModule, MatIconModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div class="flex-row-container flex-justify-content-space-between flex-align-items-center">
     <button
@@ -16,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
       (click)="moveDate(offset - 1)">
       <mat-icon color="primary" aria-hidden="false" aria-label="Last week in calendar">chevron_left</mat-icon>
     </button>
-    <p>{{ selected | date:'yMMMMd' }}</p>
+    <p>{{ selected() | date:'yMMMMd' }}</p>
     <button
       mat-icon-button
       type="button"
@@ -28,13 +26,11 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ScheduleControlsComponent {
 
-  @Input() selected!: Date;
+  readonly selected = input.required<Date>();
 
-  @Output() movingDate = new EventEmitter<number>();
+  readonly movingDate = output<number>();
 
   offset = 0;
-
-  constructor() {}
 
   moveDate(offset: number): void {
     this.offset = offset;

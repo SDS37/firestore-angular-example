@@ -1,14 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AsyncPipe, NgIf, NgFor } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ListItemComponent } from '../../../shared/components/list-item/list-item.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-// rxjs
-import { Observable, Subscription } from 'rxjs';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -21,9 +18,8 @@ import { Workout } from 'src/app/models/workout.interface';
 import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 @Component({
-  standalone: true,
   selector: 'workouts',
-  imports: [AsyncPipe, NgIf, NgFor, RouterLink, ListItemComponent, MatCardModule, MatIconModule, MatProgressBarModule],
+  imports: [RouterLink, ListItemComponent, MatCardModule, MatIconModule, MatProgressBarModule],
   template: `
   <div
     id="workouts"
@@ -48,53 +44,50 @@ import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
       </div>
     </mat-card>
 
-    <div
-      *ngIf="workouts$ | async as workouts; else loading;"
+    @if (workouts(); as workouts) {
+<div
+     
       class="flex-column-container flex-1-1-auto overflow-y-scroll scrollbar-width-none">
-      <div
-        *ngIf="!workouts.length"
+      @if (!workouts.length) {
+<div
+       
         class="flex-row-container flex-justify-content-space-between flex-align-items-center padding-10 background-color-gray-1">
         <mat-icon color="warn" aria-hidden="true">error_outline</mat-icon>
         <span>No workouts, add a new workout to start</span>
       </div>
-      <list-item
-        *ngFor="let workout of workouts"
+}
+      @for (workout of workouts; track workout.$key) {
+<list-item
+       
         [item]="workout"
         (remove)="removeWorkout($event)">
       </list-item>
+}
     </div>
+} @else {
 
-    <ng-template #loading>
       <div class="padding-10 background-color-gray-1">
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       </div>
-    </ng-template>
+    
+}
+
+    
 
   </div>
   `
 })
 
-// <pre>{{ workouts$ | async | json }}</pre>
+export class WorkoutsComponent {
+  private workoutsService = inject(WorkoutsService);
+  private store = inject(Store);
+  private snackBar = inject(MatSnackBar);
 
-export class WorkoutsComponent implements OnInit, OnDestroy {
-
-  workouts$!: Observable<Workout[] | undefined>;
-  subscription!: Subscription;
+  readonly workouts = toSignal(this.store.select('workouts'), { requireSync: true });
   private deleting = new Set<string>();
 
-  constructor(
-    private workoutsService: WorkoutsService,
-    private store: Store,
-    private snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit(): void {
-    this.workouts$ = this.store.select('workouts');
-    this.subscription = this.workoutsService.workouts$.subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  constructor() {
+    toSignal(this.workoutsService.workouts$);
   }
 
   async removeWorkout(workout: Workout): Promise<void> {

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -6,10 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { User } from 'src/app/models/user.interface';
 
 @Component({
-  standalone: true,
   selector: 'app-header',
   imports: [MatButtonModule, MatIconModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div
     id="app-header"
@@ -24,7 +22,7 @@ import { User } from 'src/app/models/user.interface';
       max-width-900
       border-radius-5
       background-color-gray-1">
-    <div id="user-name">{{ user?.email }}</div>
+    <div id="user-name">{{ user()?.email }}</div>
     <button
       mat-button
       (click)="logoutUser()">
@@ -36,8 +34,8 @@ import { User } from 'src/app/models/user.interface';
 })
 export class AppHeaderComponent {
 
-  @Input() user: User | null | undefined = null;
-  @Output() logout = new EventEmitter<void>();
+  readonly user = input<User | null | undefined>(null);
+  readonly logout = output<void>();
 
   logoutUser(): void {
     this.logout.emit();

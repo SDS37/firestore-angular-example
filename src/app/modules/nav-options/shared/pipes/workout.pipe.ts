@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Pipe({
-  standalone: true,
   name: 'workout'
 })
 export class WorkoutPipe implements PipeTransform {

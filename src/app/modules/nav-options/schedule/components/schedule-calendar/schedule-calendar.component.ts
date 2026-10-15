@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { Component, computed, input, output } from '@angular/core';
+
 import { ScheduleControlsComponent } from '../schedule-controls/schedule-controls.component';
 import { ScheduleDaysComponent } from '../schedule-days/schedule-days.component';
 import { ScheduleSectionComponent } from '../schedule-section/schedule-section.component';
@@ -12,48 +12,46 @@ import { Meal } from 'src/app/models/meal.interface';
 import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
-  standalone: true,
   selector: 'schedule-calendar',
-  imports: [NgFor, ScheduleControlsComponent, ScheduleDaysComponent, ScheduleSectionComponent],
+  imports: [ScheduleControlsComponent, ScheduleDaysComponent, ScheduleSectionComponent],
   template: `
   <schedule-controls
-    [selected]="selectedDay"
+    [selected]="selectedDay()"
     (movingDate)="onMovingDate($event)">
   </schedule-controls>
   <schedule-days
-    [selected]="selectedDayIndex"
+    [selected]="selectedDayIndex()"
     (selectingDay)="selectDay($event)">
   </schedule-days>
-  <schedule-section
-    *ngFor="let section of sections"
+  @for (section of sections; track section) {
+<schedule-section
+   
     [name]="section.name"
     [section]="getSection(section.key)"
-    [meals]="meals"
-    [workouts]="workouts"
+    [meals]="meals()"
+    [workouts]="workouts()"
     (selectingSection)="selectSection($event, section.key)">
   </schedule-section>
+}
   `
 })
 
-export class ScheduleCalendarComponent implements OnChanges {
+export class ScheduleCalendarComponent {
 
-  @Input() set date(date: Date | null | undefined) {
-    if (date) {
-      this.selectedDay = new Date(date.getTime());
-    } else {
-      this.selectedDay = new Date();
-    }
-  }
-  @Input() items: ScheduleList | null | undefined = null;
-  @Input() meals: Meal[] | null | undefined = null;
-  @Input() workouts: Workout[] | null | undefined = null;
+  readonly date = input<Date | null | undefined>(undefined);
+  readonly items = input<ScheduleList | null | undefined>(null);
+  readonly meals = input<Meal[] | null | undefined>(null);
+  readonly workouts = input<Workout[] | null | undefined>(null);
 
-  @Output() changingDate = new EventEmitter<Date>();
-  @Output() selectedSection = new EventEmitter<ScheduleSectionEvent>();
+  readonly changingDate = output<Date>();
+  readonly selectedSection = output<ScheduleSectionEvent>();
 
-  selectedDayIndex!: number;
-  selectedDay: Date = new Date();
-  selectedWeek!: Date;
+  readonly selectedDay = computed(() => {
+    const date = this.date();
+    return date ? new Date(date.getTime()) : new Date();
+  });
+  readonly selectedDayIndex = computed(() => this.getToday(this.selectedDay()));
+  readonly selectedWeek = computed(() => this.getStartOfWeek(new Date(this.selectedDay())));
 
   sections = [
     { key: 'morning', name: 'Morning' },
@@ -62,15 +60,9 @@ export class ScheduleCalendarComponent implements OnChanges {
     { key: 'snacks', name: 'Snacks and Drinks' }
   ];
 
-  ngOnChanges(_changes: SimpleChanges): void {
-    if (this.selectedDay) {
-      this.selectedDayIndex = this.getToday(this.selectedDay);
-      this.selectedWeek = this.getStartOfWeek(new Date(this.selectedDay));
-    }
-  }
-
   getSection(name: string): ScheduleItem {
-    return this.items && this.items[name] || {} as ScheduleItem;
+    const items = this.items();
+    return items && items[name] || {} as ScheduleItem;
   }
 
   selectSection(
@@ -82,18 +74,18 @@ export class ScheduleCalendarComponent implements OnChanges {
       assigned,
       data,
       section,
-      day: this.selectedDay
+      day: this.selectedDay()
     });
   }
 
   selectDay(index: number): void {
-    const selectedDay = new Date(this.selectedWeek);
+    const selectedDay = new Date(this.selectedWeek());
     selectedDay.setDate(selectedDay.getDate() + index);
     this.changingDate.emit(selectedDay);
   }
 
   onMovingDate(weekOffset: number): void {
-    const startOfWeek = this.getStartOfWeek(new Date(this.selectedDay));
+    const startOfWeek = this.getStartOfWeek(new Date(this.selectedDay()));
     const startDate = new Date(
       startOfWeek.getFullYear(),
       startOfWeek.getMonth(),

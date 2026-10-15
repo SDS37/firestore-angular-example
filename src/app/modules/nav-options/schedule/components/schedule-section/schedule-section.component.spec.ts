@@ -15,13 +15,13 @@ describe('ScheduleSectionComponent', () => {
 
     fixture = TestBed.createComponent(ScheduleSectionComponent);
     component = fixture.componentInstance;
-    component.name = 'Morning';
-    component.section = {
+    fixture.componentRef.setInput('name', 'Morning');
+    fixture.componentRef.setInput('section', {
       meals: ['Omelette'],
       workouts: null,
       section: 'morning',
       timestamp: 1
-    } as ScheduleItem;
+    } as ScheduleItem);
   });
 
   it('should emit section selection events', () => {
@@ -32,33 +32,33 @@ describe('ScheduleSectionComponent', () => {
     expect(component.selectingSection.emit).toHaveBeenCalledWith({
       type: 'meals',
       assigned: ['Omelette'],
-      data: component.section
+      data: component.section()
     });
   });
 
   it('should resolve stored ids to names and mark a missing meal deleted', () => {
-    component.meals = [{
+    fixture.componentRef.setInput('meals', [{
       name: 'Omelette',
       ingredients: ['eggs'],
       timestamp: 1,
       $key: 'meal-1',
       $exists: () => true
-    }];
-    component.section = {
-      ...component.section,
+    }]);
+    fixture.componentRef.setInput('section', {
+      ...component.section(),
       meals: ['meal-1', 'meal-9']
-    };
+    });
 
     expect(component.labelsFor('meals')).toEqual(['Omelette', 'Deleted']);
   });
 
   it('should offer assign meal as a button', () => {
-    component.section = {
+    fixture.componentRef.setInput('section', {
       meals: null,
       workouts: null,
       section: 'morning',
       timestamp: 1
-    };
+    });
     fixture.detectChanges();
     const buttons = fixture.nativeElement.querySelectorAll('button.section-action');
     expect(buttons[0].textContent).toContain('Assign meal');

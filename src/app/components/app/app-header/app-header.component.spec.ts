@@ -11,11 +11,11 @@ describe('AppHeaderComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppHeaderComponent);
-    fixture.componentInstance.user = {
+    fixture.componentRef.setInput('user', {
       email: 'test@example.com',
       uid: '1',
       authenticated: true
-    };
+    });
     fixture.detectChanges();
   });
 

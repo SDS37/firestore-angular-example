@@ -14,25 +14,25 @@ describe('ScheduleAssignComponent', () => {
 
     fixture = TestBed.createComponent(ScheduleAssignComponent);
     component = fixture.componentInstance;
-    component.section = {
+    fixture.componentRef.setInput('section', {
       type: 'meals',
       assigned: ['Soup'],
       data: { meals: ['Soup'], workouts: null, section: 'morning', timestamp: 1 },
       section: 'morning',
       day: new Date('2026-07-02T12:00:00')
-    };
-    component.list = [{
+    });
+    fixture.componentRef.setInput('list', [{
       name: 'Soup',
       ingredients: ['water'],
       timestamp: 1,
       $key: '1',
       $exists: () => true
-    }];
-    component.ngOnInit();
+    }]);
+    fixture.detectChanges();
   });
 
   it('should toggle by document id and treat a legacy name as selected', () => {
-    const soup = component.list?.[0];
+    const soup = component.list()?.[0];
     expect(soup).toBeDefined();
     if (!soup) {
       return;

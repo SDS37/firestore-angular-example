@@ -32,7 +32,6 @@ describe('MealsComponent', () => {
     }).compileComponents();
 
     component = TestBed.createComponent(MealsComponent).componentInstance;
-    component.ngOnInit();
   });
 
   it('should delete meals and handle failures', async () => {

@@ -46,6 +46,6 @@ describe('RegisterComponent', () => {
       value: { email: 'test@example.com', password: 'secret' }
     } as never);
 
-    expect(component.error).toBe('Email already in use');
+    expect(component.error()).toBe('Email already in use');
   });
 });

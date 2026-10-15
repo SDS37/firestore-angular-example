@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NgClass } from '@angular/common';
 import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { AppHeaderComponent } from '../../components/app/app-header/app-header.component';
 import { AppNavComponent } from '../../components/app/app-nav/app-nav.component';
 
 // rxjs
-import { Subscription, Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 // store
 import { Store } from 'src/app/store/store';
@@ -14,50 +14,33 @@ import { Store } from 'src/app/store/store';
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 
-// interfaces
-import { User } from 'src/app/models/user.interface';
-
 @Component({
-  standalone: true,
   selector: 'app-root',
-  imports: [AsyncPipe, NgClass, NgIf, RouterOutlet, AppHeaderComponent, AppNavComponent],
+  imports: [NgClass, RouterOutlet, AppHeaderComponent, AppNavComponent],
   templateUrl: './app.component.html'
 })
 
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent {
+  private router = inject(Router);
+  private store = inject(Store);
+  private authService = inject(AuthService);
 
-  user$!: Observable<User | null | undefined>;
-  private subscriptions = new Subscription();
+  readonly user = toSignal(this.store.select('user'), { requireSync: true });
 
-  currentUrl: string | null = null;
-  isAuthUrl = false;
-
-  constructor(
-    private router: Router,
-    private store: Store,
-    private authService: AuthService
-  ) {}
-
-  ngOnInit(): void {
-    this.subscriptions.add(this.authService.auth$.subscribe());
-    this.user$ = this.store.select('user');
-    this.onRouterChange();
+  constructor() {
+    toSignal(this.authService.auth$);
   }
-
-  onRouterChange(): void {
-    this.subscriptions.add(
-      this.router.events.pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd)
-      ).subscribe((navigationEnd: NavigationEnd) => {
-        this.currentUrl = navigationEnd.url;
-        this.isAuthUrl = this.currentUrl.includes('login') || this.currentUrl.includes('register');
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
+  private readonly navigationUrl = toSignal(
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      map(event => event.url)
+    ),
+    { initialValue: this.router.url ?? '' }
+  );
+  readonly isAuthUrl = computed(() => {
+    const url = this.navigationUrl();
+    return url.includes('login') || url.includes('register');
+  });
 
   async onLogout(): Promise<void> {
     await this.authService.logoutUser();

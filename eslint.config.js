@@ -18,9 +18,7 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-unsafe-function-type': 'off',
       '@angular-eslint/directive-selector': 'off',
       '@angular-eslint/component-selector': 'off',
-      '@angular-eslint/prefer-standalone': 'off',
-      '@angular-eslint/prefer-inject': 'off',
-      '@angular-eslint/template/prefer-control-flow': 'off'
+      '@angular-eslint/prefer-standalone': 'error'
     }
   },
   {
@@ -28,8 +26,5 @@ module.exports = tseslint.config(
     extends: [
       ...angular.configs.templateRecommended
     ],
-    rules: {
-      '@angular-eslint/template/prefer-control-flow': 'off'
-    }
   }
 );

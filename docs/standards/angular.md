@@ -11,10 +11,13 @@ The app splits each feature into containers and presentational components. Keep 
 | Kind | Lives in | Does | Does not |
 |---|---|---|---|
 | Container | `containers/` | Injects services and the `Store`, subscribes, handles route params, calls writes | Render complex markup |
-| Component | `components/` | Takes `@Input()`, emits `@Output()`, renders | Inject data services or call Firestore |
+| Component | `components/` | Takes `input()`, emits `output()`, renders | Inject data services or call Firestore |
 
-- Presentational components use `ChangeDetectionStrategy.OnPush`. **Today:** `auth-form`, `schedule-calendar`, and `not-found` still use the default strategy.
-- A container that subscribes in `ngOnInit` unsubscribes in `ngOnDestroy`. Prefer the `async` pipe when the template is the only reader.
+- Change detection defaults to `OnPush`. Omit `changeDetection` unless a component needs `ChangeDetectionStrategy.Eager`.
+- Omit `standalone: true`. Components, directives, and pipes are standalone unless `standalone: false` is set.
+- Read an observable with `toSignal` from `@angular/core/rxjs-interop`. It unsubscribes when the component is destroyed. Do not call `ChangeDetectorRef.detectChanges()`.
+- Derive view state from input signals with `computed`. Read an input once in `ngOnInit` when a form needs its initial value. Do not implement `OnChanges`, and do not use `effect` to copy component state.
+- Inject with `inject()`. Do not add a constructor only to receive dependencies.
 
 ## Services and Firestore
 
@@ -24,12 +27,12 @@ The app splits each feature into containers and presentational components. Keep 
 
 ## Providers
 
-- Services, guards, and the `Store` use `@Injectable({ providedIn: 'root' })`. Do not add a provider to a component or a route for a service the whole app shares.
+- Services, guards, and the `Store` use `@Service()`. Do not add a provider to a component or a route for a service the whole app shares.
 - Firebase is provided once, in `src/app/app.config.ts`, with `provideFirebaseApp`, `provideAuth`, and `provideFirestore`.
 
 ## Components and routes
 
-- Components and pipes are standalone. There are no NgModules; do not add one.
+- Components and pipes are standalone, and the flag is omitted because that is the default. There are no NgModules; do not add one.
 - A component's `imports` lists exactly what its template uses: Angular directives and pipes, child components, `ReactiveFormsModule`, `RouterLink`, and Material modules.
 - `src/main.ts` calls `bootstrapApplication(AppComponent, appConfig)`. Root routes live in `src/app/app.routes.ts`.
 - Features are lazy-loaded with `loadChildren` and a dynamic `import()` of the feature's `*.routes.ts` file.
@@ -38,7 +41,7 @@ The app splits each feature into containers and presentational components. Keep 
 ## Templates
 
 - Inline templates are the convention in this repo. Move a template to an `.html` file when it passes about 100 lines.
-- **Today:** templates use `*ngIf` and `*ngFor`; the ESLint rule `prefer-control-flow` is off. A migration to `@if` / `@for` is a separate PR, not part of a feature change.
+- Templates use `@if`, `@for`, and `@else`. Do not add `*ngIf` or `*ngFor`. The ESLint rules `prefer-control-flow`, `prefer-inject`, and `prefer-standalone` are on.
 - Import each Material module from its own entry point (`@angular/material/button`) into the component that uses it. A missing `MatButtonModule` or `MatInputModule` does not fail the build: the button renders unstyled, or the form field throws at runtime.
 - Forms are reactive (`FormBuilder`). Validation messages use `mat-error`.
 

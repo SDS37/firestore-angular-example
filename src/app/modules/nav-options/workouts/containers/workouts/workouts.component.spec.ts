@@ -31,7 +31,6 @@ describe('WorkoutsComponent', () => {
     }).compileComponents();
 
     component = TestBed.createComponent(WorkoutsComponent).componentInstance;
-    component.ngOnInit();
   });
 
   it('should delete workouts and handle failures', async () => {

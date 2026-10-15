@@ -19,17 +19,17 @@ describe('ScheduleCalendarComponent', () => {
       ]
     }).compileComponents();
 
-    component = TestBed.createComponent(ScheduleCalendarComponent).componentInstance;
-    component.items = {
+    const fixture = TestBed.createComponent(ScheduleCalendarComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('items', {
       morning: {
         meals: ['Omelette'],
         workouts: null,
         section: 'morning',
         timestamp: 1
       }
-    } as ScheduleList;
-    component.date = new Date('2026-07-02T12:00:00');
-    component.ngOnChanges({});
+    } as ScheduleList);
+    fixture.componentRef.setInput('date', new Date('2026-07-02T12:00:00'));
   });
 
   it('should return schedule sections by key', () => {
@@ -43,12 +43,12 @@ describe('ScheduleCalendarComponent', () => {
     component.selectSection({
       type: 'meals',
       assigned: ['Omelette'],
-      data: component.items!.morning!
+      data: component.items()!.morning!
     }, 'morning');
 
     expect(component.selectedSection.emit).toHaveBeenCalledWith(expect.objectContaining({
       section: 'morning',
-      day: component.selectedDay
+      day: component.selectedDay()
     }));
   });
 

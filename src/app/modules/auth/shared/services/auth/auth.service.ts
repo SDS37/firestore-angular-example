@@ -1,4 +1,4 @@
-import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
+import { EnvironmentInjector, inject, runInInjectionContext, Service } from '@angular/core';
 import { Auth, User } from '@angular/fire/auth';
 
 // store
@@ -20,8 +20,11 @@ import { tap } from 'rxjs/operators';
 // interfaces
 import { User as AppUser } from 'src/app/models/user.interface';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
+  private auth = inject(Auth);
+  private store = inject(Store);
+
 
   private readonly environmentInjector = inject(EnvironmentInjector);
 
@@ -39,11 +42,6 @@ export class AuthService {
       this.store.set('user', user);
     })
   );
-
-  constructor(
-    private auth: Auth,
-    private store: Store
-  ) {}
 
   get user(): User | null {
     return this.auth.currentUser;

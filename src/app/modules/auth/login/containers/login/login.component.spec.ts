@@ -48,7 +48,7 @@ describe('LoginComponent', () => {
       value: { email: 'test@example.com', password: 'wrong' }
     } as never);
 
-    expect(component.error).toBe('Invalid credentials');
+    expect(component.error()).toBe('Invalid credentials');
   });
 
   it('should ask for an email before sending a reset link', async () => {
@@ -57,6 +57,6 @@ describe('LoginComponent', () => {
     await component.sendReset();
 
     expect(authService.sendPasswordReset).not.toHaveBeenCalled();
-    expect(component.error).toBe('Enter the email address for the account.');
+    expect(component.error()).toBe('Enter the email address for the account.');
   });
 });

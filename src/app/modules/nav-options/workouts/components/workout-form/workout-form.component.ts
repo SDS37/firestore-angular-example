@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
+
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { WorkoutTypeComponent } from '../workout-type/workout-type.component';
@@ -14,10 +14,8 @@ import { Workout } from 'src/app/models/workout.interface';
 const nonNegative = [Validators.required, Validators.min(0)];
 
 @Component({
-  standalone: true,
   selector: 'workout-form',
-  imports: [ReactiveFormsModule, RouterLink, WorkoutTypeComponent, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, NgIf],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, RouterLink, WorkoutTypeComponent, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule],
   template: `
   <form [formGroup]="form">
 
@@ -30,9 +28,11 @@ const nonNegative = [Validators.required, Validators.min(0)];
             type="text"
             formControlName="name">
           <mat-hint>{{ hint }}</mat-hint>
-          <mat-error *ngIf="required">
+          @if (required) {
+<mat-error>
             Workout name is <strong>required</strong>
           </mat-error>
+}
         </mat-form-field>
 
       <h3>Type:</h3>
@@ -48,47 +48,61 @@ const nonNegative = [Validators.required, Validators.min(0)];
       id="workout-form-secondary-fields"
       class="margin-bottom-10 border-radius-5 padding-10 background-color-gray-1">
 
-      <div
-        *ngIf="form.get('type')?.value === 'strength'"
+      @if (form.get('type')?.value === 'strength') {
+<div
+       
         class="flex-column-container"
         formGroupName="strength">
         <mat-form-field class="width-100-100 margin-bottom-10">
           <mat-label>Reps</mat-label>
           <input matInput type="number" formControlName="reps" min="0"/>
           <mat-hint>how many repetitions?</mat-hint>
-          <mat-error *ngIf="numberInvalid('strength', 'reps')">Enter 0 or more</mat-error>
+          @if (numberInvalid('strength', 'reps')) {
+<mat-error>Enter 0 or more</mat-error>
+}
         </mat-form-field>
         <mat-form-field class="width-100-100 margin-bottom-10">
           <mat-label>Sets</mat-label>
           <input matInput type="number" formControlName="sets" min="0"/>
           <mat-hint>how many sets?</mat-hint>
-          <mat-error *ngIf="numberInvalid('strength', 'sets')">Enter 0 or more</mat-error>
+          @if (numberInvalid('strength', 'sets')) {
+<mat-error>Enter 0 or more</mat-error>
+}
         </mat-form-field>
         <mat-form-field class="width-100-100">
           <mat-label>Weight (kg)</mat-label>
           <input matInput type="number" formControlName="weight" min="0"/>
           <mat-hint>how much weight?</mat-hint>
-          <mat-error *ngIf="numberInvalid('strength', 'weight')">Enter 0 or more</mat-error>
+          @if (numberInvalid('strength', 'weight')) {
+<mat-error>Enter 0 or more</mat-error>
+}
         </mat-form-field>
       </div>
+}
 
-      <div
-        *ngIf="form.get('type')?.value === 'endurance'"
+      @if (form.get('type')?.value === 'endurance') {
+<div
+       
         class="flex-column-container"
         formGroupName="endurance">
         <mat-form-field class="width-100-100 margin-bottom-10">
           <mat-label>Distance (km)</mat-label>
           <input matInput type="number" formControlName="distance" min="0"/>
           <mat-hint>how many kilometers?</mat-hint>
-          <mat-error *ngIf="numberInvalid('endurance', 'distance')">Enter 0 or more</mat-error>
+          @if (numberInvalid('endurance', 'distance')) {
+<mat-error>Enter 0 or more</mat-error>
+}
         </mat-form-field>
         <mat-form-field class="width-100-100">
           <mat-label>Duration (minutes)</mat-label>
           <input matInput type="number" formControlName="duration" min="0"/>
           <mat-hint>for how long?</mat-hint>
-          <mat-error *ngIf="numberInvalid('endurance', 'duration')">Enter 0 or more</mat-error>
+          @if (numberInvalid('endurance', 'duration')) {
+<mat-error>Enter 0 or more</mat-error>
+}
         </mat-form-field>
       </div>
+}
 
     </div>
 
@@ -96,28 +110,33 @@ const nonNegative = [Validators.required, Validators.min(0)];
 
       <div class="flex-row-container flex-justify-content-start flex-align-items-center">
 
-        <button
-          *ngIf="!exists"
+        @if (!exists()) {
+<button
+         
           mat-raised-button
           color="primary"
           type="button"
-          [disabled]="form.invalid || pending"
+          [disabled]="form.invalid || pending()"
           (click)="createWorkout()">
           Create workout
         </button>
+}
 
-        <button
-          *ngIf="exists"
+        @if (exists()) {
+<button
+         
           mat-raised-button
           color="primary"
           type="button"
-          [disabled]="form.invalid || pending"
+          [disabled]="form.invalid || pending()"
           (click)="updateWorkout()">
           Save
         </button>
+}
 
-        <div
-          *ngIf="exists"
+        @if (exists()) {
+<div
+         
           class="flex-row-container flex-justify-content-space-between flex-align-items-center margin-left-10">
 
           <button
@@ -128,8 +147,9 @@ const nonNegative = [Validators.required, Validators.min(0)];
             Delete
           </button>
 
-          <div
-            *ngIf="toggled"
+          @if (toggled()) {
+<div
+           
             class="flex-row-container flex-justify-content-space-between flex-align-items-center">
             <button
               mat-icon-button
@@ -144,8 +164,10 @@ const nonNegative = [Validators.required, Validators.min(0)];
               <mat-icon color="warn" aria-hidden="false" aria-label="Delete workout">delete</mat-icon>
             </button>
           </div>
+}
 
         </div>
+}
 
       </div>
 
@@ -157,28 +179,25 @@ const nonNegative = [Validators.required, Validators.min(0)];
   `
 })
 
-export class WorkoutFormComponent implements OnChanges {
+export class WorkoutFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
 
-  @Input() workout!: Workout;
-  @Input()
-  set pending(value: boolean) {
-    this.pendingValue = value;
-    if (!value) {
-      this.emitting = false;
+  readonly workout = input.required<Workout>();
+  readonly pending = input(false);
+  readonly create = output<Workout>();
+  readonly update = output<Workout>();
+  readonly delete = output<Workout>();
+
+  readonly toggled = signal(false);
+  readonly exists = computed(() => !!this.workout().name);
+
+  ngOnInit(): void {
+    const workout = this.workout();
+    if (!workout.name) {
+      return;
     }
+    this.form.patchValue(workout);
   }
-  get pending(): boolean {
-    return this.pendingValue;
-  }
-  @Output() create = new EventEmitter<Workout>();
-  @Output() update = new EventEmitter<Workout>();
-  @Output() delete = new EventEmitter<Workout>();
-
-  toggled = false;
-  exists = false;
-
-  private pendingValue = false;
-  private emitting = false;
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -193,18 +212,6 @@ export class WorkoutFormComponent implements OnChanges {
       duration: [0, nonNegative]
     })
   });
-
-  constructor(
-    private fb: FormBuilder
-  ) {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.workout && changes.workout.currentValue.name) {
-      this.exists = true;
-      const value = this.workout;
-      this.form.patchValue(value);
-    }
-  }
 
   get hint(): string {
     return `e.g. ${this.form.get('type')?.value === 'strength' ? 'benchpress' : 'treadmill'}`;
@@ -221,20 +228,18 @@ export class WorkoutFormComponent implements OnChanges {
   }
 
   createWorkout(): void {
-    if (this.form.invalid || this.pending || this.emitting) {
+    if (this.form.invalid || this.pending()) {
       this.form.markAllAsTouched();
       return;
     }
-    this.emitting = true;
     this.create.emit(this.form.value);
   }
 
   updateWorkout(): void {
-    if (this.form.invalid || this.pending || this.emitting) {
+    if (this.form.invalid || this.pending()) {
       this.form.markAllAsTouched();
       return;
     }
-    this.emitting = true;
     this.update.emit(this.form.value);
   }
 
@@ -243,7 +248,7 @@ export class WorkoutFormComponent implements OnChanges {
   }
 
   toggle(): void {
-    this.toggled = !this.toggled;
+    this.toggled.update(value => !value);
   }
 
 }

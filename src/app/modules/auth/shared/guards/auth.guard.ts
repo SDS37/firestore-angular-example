@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Router, CanActivate, UrlTree } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { onAuthStateChanged } from 'src/app/utils/firebase-auth.utils';
@@ -6,13 +6,11 @@ import { onAuthStateChanged } from 'src/app/utils/firebase-auth.utils';
 // rxjs
 import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthGuard implements CanActivate {
+  private router = inject(Router);
+  private auth = inject(Auth);
 
-  constructor(
-    private router: Router,
-    private auth: Auth
-  ) {}
 
   canActivate(): Observable<boolean | UrlTree> {
     return new Observable<boolean | UrlTree>(observer => {

@@ -1,13 +1,12 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, output, inject } from '@angular/core';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  standalone: true,
   selector: 'auth-form',
-  imports: [NgIf, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   template: `
     <form class="flex-column-container padding-20 margin-10 border-solid-1 min-width-258" [formGroup]="form" (ngSubmit)="onSubmit()">
 
@@ -16,23 +15,31 @@ import { MatInputModule } from '@angular/material/input';
       <mat-form-field class="margin-bottom-10">
         <mat-label>Email address</mat-label>
         <input matInput type="email" formControlName="email">
-        <mat-error *ngIf="emailRequired">
+        @if (emailRequired) {
+<mat-error>
           Email address is <strong>required</strong>
         </mat-error>
-        <mat-error *ngIf="emailFormat">
+}
+        @if (emailFormat) {
+<mat-error>
           Enter a valid email address
         </mat-error>
+}
       </mat-form-field>
 
       <mat-form-field class="margin-bottom-10">
         <mat-label>Password</mat-label>
         <input matInput type="password" formControlName="password">
-        <mat-error *ngIf="passwordRequired">
+        @if (passwordRequired) {
+<mat-error>
           Password is <strong>required</strong>
         </mat-error>
-        <mat-error *ngIf="passwordTooShort">
+}
+        @if (passwordTooShort) {
+<mat-error>
           Use at least 6 characters
         </mat-error>
+}
       </mat-form-field>
 
       <ng-content select=".error"></ng-content>
@@ -49,17 +56,15 @@ import { MatInputModule } from '@angular/material/input';
   })
 
 export class AuthFormComponent {
+  private fb = inject(FormBuilder);
 
-  @Output() submitted = new EventEmitter<FormGroup>();
+
+  readonly submitted = output<FormGroup>();
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
-
-  constructor(
-    private fb: FormBuilder
-  ) {}
 
   onSubmit(): void {
     if (this.form.invalid) {
