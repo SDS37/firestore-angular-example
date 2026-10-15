@@ -5,6 +5,7 @@ import { ListItemComponent } from '../../../shared/components/list-item/list-ite
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // rxjs
 import { Observable, Subscription } from 'rxjs';
@@ -81,7 +82,8 @@ export class MealsComponent implements OnInit, OnDestroy {
 
   constructor(
     private mealsService: MealsService,
-    private store: Store
+    private store: Store,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -96,8 +98,8 @@ export class MealsComponent implements OnInit, OnDestroy {
   async removeMeal(meal: Meal): Promise<void> {
     try {
       await this.mealsService.deleteMeal(meal.$key);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.snackBar.open('Could not delete the meal.', 'Dismiss', { duration: 8000 });
     }
   }
 

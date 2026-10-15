@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { WorkoutFormComponent } from '../../components/workout-form/workout-form.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // services
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
@@ -59,7 +60,8 @@ export class WorkoutComponent implements OnInit, OnDestroy {
   constructor(
     private workoutsService: WorkoutsService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -84,8 +86,8 @@ export class WorkoutComponent implements OnInit, OnDestroy {
     try {
       await this.workoutsService.addWorkout(event);
       this.backToWorkouts();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.reportFailure('Could not save the workout.');
     }
   }
 
@@ -94,8 +96,8 @@ export class WorkoutComponent implements OnInit, OnDestroy {
       const key = this.activatedRoute.snapshot.params.id;
       await this.workoutsService.updateWorkout(key, event);
       this.backToWorkouts();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.reportFailure('Could not save the workout.');
     }
   }
 
@@ -104,9 +106,13 @@ export class WorkoutComponent implements OnInit, OnDestroy {
       const key = this.activatedRoute.snapshot.params.id;
       await this.workoutsService.deleteWorkout(key);
       this.backToWorkouts();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.reportFailure('Could not delete the workout.');
     }
+  }
+
+  private reportFailure(message: string): void {
+    this.snackBar.open(message, 'Dismiss', { duration: 8000 });
   }
 
   backToWorkouts(): void {

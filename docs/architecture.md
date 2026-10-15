@@ -111,7 +111,7 @@ Logout calls `Store.reset()`: `user` becomes `null` and every other key returns 
 1. `ScheduleService.schedule$` turns the selected date into a `[startAt, endAt]` range for that local day, queries `users/{uid}/schedule` ordered by `timestamp`, and keys the result by `section`.
 2. Clicking a section emits `{ type, assigned, data, section, day }` to `selectSection`.
 3. `list$` puts the user's meals or workouts in the store for the assign dialog.
-4. Confirming the dialog calls `updateItems`. `items$` merges the selection with the section and either updates the existing document (`$key` present) or creates one.
+4. Confirming the dialog awaits `updateItems`. That merges the selection with the selected section and either updates the existing document (`$key` present) or creates one. A rejection leaves the dialog open and shows a snackbar.
 
 ## Build and deploy
 
@@ -127,4 +127,4 @@ Logout calls `Store.reset()`: `user` becomes `null` and every other key returns 
 - A query path always contains the uid of the current Firebase user; a request for another uid is denied by the rules.
 - An unknown meal or workout id redirects to the list.
 - An unknown URL renders the not-found page.
-- **Today:** a failed write is logged with `console.error` and the user is not told. [FAE-051](https://github.com/SDS37/firestore-angular-example/issues/105) adds a message.
+- A failed meal, workout, or schedule write opens a snackbar and leaves the user on the form or the assign dialog. The container awaits the write, so a rejection does not navigate away.

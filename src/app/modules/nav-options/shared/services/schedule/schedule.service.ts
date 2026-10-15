@@ -24,8 +24,8 @@ import {
 } from 'src/app/utils/firestore.utils';
 
 // rxjs
-import { BehaviorSubject, EMPTY, Subject, from } from 'rxjs';
-import { tap, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
+import { tap, map, switchMap } from 'rxjs/operators';
 
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
@@ -38,28 +38,7 @@ export class ScheduleService {
 
   private date$ = new BehaviorSubject<Date>(new Date());
   private section$ = new Subject<ScheduleSectionEvent>();
-  private itemList$ = new Subject<Record<string, string[]>>();
-
-  items$ = this.itemList$.pipe(
-    withLatestFrom(this.section$),
-    switchMap(([items, section]) => {
-      const id = section.data.$key;
-      const defaults: ScheduleItem = {
-        meals: null,
-        workouts: null,
-        section: section.section,
-        timestamp: new Date(section.day).getTime()
-      };
-      const payload: ScheduleItem = {
-        ...(id ? section.data : defaults),
-        ...items
-      };
-      if (id) {
-        return from(this.updateSection(id, payload));
-      }
-      return from(this.createSection(payload));
-    })
-  );
+  private selectedSection: ScheduleSectionEvent | null = null;
 
   selected$ = this.section$.pipe(
     tap((next) => this.store.set('selected', next))
@@ -123,8 +102,26 @@ export class ScheduleService {
     return user.uid;
   }
 
-  updateItems(items: Record<string, string[]>): void {
-    this.itemList$.next(items);
+  updateItems(items: Record<string, string[]>): Promise<DocumentReference | void> {
+    const section = this.selectedSection;
+    if (!section) {
+      return Promise.reject(new Error('No schedule section is selected'));
+    }
+    const id = section.data.$key;
+    const defaults: ScheduleItem = {
+      meals: null,
+      workouts: null,
+      section: section.section,
+      timestamp: new Date(section.day).getTime()
+    };
+    const payload: ScheduleItem = {
+      ...(id ? section.data : defaults),
+      ...items
+    };
+    if (id) {
+      return this.updateSection(id, payload);
+    }
+    return this.createSection(payload);
   }
 
   updateDate(date: Date): void {
@@ -132,6 +129,7 @@ export class ScheduleService {
   }
 
   selectSection(event: ScheduleSectionEvent): void {
+    this.selectedSection = event;
     this.section$.next(event);
   }
 

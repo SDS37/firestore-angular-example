@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScheduleCalendarComponent } from '../../components/schedule-calendar/schedule-calendar.component';
 import { ScheduleAssignComponent } from '../../components/schedule-assign/schedule-assign.component';
 
@@ -74,7 +75,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     private store: Store,
     private scheduleService: ScheduleService,
     private mealsService: MealsService,
-    private workoutService: WorkoutsService
+    private workoutService: WorkoutsService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -86,7 +88,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.scheduleService.schedule$.subscribe(),
       this.scheduleService.selected$.subscribe(),
       this.scheduleService.list$.subscribe(),
-      this.scheduleService.items$.subscribe(),
       this.mealsService.meals$.subscribe(),
       this.workoutService.workouts$.subscribe()
     ];
@@ -105,9 +106,13 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.scheduleService.updateDate(date);
   }
 
-  updateItems(items: Record<string, string[]>): void {
-    this.scheduleService.updateItems(items);
-    this.closeAssign();
+  async updateItems(items: Record<string, string[]>): Promise<void> {
+    try {
+      await this.scheduleService.updateItems(items);
+      this.closeAssign();
+    } catch {
+      this.snackBar.open('Could not update the schedule.', 'Dismiss', { duration: 8000 });
+    }
   }
 
   closeAssign(): void {

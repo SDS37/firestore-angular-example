@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MealFormComponent } from '../../components/meal-form/meal-form.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // services
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
@@ -59,7 +60,8 @@ export class MealComponent implements OnInit, OnDestroy {
   constructor(
     private mealsService: MealsService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -84,8 +86,8 @@ export class MealComponent implements OnInit, OnDestroy {
     try {
       await this.mealsService.addMeal(event);
       this.backToMeals();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.reportFailure('Could not save the meal.');
     }
   }
 
@@ -94,8 +96,8 @@ export class MealComponent implements OnInit, OnDestroy {
       const key = this.activatedRoute.snapshot.params.id;
       await this.mealsService.updateMeal(key, event);
       this.backToMeals();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.reportFailure('Could not save the meal.');
     }
   }
 
@@ -104,9 +106,13 @@ export class MealComponent implements OnInit, OnDestroy {
       const key = this.activatedRoute.snapshot.params.id;
       await this.mealsService.deleteMeal(key);
       this.backToMeals();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      this.reportFailure('Could not delete the meal.');
     }
+  }
+
+  private reportFailure(message: string): void {
+    this.snackBar.open(message, 'Dismiss', { duration: 8000 });
   }
 
   backToMeals(): void {

@@ -12,6 +12,7 @@ import { ScheduleControlsComponent } from '../../components/schedule-controls/sc
 import { ScheduleDaysComponent } from '../../components/schedule-days/schedule-days.component';
 import { ScheduleSectionComponent } from '../../components/schedule-section/schedule-section.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('ScheduleComponent', () => {
   let component: ScheduleComponent;
@@ -22,8 +23,8 @@ describe('ScheduleComponent', () => {
     schedule$: Observable<any>;
     selected$: Observable<any>;
     list$: Observable<any>;
-    items$: Observable<any>;
   };
+  let snackBar: { open: Mock };
 
   beforeEach(async () => {
     scheduleService = {
@@ -32,9 +33,9 @@ describe('ScheduleComponent', () => {
       updateItems: vi.fn(),
       schedule$: of({}),
       selected$: of(null),
-      list$: of([]),
-      items$: of(undefined)
+      list$: of([])
     };
+    snackBar = { open: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -50,7 +51,8 @@ describe('ScheduleComponent', () => {
         Store,
         { provide: ScheduleService, useValue: scheduleService },
         { provide: MealsService, useValue: { meals$: of([]) } },
-        { provide: WorkoutsService, useValue: { workouts$: of([]) } }
+        { provide: WorkoutsService, useValue: { workouts$: of([]) } },
+        { provide: MatSnackBar, useValue: snackBar }
       ]
     }).compileComponents();
 
@@ -78,12 +80,23 @@ describe('ScheduleComponent', () => {
     expect(scheduleService.selectSection).toHaveBeenCalledWith(event);
   });
 
-  it('should close the assign dialog after updating items', () => {
+  it('should close the assign dialog after updating items', async () => {
     component.open = true;
+    scheduleService.updateItems.mockResolvedValue(undefined);
 
-    component.updateItems({ meals: ['Soup'] });
+    await component.updateItems({ meals: ['Soup'] });
 
     expect(scheduleService.updateItems).toHaveBeenCalledWith({ meals: ['Soup'] });
     expect(component.open).toBe(false);
+  });
+
+  it('should keep the assign dialog open and show a message when the write is rejected', async () => {
+    component.open = true;
+    scheduleService.updateItems.mockRejectedValue(new Error('permission denied'));
+
+    await component.updateItems({ meals: ['Soup'] });
+
+    expect(component.open).toBe(true);
+    expect(snackBar.open).toHaveBeenCalledWith('Could not update the schedule.', 'Dismiss', { duration: 8000 });
   });
 });

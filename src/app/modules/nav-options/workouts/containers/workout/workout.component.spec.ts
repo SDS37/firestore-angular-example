@@ -8,6 +8,7 @@ import { WorkoutFormComponent } from '../../components/workout-form/workout-form
 import { WorkoutTypeComponent } from '../../components/workout-type/workout-type.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Workout } from 'src/app/models/workout.interface';
 
 describe('WorkoutComponent', () => {
@@ -20,6 +21,7 @@ describe('WorkoutComponent', () => {
     workouts$: Observable<any>;
   };
   let router: { navigate: Mock };
+  let snackBar: { open: Mock };
 
   beforeEach(async () => {
     workoutsService = {
@@ -30,12 +32,14 @@ describe('WorkoutComponent', () => {
       workouts$: of([])
     };
     router = { navigate: vi.fn() };
+    snackBar = { open: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, ReactiveFormsModule, WorkoutComponent, WorkoutFormComponent, WorkoutTypeComponent],
       providers: [
         { provide: WorkoutsService, useValue: workoutsService },
         { provide: Router, useValue: router },
+        { provide: MatSnackBar, useValue: snackBar },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -77,5 +81,24 @@ describe('WorkoutComponent', () => {
 
     expect(workoutsService.addWorkout).toHaveBeenCalledWith(workout);
     expect(router.navigate).toHaveBeenCalledWith(['/workouts']);
+  });
+
+  it('should stay on the form and show a message when the save is rejected', async () => {
+    workoutsService.getWorkout.mockReturnValue(EMPTY);
+    workoutsService.addWorkout.mockRejectedValue(new Error('permission denied'));
+    component.ngOnInit();
+
+    await component.addWorkout({
+      name: 'Run',
+      type: 'endurance',
+      strength: {},
+      endurance: { distance: 5, duration: 30 },
+      timestamp: 1,
+      $key: '',
+      $exists: () => false
+    });
+
+    expect(snackBar.open).toHaveBeenCalledWith('Could not save the workout.', 'Dismiss', { duration: 8000 });
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });

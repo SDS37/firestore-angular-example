@@ -23,7 +23,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-2.3 | Client-only fields (`$key`, `$exists`) never reach Firestore | `toFirestoreData` spec; meals and workouts service specs | Observed (specs) |
 | TR-2.4 | A new meal or workout gets a `timestamp`; an update keeps the existing one | Meals and workouts service specs cover the timestamp on create; the meals spec covers the update. The workouts update uses the same code path, with no spec | Observed (specs) |
 | TR-2.5 | An unknown meal or workout id redirects to its list | `MealComponent` and `WorkoutComponent` specs | Observed (specs) |
-| TR-2.6 | A failed write shows a message and keeps the user on the form | Today the error goes to `console.error` | Not yet: [FAE-051](https://github.com/SDS37/firestore-angular-example/issues/105) |
+| TR-2.6 | A failed write shows a message and keeps the user on the form | Meal, workout, meals, workouts, and schedule container specs: a rejected write opens a snackbar and does not navigate away or close the assign dialog | Observed (specs) |
 
 ## TR-3 Rules
 
@@ -58,7 +58,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
 | TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds. The stylesheet is `styles-KH4XGI3E.css` (109.39 kB), the same file as before the Sass module change. No Sass deprecation warning | Observed |
-| TR-6.4 | `npm test` passes | 76 of 76 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
+| TR-6.4 | `npm test` passes | 81 of 81 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
 | TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 11 (7 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
 | TR-6.7 | CI runs lint, build, and tests on every PR | `.github/workflows/verify.yml` runs on `pull_request` and on push to `master`: Node from `.nvmrc`, `npm ci` with the npm cache, then `npm run lint`, `npm run build`, `npm test`, and `npm run test:rules` | Observed |

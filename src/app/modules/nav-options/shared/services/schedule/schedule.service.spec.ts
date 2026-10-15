@@ -77,8 +77,6 @@ describe('ScheduleService', () => {
 
   it('should create a new schedule section when assigning without an existing id', async () => {
     const day = new Date('2026-07-02T12:00:00');
-    const pending = firstValueFrom(service.items$);
-
     service.selectSection({
       type: 'meals',
       assigned: ['Salad'],
@@ -86,8 +84,7 @@ describe('ScheduleService', () => {
       section: 'lunch',
       day
     });
-    service.updateItems({ meals: ['Salad'] });
-    await pending;
+    await service.updateItems({ meals: ['Salad'] });
 
     expect(mocks.createDocument).toHaveBeenCalled();
     const payload = mocks.createDocument.mock.calls.at(-1)?.[1] as ScheduleItem;
@@ -97,8 +94,6 @@ describe('ScheduleService', () => {
   });
 
   it('should update an existing schedule section when an id is present', async () => {
-    const pending = firstValueFrom(service.items$);
-
     service.selectSection({
       type: 'meals',
       assigned: ['Omelette', 'Toast'],
@@ -106,8 +101,7 @@ describe('ScheduleService', () => {
       section: 'morning',
       day: new Date(scheduleItem.timestamp)
     });
-    service.updateItems({ meals: ['Omelette', 'Toast'] });
-    await pending;
+    await service.updateItems({ meals: ['Omelette', 'Toast'] });
 
     expect(mocks.updateDocument).toHaveBeenCalled();
   });

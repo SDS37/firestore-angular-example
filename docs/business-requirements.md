@@ -21,7 +21,7 @@ The app is an example first. Its features stay small so the Firestore and Angula
 ## Promises to the user
 
 - **Privacy.** A user's meals, workouts, and schedule are visible only to that user, and only while signed in.
-- **Honesty about failures.** A save that fails says so. (Not yet: [FAE-051](https://github.com/SDS37/firestore-angular-example/issues/105).)
+- **Honesty about failures.** A save or delete that fails opens a snackbar and leaves the user on the form.
 - **Access.** The app works with a keyboard and allows zoom. (Not yet: [FAE-060](https://github.com/SDS37/firestore-angular-example/issues/109).)
 
 ## What "done" means
