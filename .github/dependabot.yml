@@ -42,6 +42,9 @@ updates:
       # @firebase/rules-unit-testing 6 peers firebase 13. See ADR-002.
       - dependency-name: "@firebase/rules-unit-testing"
         versions: ["6.x"]
+      # @types/node stays on the Node major in .nvmrc. See the roadmap dependency table.
+      - dependency-name: "@types/node"
+        versions: [">=25.0.0"]
 
   - package-ecosystem: github-actions
     directory: "/"

@@ -16,7 +16,7 @@ Every package is on the newest stable version that all of its peers accept. When
 - **Peer conflicts:** solve them with an explicit `overrides` entry and an ADR. There is no `legacy-peer-deps`. [ADR-002](../architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides) maps AngularFire onto the root Angular packages and onto `firebase` 12.19.0, and pins `rxfire` to 6.2.0. [ADR-006](../architecture-decision-records.md#adr-006-grpc-js-pinned-to-1146) pins `@grpc/grpc-js` to 1.14.6.
 - **Audit:** `npm audit fix` without `--force`. `npm audit --omit=dev` reports no critical or high before a release.
 - **Pre-releases:** no `rc`, `next`, or `canary` versions.
-- **Dependabot:** `.github/dependabot.yml` opens one version-update PR per family each week (`angular`, `firebase`, `lint`, `test`) and one GitHub Actions PR each month. It ignores `firebase` 13 ([ADR-002](../architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides)), TypeScript 7 ([ADR-005](../architecture-decision-records.md#adr-005-typescript-pinned-to-60)), and `@firebase/rules-unit-testing` 6. Security updates stay off in the repository settings.
+- **Dependabot:** `.github/dependabot.yml` opens one version-update PR per family each week (`angular`, `firebase`, `lint`, `test`) and one GitHub Actions PR each month. It ignores `firebase` 13 ([ADR-002](../architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides)), TypeScript 7 ([ADR-005](../architecture-decision-records.md#adr-005-typescript-pinned-to-60)), `@firebase/rules-unit-testing` 6, and `@types/node` 25 or newer (the Node major in `.nvmrc` is 24). Security updates stay off in the repository settings.
 
 ## Accepted dev-only findings
 
