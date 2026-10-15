@@ -8,6 +8,8 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "verify": "npm run lint && npm run build && npm test",
+    "emulators": "firebase emulators:start --only auth,firestore",
+    "test:rules": "firebase emulators:exec --only auth,firestore --project demo-fir-example-app \"npx vitest run --config vitest.rules.config.mts\"",
     "predeploy:firebase": "npm run build",
     "deploy:firebase": "firebase deploy --only firestore:rules,hosting"
   },
@@ -41,6 +43,7 @@
     "@angular/cli": "^22.2.2",
     "@angular/compiler-cli": "^22.2.2",
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@types/node": "^24.19.2",
     "@vitest/coverage-v8": "^5.0.4",
     "angular-eslint": "^22.6.0",

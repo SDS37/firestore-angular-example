@@ -4,7 +4,7 @@ A meal and workout planner with a weekly schedule. Cloud Firestore is the reacti
 
 License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-app-5c3d3.web.app)
 
-**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies. GitHub Actions runs lint, build, and the unit tests on every pull request and on `master`. The [roadmap](docs/roadmap.md) fixes those in order.
+**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies. GitHub Actions runs lint, build, the unit tests, and the rules tests on every pull request and on `master`. The [roadmap](docs/roadmap.md) fixes those in order.
 
 ## Current status
 
@@ -13,11 +13,11 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Auth | Email and password register, login, logout. A signed-out user is sent to `/auth/login` |
 | Meals and workouts | Create, edit, delete. Live lists from Firestore |
 | Schedule | Week view, four sections per day, assign meals and workouts. Entries store names, not ids ([FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106)) |
-| Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. Not tested yet ([FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101)) |
+| Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. `npm run test:rules` proves the owner is allowed, and another signed-in user and an anonymous client are denied |
 | Unit tests | 73 specs, Vitest 5.0.4 and jsdom 30.1.2 |
 | Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M4](https://github.com/SDS37/firestore-angular-example/issues/98) |
 | PWA | Manifest and service worker are built; the service worker is not registered |
-| CI and deploy | GitHub Actions runs lint, build, and unit tests on every pull request and on `master` ([FAE-040](https://github.com/SDS37/firestore-angular-example/issues/99)). Deploy is still manual: `npm run deploy:firebase`. Preview channels and deploy on merge are [FAE-043](https://github.com/SDS37/firestore-angular-example/issues/102) |
+| CI and deploy | GitHub Actions runs lint, build, unit tests, and rules tests on every pull request and on `master`. Deploy is still manual: `npm run deploy:firebase`. Preview channels and deploy on merge are [FAE-043](https://github.com/SDS37/firestore-angular-example/issues/102) |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
 
 ## How it works
@@ -112,6 +112,12 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 
 `npm start` uses `src/environments/environment.ts`, which points at the same Firebase project as the hosted app. Accounts and data you create locally are real accounts and data in that project. To work against your own project, follow the next section.
 
+## Emulators
+
+`npm run emulators` starts the Auth emulator on port 9099 and the Firestore emulator on port 8080. In `src/environments/environment.ts`, set `useEmulators` to `true`, then run `npm start` in a second terminal. The app then talks to those emulators instead of the hosted project. Set the flag back to `false` before you commit: the copy in git stays `false`, and the production build never connects to an emulator.
+
+`npm run test:rules` starts the same emulators, runs the rules specs against the demo project `demo-fir-example-app`, and shuts the emulators down. That command does not need a Firebase login and does not touch the hosted project.
+
 ## Use your own Firebase project
 
 1. In the [Firebase console](https://console.firebase.google.com/), create a project.
@@ -144,6 +150,8 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 | `npm test` | `ng test` once, in Vitest and jsdom, and writes `coverage/firebase-example-app` |
 | `npm run lint` | ESLint over `src/**/*.ts` and `src/**/*.html` |
 | `npm run verify` | `lint`, then `build`, then `test`. Run it before every PR |
+| `npm run emulators` | Auth and Firestore emulators |
+| `npm run test:rules` | Rules specs on the emulators, then the emulators stop |
 | `npm run deploy:firebase` | `npm run build`, then `firebase deploy --only firestore:rules,hosting` |
 
 ## Test
@@ -152,7 +160,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 npm test
 ```
 
-Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. There are no rules tests and no end-to-end tests yet ([FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101), [M7](https://github.com/SDS37/firestore-angular-example/issues/111)).
+Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 13 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. There are no end-to-end tests yet ([M7](https://github.com/SDS37/firestore-angular-example/issues/111)).
 
 ## Deploy
 

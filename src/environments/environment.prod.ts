@@ -2,6 +2,7 @@ import { FirebaseOptions } from 'firebase/app';
 
 export const environment = {
   production: true,
+  useEmulators: false,
   firebase: {
     apiKey: 'AIzaSyB92cP5jN2Wei9UxZt76UTiOJ3yZbwfXY4',
     authDomain: 'fir-example-app-5c3d3.firebaseapp.com',

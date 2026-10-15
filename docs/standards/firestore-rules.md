@@ -19,7 +19,7 @@
 
 ## Tests
 
-- **Target:** every rule has an emulator test that proves an allowed and a denied case: the owner, another signed-in user, and an anonymous client. **Today:** no rules tests exist. [FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101) adds them with `@firebase/rules-unit-testing`.
+- **Today:** `rules/firestore.rules.spec.ts` proves an allowed and a denied case for the owner, another signed-in user, and an anonymous client, on `users/{uid}` and on `meals`, `workouts`, and `schedule`. `npm run test:rules` runs them with `@firebase/rules-unit-testing` 5.0.2. Version 6 peers `firebase` 13, which stays out ([ADR-002](../architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides)).
 
 ## Deploy
 
