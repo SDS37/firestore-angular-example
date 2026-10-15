@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./rules",
+    "outDir": "./dist/out-tsc/rules",
+    "types": ["node", "vitest/globals"],
+    "skipLibCheck": true
+  },
+  "include": ["rules/**/*.spec.ts"]
+}

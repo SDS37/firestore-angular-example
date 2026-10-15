@@ -6,7 +6,7 @@
 
 ## Compiler
 
-- The compiler options live in `tsconfig.json`. `tsconfig.app.json` and `tsconfig.spec.json` only change `outDir`, `files`, `include`, and `types`.
+- The compiler options live in `tsconfig.json`. Its `include` is `src`, which is also `rootDir`, and it excludes `src/**/*.spec.ts`. `tsconfig.app.json` and `tsconfig.spec.json` only change `outDir`, `files`, `include`, and `types`. `tsconfig.rules.json` compiles `rules/` and sets its own `rootDir`, because that spec is outside `src`.
 - TypeScript stays on the 6.0 line until `@angular/build` accepts a newer one. See [ADR-005](../architecture-decision-records.md#adr-005-typescript-pinned-to-60).
 - **Today:** `strict` and `strictTemplates` are `true` in `tsconfig.json` ([FAE-033](https://github.com/SDS37/firestore-angular-example/issues/97)). `npm run verify` compiles the app and the specs under both.
 
