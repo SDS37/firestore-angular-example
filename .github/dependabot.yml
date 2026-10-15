@@ -1,0 +1,49 @@
+# Version updates only. Dependabot security updates stay off in the repository
+# settings. This file does not turn them on.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      angular:
+        patterns:
+          - "@angular/*"
+          - "@angular-devkit/*"
+          - "@schematics/*"
+      firebase:
+        patterns:
+          - "firebase"
+          - "@angular/fire"
+          - "rxfire"
+          - "firebase-tools"
+      lint:
+        patterns:
+          - "eslint"
+          - "@eslint/*"
+          - "angular-eslint"
+          - "@angular-eslint/*"
+          - "typescript-eslint"
+          - "@typescript-eslint/*"
+      test:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "jsdom"
+          - "@firebase/rules-unit-testing"
+    ignore:
+      # firebase 13 until an AngularFire release accepts it. See ADR-002.
+      - dependency-name: "firebase"
+        versions: ["13.x"]
+      # TypeScript 7 until @angular/build and typescript-eslint accept it. See ADR-005.
+      - dependency-name: "typescript"
+        versions: ["7.x"]
+      # @firebase/rules-unit-testing 6 peers firebase 13. See ADR-002.
+      - dependency-name: "@firebase/rules-unit-testing"
+        versions: ["6.x"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly

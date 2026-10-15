@@ -62,7 +62,7 @@ Each record states the context, the decision, its consequences, and the conditio
 
 **Decision.** Stay on TypeScript 6.0.x.
 
-**Consequences.** `tsconfig.json` keeps `ignoreDeprecations: "6.0"`. [FAE-041](https://github.com/SDS37/firestore-angular-example/issues/100) configures Dependabot to ignore TypeScript majors; until then Dependabot can open a TypeScript 7 PR, and it is closed.
+**Consequences.** `tsconfig.json` keeps `ignoreDeprecations: "6.0"`. `.github/dependabot.yml` ignores TypeScript 7 and `firebase` 13 ([FAE-041](https://github.com/SDS37/firestore-angular-example/issues/100)). Dependabot security updates stay off.
 
 **Reopen when.** Both `@angular/build` and `typescript-eslint` accept TypeScript 7.
 
