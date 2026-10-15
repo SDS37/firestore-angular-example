@@ -48,7 +48,7 @@ Each record states the context, the decision, its consequences, and the conditio
 
 ## ADR-004: Vitest instead of Karma
 
-**Context.** `ng test` uses `@angular-devkit/build-angular:karma`, which Angular has deprecated with the Webpack builders. Karma needs a local Chrome; the tests fail to start where Chrome cannot launch. `@angular/build` 22.2 provides `@angular/build:unit-test` with Vitest (`^4.0.8 || ^5.0.0`).
+**Context.** `ng test` uses `@angular/build:karma`. Karma needs a local Chrome; the tests fail to start where Chrome cannot launch. `@angular/build` 22.2 provides `@angular/build:unit-test` with Vitest (`^4.0.8 || ^5.0.0`).
 
 **Decision.** Move the 73 specs to `@angular/build:unit-test` with Vitest 5 and jsdom, and remove Karma and Jasmine. Implemented in [FAE-031](https://github.com/SDS37/firestore-angular-example/issues/95).
 

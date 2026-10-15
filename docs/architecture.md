@@ -115,7 +115,7 @@ Services write in `tap`. A container must subscribe to the service stream for th
 
 ## Build and deploy
 
-- `ng build` uses `@angular-devkit/build-angular:application` and writes `dist/firebase-example-app/browser`. The production configuration replaces `environment.ts` with `environment.prod.ts` and writes `ngsw-worker.js` from `ngsw-config.json`. **Today:** nothing in `src/` registers that service worker ([TR-5.2](technical-requirements.md#tr-5-pwa-and-accessibility)).
+- `ng build` uses `@angular/build:application` and writes `dist/firebase-example-app/browser`. The production configuration replaces `environment.ts` with `environment.prod.ts` and writes `ngsw-worker.js` from `ngsw-config.json`. **Today:** nothing in `src/` registers that service worker ([TR-5.2](technical-requirements.md#tr-5-pwa-and-accessibility)).
 - `firebase.json` serves that folder from the hosting target `firebase-example-app`, rewrites every path to `/index.html`, and points Firestore at `firestore.rules` and `firestore.indexes.json`.
 - `npm run deploy:firebase` runs `predeploy:firebase` (`npm run build`) first, then deploys the rules and hosting together.
 - `.firebaserc` maps the default project and the hosting target to `fir-example-app-5c3d3`.

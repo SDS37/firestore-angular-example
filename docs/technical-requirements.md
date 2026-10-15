@@ -58,9 +58,9 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
 | TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds; warns that Sass `@import` is deprecated | Observed |
-| TR-6.4 | `npm test` passes | 73 of 73 specs pass in ChromeHeadless 154 | Observed |
+| TR-6.4 | `npm test` passes | 73 of 73 specs pass in ChromeHeadless 155 | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
-| TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 16 (12 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
+| TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 12 (8 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
 | TR-6.7 | CI runs lint, build, and tests on every PR | No `.github/` folder | Not yet: [FAE-040](https://github.com/SDS37/firestore-angular-example/issues/99) |
 
 ## Beyond these requirements
