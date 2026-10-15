@@ -12,7 +12,7 @@ The roadmap is done when a colleague can follow the root README and every box be
 - [x] `npm audit --omit=dev` reports no critical or high vulnerability (M2)
 - [x] No open Dependabot PR is superseded by work already merged (M2)
 - [x] Build and tests use `@angular/build`, unit tests run on Vitest, and the build prints no deprecation warning (M3)
-- [ ] TypeScript `strict` and `strictTemplates` are on (M3)
+- [x] TypeScript `strict` and `strictTemplates` are on (M3)
 - [ ] Lint, build, unit tests, and rules tests run in GitHub Actions on every PR, and `master` requires that check (M4)
 - [ ] Rules tests on the emulator prove that a user cannot read or write another user's meals, workouts, or schedule (M4)
 - [ ] A PR gets a preview URL, and a merge to `master` deploys hosting and rules (M4)

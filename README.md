@@ -14,8 +14,8 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Meals and workouts | Create, edit, delete. Live lists from Firestore |
 | Schedule | Week view, four sections per day, assign meals and workouts. Entries store names, not ids ([FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106)) |
 | Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. Not tested yet ([FAE-042](https://github.com/SDS37/firestore-angular-example/issues/101)) |
-| Unit tests | 73 specs, Karma and Jasmine. Moving to Vitest ([FAE-031](https://github.com/SDS37/firestore-angular-example/issues/95)) |
-| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. Next is [M3](https://github.com/SDS37/firestore-angular-example/issues/93) |
+| Unit tests | 73 specs, Vitest 5.0.4 and jsdom 30.1.2 |
+| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M4](https://github.com/SDS37/firestore-angular-example/issues/98) |
 | PWA | Manifest and service worker are built; the service worker is not registered |
 | CI and deploy | None. Manual deploy with `npm run deploy:firebase`. Automated in [M4](https://github.com/SDS37/firestore-angular-example/issues/98) |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
@@ -40,7 +40,7 @@ Containers call data services. Only the services and the auth guard talk to Fire
 | Firebase access | `@angular/fire` 20, Firebase JS SDK 12 |
 | Backend | Firebase Authentication (email and password), Cloud Firestore |
 | Hosting | Firebase Hosting, Angular service worker build |
-| Tests and lint | Karma and Jasmine, ESLint with angular-eslint and typescript-eslint |
+| Tests and lint | Vitest and jsdom, ESLint with angular-eslint and typescript-eslint |
 
 ## Repository structure
 
