@@ -11,7 +11,7 @@ The roadmap is done when a colleague can follow the root README and every box be
 - [x] Every dependency is on the newest stable version its peers accept. Each exception is in the roadmap dependency table and an ADR (M2)
 - [x] `npm audit --omit=dev` reports no critical or high vulnerability (M2)
 - [x] No open Dependabot PR is superseded by work already merged (M2)
-- [ ] Build and tests use `@angular/build`, unit tests run on Vitest, and the build prints no deprecation warning (M3)
+- [x] Build and tests use `@angular/build`, unit tests run on Vitest, and the build prints no deprecation warning (M3)
 - [ ] TypeScript `strict` and `strictTemplates` are on (M3)
 - [ ] Lint, build, unit tests, and rules tests run in GitHub Actions on every PR, and `master` requires that check (M4)
 - [ ] Rules tests on the emulator prove that a user cannot read or write another user's meals, workouts, or schedule (M4)

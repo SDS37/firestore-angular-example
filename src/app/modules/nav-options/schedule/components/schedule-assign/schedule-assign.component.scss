@@ -1,4 +1,4 @@
-@import 'src/styles/variables.scss';
+@use 'styles/variables' as *;
 #clickable-div-list {
     mat-icon {
         border-radius: 100%;

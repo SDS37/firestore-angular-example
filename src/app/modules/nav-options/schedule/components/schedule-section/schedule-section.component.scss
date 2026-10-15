@@ -1,4 +1,4 @@
-@import 'src/styles/variables.scss';
+@use 'styles/variables' as *;
 #div-as-button {
     &:hover {
         background-color: $color-gray-0;

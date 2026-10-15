@@ -18,7 +18,7 @@ The Material theme is the prebuilt `deeppurple-amber.css`, listed in `angular.js
 
 ## Rules
 
-- **Target:** Sass modules: `@use` and `@forward`. **Today:** `src/styles.scss` uses `@import`, and the build prints a deprecation warning for each one. [FAE-032](https://github.com/SDS37/firestore-angular-example/issues/96) replaces them. New files use `@use`.
+- Sass modules: `@use` and `@forward`. `src/styles.scss` loads `mixins`, `fonts`, and `variables` with `@use`. Component styles load variables with `@use 'styles/variables' as *`. The `src` directory is a Sass include path, set in `angular.json`. New files use `@use`.
 - Reuse a global utility class before writing a new rule. Add a new utility class only when two or more components need it.
 - Component styles stay under the `anyComponentStyle` budget in `angular.json`: warning at 6 kB, error at 10 kB.
 - Do not use `::ng-deep`. Do not set `ViewEncapsulation.None` to reach into a Material component.

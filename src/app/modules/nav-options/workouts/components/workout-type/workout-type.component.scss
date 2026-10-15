@@ -1,4 +1,4 @@
-@import 'src/styles/variables.scss';
+@use 'styles/variables' as *;
 mat-icon {
     background-color: $color-blue-1;
     color: $color-white;
