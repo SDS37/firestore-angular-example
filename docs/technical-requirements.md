@@ -19,11 +19,11 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | Id | Requirement | Observation | Status |
 |---|---|---|---|
 | TR-2.1 | Every read and write path is under `users/{uid}` for the current Firebase user | Service specs load meals, workouts, and schedule for the authenticated user | Observed (specs) |
-| TR-2.2 | A new user gets a new query without a page reload | Data services build queries in `switchMap` on the auth state | Observed (code). End-to-end: [FAE-071](https://github.com/SDS37/firestore-angular-example/issues/113) |
+| TR-2.2 | A new user gets a new query without a page reload | Data services build queries in `switchMap` on the auth state. The Playwright isolation test logs out and logs in as a second user without a reload; that user sees none of the first user's meals, workouts, or schedule | Observed |
 | TR-2.3 | Client-only fields (`$key`, `$exists`) never reach Firestore | `toFirestoreData` spec; meals and workouts service specs | Observed (specs) |
 | TR-2.4 | A new meal or workout gets a `timestamp`; an update keeps the existing one | Meals and workouts service specs cover the timestamp on create; the meals spec covers the update. The workouts update uses the same code path, with no spec | Observed (specs) |
 | TR-2.5 | An unknown meal or workout id redirects to its list | `MealComponent` and `WorkoutComponent` specs | Observed (specs) |
-| TR-2.6 | A failed write shows a message and keeps the user on the form | Meal, workout, meals, workouts, and schedule container specs: a rejected write opens a snackbar and does not navigate away or close the assign dialog | Observed (specs) |
+| TR-2.6 | A failed write shows a message and keeps the user on the form | Meal, workout, meals, workouts, and schedule container specs: a rejected write opens a snackbar and does not navigate away or close the assign dialog. The Playwright failure test loads rules that deny writes, then “Could not save the meal.” appears and the create form stays open | Observed |
 
 ## TR-3 Rules
 
@@ -49,7 +49,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-5.1 | The production build writes a service worker and a manifest | `dist/firebase-example-app/browser` contains `ngsw-worker.js`, `ngsw.json`, and `manifest.webmanifest` | Observed |
 | TR-5.2 | The app registers that service worker in production | No code in `src/` registers it; the registration was removed in `0cdcfcf` | Not yet: no story covers it |
 | TR-5.3 | Pinch zoom works and a keyboard-only user can assign a meal | The viewport meta has no `maximum-scale`. Schedule sections and the assign list are `button` elements, covered by the section and assign specs | Observed (code and specs) |
-| TR-5.4 | An unknown URL renders the not-found page | The `**` route in `app.routes.ts`; `NotFoundComponent` spec | Observed (code and spec) |
+| TR-5.4 | An unknown URL renders the not-found page | The `**` route in `app.routes.ts`; `NotFoundComponent` spec. Playwright opens `/no-such-page` and sees `404` | Observed |
 
 ## TR-6 Tooling
 

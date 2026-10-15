@@ -15,7 +15,7 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Schedule | Week view, four sections per day, assign meals and workouts by document id. A stored name from an older entry still displays when that name matches. Deleting a meal or workout removes it from the schedule |
 | Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. `npm run test:rules` proves the owner is allowed, and another signed-in user and an anonymous client are denied |
 | Unit tests | 88 specs, Vitest 5.0.4 and jsdom 30.1.2 |
-| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M7](https://github.com/SDS37/firestore-angular-example/issues/111) |
+| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. The roadmap milestones through [M7](https://github.com/SDS37/firestore-angular-example/issues/111) are done |
 | PWA | Manifest name is “Meal and workout planner”. `robots.txt` is served. The service worker is built and not registered. Scores are in [Lighthouse](#lighthouse) |
 | CI and deploy | GitHub Actions runs lint, build, unit tests, rules tests, and the Playwright suite on every pull request and on `master`. A pull request deploys a Hosting preview and comments the URL. A push to `master` deploys hosting and `firestore.rules`. The credential is the `FIREBASE_SERVICE_ACCOUNT` GitHub secret |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
@@ -177,7 +177,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 npm test
 ```
 
-Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 13 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. `npm run e2e` is Playwright on Chromium: it registers, logs in, creates a meal and a workout, assigns both to today, and logs out, against the Auth and Firestore emulators.
+Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 13 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. `npm run e2e` is Playwright on Chromium against the Auth and Firestore emulators. One test registers, logs in, creates a meal and a workout, assigns both to today, and logs out. Another logs out and logs in as a second user without a reload, and that user sees none of the first user's meals, workouts, or schedule. An unknown route shows the not-found page. A write the emulator rules deny shows “Could not save the meal.” and stays on the form.
 
 ## Deploy
 

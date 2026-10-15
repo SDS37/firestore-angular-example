@@ -13,7 +13,7 @@ The work is ordered so each milestone starts from a base that already passes `np
 | [M4](https://github.com/SDS37/firestore-angular-example/issues/98) | Done (2026-10-15) | CI, Dependabot config, rules tests, deploy | FAE-040–FAE-043 | A PR cannot merge without a green `verify` check, and the rules tests run in it |
 | [M5](https://github.com/SDS37/firestore-angular-example/issues/103) | Done (2026-10-15) | Architecture and data integrity | FAE-050–FAE-053 | Logging out and in as another user, without a reload, shows only that user's data. Deleting a meal leaves no dangling schedule entry |
 | [M6](https://github.com/SDS37/firestore-angular-example/issues/108) | Done (2026-10-15) | Accessibility, SEO, and PWA | FAE-060–FAE-061 | A keyboard-only user can assign a meal, pinch zoom works, a current Lighthouse report is in the README |
-| [M7](https://github.com/SDS37/firestore-angular-example/issues/111) | In progress | End-to-end tests on the emulators | FAE-070–FAE-071 | CI runs the e2e suite against the Auth and Firestore emulators on every PR |
+| [M7](https://github.com/SDS37/firestore-angular-example/issues/111) | Done (2026-10-15) | End-to-end tests on the emulators | FAE-070–FAE-071 | CI runs the e2e suite against the Auth and Firestore emulators on every PR |
 
 ```mermaid
 flowchart LR
