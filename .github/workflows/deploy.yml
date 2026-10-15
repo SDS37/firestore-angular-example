@@ -42,9 +42,14 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
         run: |
-          output=$(npx firebase hosting:channel:deploy "pr${PR_NUMBER}" --only hosting:firebase-example-app --expires 7d --project fir-example-app-5c3d3 --non-interactive)
+          set +e
+          output=$(npx firebase hosting:channel:deploy "pr${PR_NUMBER}" --only firebase-example-app --expires 7d --project fir-example-app-5c3d3 --non-interactive 2>&1)
+          status=$?
           printf '%s\n' "$output"
-          url=$(printf '%s\n' "$output" | grep -oE 'https://[^ ]+\.web\.app' | head -1)
+          if [ "$status" -ne 0 ]; then
+            exit "$status"
+          fi
+          url=$(printf '%s\n' "$output" | grep -oE 'https://[^ ]+--[^ ]+\.web\.app' | head -1)
           echo "url=$url" >> "$GITHUB_OUTPUT"
           test -n "$url"
       - name: Comment the preview URL
