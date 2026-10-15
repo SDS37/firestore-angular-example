@@ -48,49 +48,39 @@ import { Workout } from 'src/app/models/workout.interface';
 
       <div
         *ngIf="form.get('type')?.value === 'strength'"
-        class="flex-row-container flex-justify-content-space-around flex-align-items-center margin-bottom-10"
+        class="flex-column-container"
         formGroupName="strength">
-        <label>
-          <mat-form-field>
-            <mat-label>Reps</mat-label>
-            <input matInput type="number" formControlName="reps"/>
-            <mat-hint>how many repetitions?</mat-hint>
-          </mat-form-field>
-        </label>
-        <label>
-          <mat-form-field>
-            <mat-label>Sets</mat-label>
-            <input matInput type="number" formControlName="sets"/>
-            <mat-hint>how many sets?</mat-hint>
-          </mat-form-field>
-        </label>
-        <label>
-          <mat-form-field>
-            <mat-label>Weight (kg)</mat-label>
-            <input matInput type="number" formControlName="weight"/>
-            <mat-hint>how much weight?</mat-hint>
-          </mat-form-field>
-        </label>
+        <mat-form-field class="width-100-100 margin-bottom-10">
+          <mat-label>Reps</mat-label>
+          <input matInput type="number" formControlName="reps"/>
+          <mat-hint>how many repetitions?</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="width-100-100 margin-bottom-10">
+          <mat-label>Sets</mat-label>
+          <input matInput type="number" formControlName="sets"/>
+          <mat-hint>how many sets?</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="width-100-100">
+          <mat-label>Weight (kg)</mat-label>
+          <input matInput type="number" formControlName="weight"/>
+          <mat-hint>how much weight?</mat-hint>
+        </mat-form-field>
       </div>
 
       <div
         *ngIf="form.get('type')?.value === 'endurance'"
-        class="flex-row-container flex-justify-content-space-around flex-align-items-center margin-bottom-10"
+        class="flex-column-container"
         formGroupName="endurance">
-        <label>
-          <mat-form-field>
-            <mat-label>Distance (km)</mat-label>
-            <input matInput type="number" formControlName="distance"/>
-            <mat-hint>how many kilometers?</mat-hint>
-          </mat-form-field>
-        </label>
-        <label>
-          <mat-form-field>
-            <mat-label>Duration (minutes)</mat-label>
-            <input matInput type="number" formControlName="duration"/>
-            <mat-hint>for how long?</mat-hint>
-            </mat-form-field>
-        </label>
+        <mat-form-field class="width-100-100 margin-bottom-10">
+          <mat-label>Distance (km)</mat-label>
+          <input matInput type="number" formControlName="distance"/>
+          <mat-hint>how many kilometers?</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="width-100-100">
+          <mat-label>Duration (minutes)</mat-label>
+          <input matInput type="number" formControlName="duration"/>
+          <mat-hint>for how long?</mat-hint>
+        </mat-form-field>
       </div>
 
     </div>
