@@ -8,6 +8,7 @@
 
 - The file starts with `rules_version = '2';`.
 - Every user document lives under `users/{userId}`. Access is granted only when `request.auth.uid == userId`, through the `isOwner(userId)` function.
+- A meal, workout, or schedule write also has to match the shape the app saves: a named meal with ingredients and a timestamp, a named workout whose numbers are zero or greater, and a schedule section of morning, lunch, evening, or snacks. Reads and deletes stay owner-only. The user profile document itself is not shape-checked.
 - Deny by default. A collection with no `match` block is not readable or writable. Adding a collection means adding its `match` block in the same PR.
 - No `allow read, write: if true;`, not even temporarily.
 - The Realtime Database is not used. There is no `database.rules.json`; [FAE-011](https://github.com/SDS37/firestore-angular-example/issues/87) removed it.
@@ -19,7 +20,7 @@
 
 ## Tests
 
-- **Today:** `rules/firestore.rules.spec.ts` proves an allowed and a denied case for the owner, another signed-in user, and an anonymous client, on `users/{uid}` and on `meals`, `workouts`, and `schedule`. `npm run test:rules` runs them with `@firebase/rules-unit-testing` 5.0.2. Version 6 peers `firebase` 13, which stays out ([ADR-002](../architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides)).
+- **Today:** `rules/firestore.rules.spec.ts` proves an allowed and a denied case for the owner, another signed-in user, and an anonymous client, on `users/{uid}` and on `meals`, `workouts`, and `schedule`. It also denies a meal with no name, a workout with a negative weight, and a schedule section the app does not use. `npm run test:rules` runs them with `@firebase/rules-unit-testing` 5.0.2. Version 6 peers `firebase` 13, which stays out ([ADR-002](../architecture-decision-records.md#adr-002-angularfire-with-explicit-overrides)).
 
 ## Deploy
 

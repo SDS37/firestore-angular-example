@@ -31,4 +31,18 @@ describe('WorkoutFormComponent', () => {
 
     expect(component.create.emit).toHaveBeenCalled();
   });
+
+  it('should not emit a workout with a negative number', () => {
+    vi.spyOn(component.create, 'emit');
+    component.form.setValue({
+      name: 'Bench press',
+      type: 'strength',
+      strength: { reps: -1, sets: 3, weight: 60 },
+      endurance: { distance: 0, duration: 0 }
+    });
+
+    component.createWorkout();
+
+    expect(component.create.emit).not.toHaveBeenCalled();
+  });
 });

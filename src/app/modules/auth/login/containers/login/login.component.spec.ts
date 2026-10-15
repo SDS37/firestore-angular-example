@@ -9,11 +9,12 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
-  let authService: { loginUser: Mock };
+  let fixture: ReturnType<typeof TestBed.createComponent<LoginComponent>>;
+  let authService: { loginUser: Mock; sendPasswordReset: Mock };
   let router: Router;
 
   beforeEach(async () => {
-    authService = { loginUser: vi.fn() };
+    authService = { loginUser: vi.fn(), sendPasswordReset: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, LoginComponent, AuthFormComponent],
@@ -25,7 +26,7 @@ describe('LoginComponent', () => {
     router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
-    const fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
   });
 
@@ -48,5 +49,14 @@ describe('LoginComponent', () => {
     } as never);
 
     expect(component.error).toBe('Invalid credentials');
+  });
+
+  it('should ask for an email before sending a reset link', async () => {
+    fixture.detectChanges();
+
+    await component.sendReset();
+
+    expect(authService.sendPasswordReset).not.toHaveBeenCalled();
+    expect(component.error).toBe('Enter the email address for the account.');
   });
 });

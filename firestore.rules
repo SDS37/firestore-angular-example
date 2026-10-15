@@ -6,20 +6,80 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
 
       match /meals/{mealId} {
-        allow read, write: if isOwner(userId);
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validMeal();
       }
 
       match /workouts/{workoutId} {
-        allow read, write: if isOwner(userId);
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validWorkout();
       }
 
       match /schedule/{scheduleId} {
-        allow read, write: if isOwner(userId);
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSchedule();
       }
     }
   }
 
   function isOwner(userId) {
     return request.auth != null && request.auth.uid == userId;
+  }
+
+  function validMeal() {
+    let data = request.resource.data;
+    return data.keys().hasOnly(['name', 'ingredients', 'timestamp'])
+      && data.name is string
+      && data.name.size() > 0
+      && data.name.size() <= 200
+      && data.ingredients is list
+      && data.ingredients.size() > 0
+      && data.ingredients.size() <= 40
+      && data.timestamp is number;
+  }
+
+  function validStrength() {
+    let data = request.resource.data.strength;
+    return data.keys().hasOnly(['reps', 'sets', 'weight'])
+      && data.reps is number
+      && data.sets is number
+      && data.weight is number
+      && data.reps >= 0
+      && data.sets >= 0
+      && data.weight >= 0;
+  }
+
+  function validEndurance() {
+    let data = request.resource.data.endurance;
+    return data.keys().hasOnly(['distance', 'duration'])
+      && data.distance is number
+      && data.duration is number
+      && data.distance >= 0
+      && data.duration >= 0;
+  }
+
+  function validWorkout() {
+    let data = request.resource.data;
+    return data.keys().hasOnly(['name', 'type', 'strength', 'endurance', 'timestamp'])
+      && data.name is string
+      && data.name.size() > 0
+      && data.name.size() <= 200
+      && (data.type == 'strength' || data.type == 'endurance')
+      && validStrength()
+      && validEndurance()
+      && data.timestamp is number;
+  }
+
+  function validScheduleList(items) {
+    return items == null || (items is list && items.size() <= 40);
+  }
+
+  function validSchedule() {
+    let data = request.resource.data;
+    return data.keys().hasOnly(['meals', 'workouts', 'section', 'timestamp'])
+      && validScheduleList(data.meals)
+      && validScheduleList(data.workouts)
+      && (data.section == 'morning' || data.section == 'lunch' || data.section == 'evening' || data.section == 'snacks')
+      && data.timestamp is number;
   }
 }

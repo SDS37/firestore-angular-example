@@ -94,4 +94,10 @@ describe('AuthService', () => {
 
     expect(mocks.signOutUser).toHaveBeenCalledWith(mockAuth);
   });
+
+  it('should request a password reset email', async () => {
+    await service.sendPasswordReset('test@example.com');
+
+    expect(mocks.sendPasswordReset).toHaveBeenCalledWith(mockAuth, 'test@example.com');
+  });
 });

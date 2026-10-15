@@ -21,6 +21,21 @@ describe('AuthFormComponent', () => {
     vi.spyOn(component.submitted, 'emit');
     component.onSubmit();
     expect(component.submitted.emit).not.toHaveBeenCalled();
+    expect(component.form.get('email')?.touched).toBe(true);
+    expect(component.form.get('password')?.touched).toBe(true);
+  });
+
+  it('should reject a password shorter than 6 characters', () => {
+    vi.spyOn(component.submitted, 'emit');
+    component.form.setValue({
+      email: 'test@example.com',
+      password: 'short'
+    });
+
+    component.onSubmit();
+
+    expect(component.submitted.emit).not.toHaveBeenCalled();
+    expect(component.passwordTooShort).toBe(true);
   });
 
   it('should emit the form when valid', () => {

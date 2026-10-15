@@ -11,6 +11,7 @@ import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/
 
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
+import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 // rxjs
 import { Observable, Subscription, of, EMPTY } from 'rxjs';
@@ -38,6 +39,7 @@ import { switchMap, tap } from 'rxjs/operators';
       <div *ngIf="meal$ | async as meal; else loading;">
         <meal-form
           [meal]="meal"
+          [pending]="saving"
           (create)="addMeal($event)"
           (update)="updateMeal($event)"
           (delete)="deleteMeal($event)">
@@ -56,6 +58,7 @@ export class MealComponent implements OnInit, OnDestroy {
 
   meal$!: Observable<Meal | undefined>;
   subscription!: Subscription;
+  saving = false;
 
   constructor(
     private mealsService: MealsService,
@@ -83,20 +86,30 @@ export class MealComponent implements OnInit, OnDestroy {
   }
 
   async addMeal(event: Meal): Promise<void> {
+    if (this.saving) {
+      return;
+    }
+    this.saving = true;
     try {
       await this.mealsService.addMeal(event);
       this.backToMeals();
     } catch {
+      this.saving = false;
       this.reportFailure('Could not save the meal.');
     }
   }
 
   async updateMeal(event: Meal): Promise<void> {
+    if (this.saving) {
+      return;
+    }
+    this.saving = true;
     try {
       const key = this.activatedRoute.snapshot.params.id;
       await this.mealsService.updateMeal(key, event);
       this.backToMeals();
     } catch {
+      this.saving = false;
       this.reportFailure('Could not save the meal.');
     }
   }
@@ -106,8 +119,8 @@ export class MealComponent implements OnInit, OnDestroy {
       const key = this.activatedRoute.snapshot.params.id;
       await this.mealsService.deleteMeal(key);
       this.backToMeals();
-    } catch {
-      this.reportFailure('Could not delete the meal.');
+    } catch (error: unknown) {
+      this.reportFailure(deleteFailureMessage(error, 'Could not delete the meal.'));
     }
   }
 

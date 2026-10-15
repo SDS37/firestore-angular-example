@@ -26,4 +26,12 @@ describe('WorkoutPipe', () => {
     expect(result).toContain('Distance: 5km');
     expect(result).toContain('Duration: 30mins');
   });
+
+  it('should survive a workout that is missing its groups', () => {
+    const result = pipe.transform({ type: 'strength' } as Workout);
+
+    expect(result).toContain('Weight: none');
+    expect(result).toContain('Reps: none');
+    expect(result).not.toContain('null');
+  });
 });

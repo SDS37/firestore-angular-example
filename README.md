@@ -4,7 +4,7 @@ A meal and workout planner with a weekly schedule. Cloud Firestore is the reacti
 
 License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-app-5c3d3.web.app)
 
-**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 88 of 88 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies. GitHub Actions runs lint, build, the unit tests, the rules tests, and Playwright on every pull request and on `master`. The [roadmap](docs/roadmap.md) fixes those in order.
+**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 99 of 99 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, can request a reset link from the login page, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. Meal, workout, and schedule writes also have to match the shape the app saves. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies. GitHub Actions runs lint, build, the unit tests, the rules tests, and Playwright on every pull request and on `master`. The [roadmap](docs/roadmap.md) fixes those in order.
 
 ## Current status
 
@@ -14,7 +14,7 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Meals and workouts | Create, edit, delete. Live lists from Firestore |
 | Schedule | Week view, four sections per day, assign meals and workouts by document id. A stored name from an older entry still displays when that name matches. Deleting a meal or workout removes it from the schedule |
 | Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. `npm run test:rules` proves the owner is allowed, and another signed-in user and an anonymous client are denied |
-| Unit tests | 88 specs, Vitest 5.0.4 and jsdom 30.1.2 |
+| Unit tests | 99 specs, Vitest 5.0.4 and jsdom 30.1.2 |
 | Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. The roadmap milestones through [M7](https://github.com/SDS37/firestore-angular-example/issues/111) are done |
 | PWA | Manifest name is “Meal and workout planner”. `robots.txt` is served. The service worker is built and not registered. Scores are in [Lighthouse](#lighthouse) |
 | CI and deploy | GitHub Actions runs lint, build, unit tests, rules tests, and the Playwright suite on every pull request and on `master`. A pull request deploys a Hosting preview and comments the URL. A push to `master` deploys hosting and `firestore.rules`. The credential is the `FIREBASE_SERVICE_ACCOUNT` GitHub secret |
@@ -32,7 +32,7 @@ Lighthouse 13.5.0 on 2026-10-15, default mobile run, against a local production 
 | SEO | 100 |
 | Agentic browsing | 100 |
 
-First contentful paint was 3.5 s and largest contentful paint was 5.0 s. Accessibility misses a `main` landmark. Best practices miss source maps and a favicon, which 404s in the console.
+First contentful paint was 3.5 s and largest contentful paint was 5.0 s. That run missed a `main` landmark and a favicon. Both are in the app now. Production source maps stay off, so the best-practices score still misses `valid-source-maps`.
 
 ## How it works
 
@@ -177,7 +177,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 npm test
 ```
 
-Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 13 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. `npm run e2e` is Playwright on Chromium against the Auth and Firestore emulators. One test registers, logs in, creates a meal and a workout, assigns both to today, and logs out. Another logs out and logs in as a second user without a reload, and that user sees none of the first user's meals, workouts, or schedule. An unknown route shows the not-found page. A write the emulator rules deny shows “Could not save the meal.” and stays on the form.
+Specs never reach Firebase: `src/app/testing/firebase-test-harness.ts` replaces the wrappers in `src/app/utils/` with spies. `npm run test:rules` is separate: 16 specs on the emulators with `@firebase/rules-unit-testing` 5.0.2. `npm run e2e` is Playwright on Chromium against the Auth and Firestore emulators. One test registers, logs in, creates a meal and a workout, assigns both to today, and logs out. Another logs out and logs in as a second user without a reload, and that user sees none of the first user's meals, workouts, or schedule. An unknown route shows the not-found page. A write the emulator rules deny shows “Could not save the meal.” and stays on the form.
 
 ## Deploy
 

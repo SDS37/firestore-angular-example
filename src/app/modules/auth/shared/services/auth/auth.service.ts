@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
 import { Auth, User } from '@angular/fire/auth';
 
 // store
@@ -8,6 +8,7 @@ import { Store } from 'src/app/store/store';
 import {
   observeAuthState,
   registerUser,
+  sendPasswordReset as requestPasswordReset,
   signInUser,
   signOutUser
 } from 'src/app/utils/firebase-auth.utils';
@@ -21,6 +22,8 @@ import { User as AppUser } from 'src/app/models/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  private readonly environmentInjector = inject(EnvironmentInjector);
 
   auth$: Observable<User | null> = observeAuthState(this.auth).pipe(
     tap((next: User | null) => {
@@ -51,15 +54,19 @@ export class AuthService {
   }
 
   createUser(email: string, password: string) {
-    return registerUser(this.auth, email, password);
+    return runInInjectionContext(this.environmentInjector, () => registerUser(this.auth, email, password));
   }
 
   loginUser(email: string, password: string) {
-    return signInUser(this.auth, email, password);
+    return runInInjectionContext(this.environmentInjector, () => signInUser(this.auth, email, password));
   }
 
   logoutUser() {
-    return signOutUser(this.auth);
+    return runInInjectionContext(this.environmentInjector, () => signOutUser(this.auth));
+  }
+
+  sendPasswordReset(email: string) {
+    return runInInjectionContext(this.environmentInjector, () => requestPasswordReset(this.auth, email));
   }
 
 }

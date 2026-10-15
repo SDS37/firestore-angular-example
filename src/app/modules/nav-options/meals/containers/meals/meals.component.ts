@@ -18,6 +18,7 @@ import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/
 
 // interfaces
 import { Meal } from 'src/app/models/meal.interface';
+import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 @Component({
   standalone: true,
@@ -79,6 +80,7 @@ export class MealsComponent implements OnInit, OnDestroy {
 
   meals$!: Observable<Meal[] | undefined>;
   subscription!: Subscription;
+  private deleting = new Set<string>();
 
   constructor(
     private mealsService: MealsService,
@@ -96,10 +98,16 @@ export class MealsComponent implements OnInit, OnDestroy {
   }
 
   async removeMeal(meal: Meal): Promise<void> {
+    if (!meal.$key || this.deleting.has(meal.$key)) {
+      return;
+    }
+    this.deleting.add(meal.$key);
     try {
       await this.mealsService.deleteMeal(meal.$key);
-    } catch {
-      this.snackBar.open('Could not delete the meal.', 'Dismiss', { duration: 8000 });
+    } catch (error: unknown) {
+      this.snackBar.open(deleteFailureMessage(error, 'Could not delete the meal.'), 'Dismiss', { duration: 8000 });
+    } finally {
+      this.deleting.delete(meal.$key);
     }
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
@@ -12,9 +12,11 @@ import { ScheduleService } from 'src/app/modules/nav-options/shared/services/sch
 // utils
 import { toFirestoreData } from 'src/app/utils/firestore-document';
 import { observeAuthState } from 'src/app/utils/firebase-auth.utils';
+import { ScheduleCleanupError } from 'src/app/utils/schedule-cleanup-error';
 import {
   getCollection,
   observeCollectionData,
+  observeInInjectionContext,
   getDocument,
   createDocument,
   updateDocument,
@@ -31,13 +33,17 @@ import { Meal } from 'src/app/models/meal.interface';
 @Injectable({ providedIn: 'root' })
 export class MealsService {
 
+  private readonly environmentInjector = inject(EnvironmentInjector);
+
   meals$: Observable<Meal[]> = observeAuthState(this.auth).pipe(
     switchMap(user => {
       if (!user) {
         return EMPTY;
       }
-      const mealsCollection = getCollection(this.firestore, `users/${user.uid}/meals`);
-      return observeCollectionData<Meal>(mealsCollection, { idField: '$key' });
+      return observeInInjectionContext(this.environmentInjector, () => {
+        const mealsCollection = getCollection(this.firestore, `users/${user.uid}/meals`);
+        return observeCollectionData<Meal>(mealsCollection, { idField: '$key' });
+      });
     }),
     shareReplay({ bufferSize: 1, refCount: true }),
     tap((next: Meal[]): void => {
@@ -62,23 +68,33 @@ export class MealsService {
   }
 
   addMeal(meal: Meal): Promise<DocumentReference> {
-    const mealsCollection = getCollection(this.firestore, `users/${this.uid}/meals`);
-    return createDocument(mealsCollection, toFirestoreData({
-      ...meal,
-      timestamp: meal.timestamp ?? Date.now()
-    }));
+    return runInInjectionContext(this.environmentInjector, () => {
+      const mealsCollection = getCollection(this.firestore, `users/${this.uid}/meals`);
+      return createDocument(mealsCollection, toFirestoreData({
+        ...meal,
+        timestamp: meal.timestamp ?? Date.now()
+      }));
+    });
   }
 
   updateMeal(key: string, meal: Meal): Promise<void> {
-    const mealDoc = getDocument(this.firestore, `users/${this.uid}/meals/${key}`);
-    return updateDocument(mealDoc, toFirestoreData(meal));
+    return runInInjectionContext(this.environmentInjector, () => {
+      const mealDoc = getDocument(this.firestore, `users/${this.uid}/meals/${key}`);
+      return updateDocument(mealDoc, toFirestoreData(meal));
+    });
   }
 
   async deleteMeal(key: string): Promise<void> {
     const name = this.store.value.meals?.find(meal => meal.$key === key)?.name;
-    const mealDoc = getDocument(this.firestore, `users/${this.uid}/meals/${key}`);
-    await deleteDocument(mealDoc);
-    await this.scheduleService.removeReferences('meals', key, name);
+    await runInInjectionContext(this.environmentInjector, () => {
+      const mealDoc = getDocument(this.firestore, `users/${this.uid}/meals/${key}`);
+      return deleteDocument(mealDoc);
+    });
+    try {
+      await this.scheduleService.removeReferences('meals', key, name);
+    } catch {
+      throw new ScheduleCleanupError('meal');
+    }
   }
 
   getMeal(paramskey: string): Observable<Meal | undefined> {

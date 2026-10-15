@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { MealsComponent } from './meals.component';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
+import { ScheduleCleanupError } from 'src/app/utils/schedule-cleanup-error';
 import { Store } from 'src/app/store/store';
 import { ListItemComponent } from 'src/app/modules/nav-options/shared/components/list-item/list-item.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -60,5 +61,23 @@ describe('MealsComponent', () => {
     });
 
     expect(snackBar.open).toHaveBeenCalledWith('Could not delete the meal.', 'Dismiss', { duration: 8000 });
+  });
+
+  it('should say the meal is already gone when only the schedule cleanup fails', async () => {
+    mealsService.deleteMeal.mockRejectedValue(new ScheduleCleanupError('meal'));
+
+    await component.removeMeal({
+      name: 'Toast',
+      ingredients: ['bread'],
+      timestamp: 1,
+      $key: 'meal-1',
+      $exists: () => true
+    });
+
+    expect(snackBar.open).toHaveBeenCalledWith(
+      'The meal was deleted, but the schedule could not be updated.',
+      'Dismiss',
+      { duration: 8000 }
+    );
   });
 });

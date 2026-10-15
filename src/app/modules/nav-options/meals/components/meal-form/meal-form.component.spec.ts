@@ -54,4 +54,23 @@ describe('MealFormComponent', () => {
     expect(component.form.get('name')?.value).toBe('Omelette');
     expect(component.ingredients.length).toBe(2);
   });
+
+  it('should not emit a meal with a blank ingredient', () => {
+    vi.spyOn(component.create, 'emit');
+    component.form.setValue({ name: 'Toast', ingredients: [' '] });
+
+    component.createMeal();
+
+    expect(component.create.emit).not.toHaveBeenCalled();
+  });
+
+  it('should ignore a second create while the first is still pending', () => {
+    vi.spyOn(component.create, 'emit');
+    component.form.setValue({ name: 'Toast', ingredients: ['bread'] });
+
+    component.createMeal();
+    component.createMeal();
+
+    expect(component.create.emit).toHaveBeenCalledTimes(1);
+  });
 });

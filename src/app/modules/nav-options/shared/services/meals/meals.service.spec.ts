@@ -1,9 +1,12 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { firstValueFrom, of, Subject } from 'rxjs';
 import { MealsService } from './meals.service';
+import { ScheduleService } from 'src/app/modules/nav-options/shared/services/schedule/schedule.service';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
+import { ScheduleCleanupError } from 'src/app/utils/schedule-cleanup-error';
 import { Store } from 'src/app/store/store';
 import { installFirebaseTestMocks } from 'src/app/testing/firebase-test-harness';
 import { mockAuth, mockFirebaseUser, mockFirestore } from 'src/app/testing/firebase.mock';
@@ -108,6 +111,13 @@ describe('MealsService', () => {
   it('should delete meals by key', async () => {
     await service.deleteMeal('meal-1');
 
+    expect(mocks.deleteDocument).toHaveBeenCalled();
+  });
+
+  it('should say the meal is already gone when schedule cleanup fails', async () => {
+    vi.spyOn(TestBed.inject(ScheduleService), 'removeReferences').mockRejectedValue(new Error('denied'));
+
+    await expect(service.deleteMeal('meal-1')).rejects.toBeInstanceOf(ScheduleCleanupError);
     expect(mocks.deleteDocument).toHaveBeenCalled();
   });
 

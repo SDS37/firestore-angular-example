@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
@@ -12,9 +12,11 @@ import { ScheduleService } from 'src/app/modules/nav-options/shared/services/sch
 // utils
 import { toFirestoreData } from 'src/app/utils/firestore-document';
 import { observeAuthState } from 'src/app/utils/firebase-auth.utils';
+import { ScheduleCleanupError } from 'src/app/utils/schedule-cleanup-error';
 import {
   getCollection,
   observeCollectionData,
+  observeInInjectionContext,
   getDocument,
   createDocument,
   updateDocument,
@@ -31,13 +33,17 @@ import { Workout } from 'src/app/models/workout.interface';
 @Injectable({ providedIn: 'root' })
 export class WorkoutsService {
 
+  private readonly environmentInjector = inject(EnvironmentInjector);
+
   workouts$: Observable<Workout[]> = observeAuthState(this.auth).pipe(
     switchMap(user => {
       if (!user) {
         return EMPTY;
       }
-      const workoutsCollection = getCollection(this.firestore, `users/${user.uid}/workouts`);
-      return observeCollectionData<Workout>(workoutsCollection, { idField: '$key' });
+      return observeInInjectionContext(this.environmentInjector, () => {
+        const workoutsCollection = getCollection(this.firestore, `users/${user.uid}/workouts`);
+        return observeCollectionData<Workout>(workoutsCollection, { idField: '$key' });
+      });
     }),
     shareReplay({ bufferSize: 1, refCount: true }),
     tap((next: Workout[]): void => {
@@ -62,23 +68,33 @@ export class WorkoutsService {
   }
 
   addWorkout(workout: Workout): Promise<DocumentReference> {
-    const workoutsCollection = getCollection(this.firestore, `users/${this.uid}/workouts`);
-    return createDocument(workoutsCollection, toFirestoreData({
-      ...workout,
-      timestamp: workout.timestamp ?? Date.now()
-    }));
+    return runInInjectionContext(this.environmentInjector, () => {
+      const workoutsCollection = getCollection(this.firestore, `users/${this.uid}/workouts`);
+      return createDocument(workoutsCollection, toFirestoreData({
+        ...workout,
+        timestamp: workout.timestamp ?? Date.now()
+      }));
+    });
   }
 
   updateWorkout(key: string, workout: Workout): Promise<void> {
-    const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
-    return updateDocument(workoutDoc, toFirestoreData(workout));
+    return runInInjectionContext(this.environmentInjector, () => {
+      const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
+      return updateDocument(workoutDoc, toFirestoreData(workout));
+    });
   }
 
   async deleteWorkout(key: string): Promise<void> {
     const name = this.store.value.workouts?.find(workout => workout.$key === key)?.name;
-    const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
-    await deleteDocument(workoutDoc);
-    await this.scheduleService.removeReferences('workouts', key, name);
+    await runInInjectionContext(this.environmentInjector, () => {
+      const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
+      return deleteDocument(workoutDoc);
+    });
+    try {
+      await this.scheduleService.removeReferences('workouts', key, name);
+    } catch {
+      throw new ScheduleCleanupError('workout');
+    }
   }
 
   getWorkout(paramskey: string): Observable<Workout | undefined> {

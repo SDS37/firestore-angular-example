@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
 
+const nonNegative = [Validators.required, Validators.min(0)];
+
 @Component({
   standalone: true,
   selector: 'workout-form',
@@ -52,18 +54,21 @@ import { Workout } from 'src/app/models/workout.interface';
         formGroupName="strength">
         <mat-form-field class="width-100-100 margin-bottom-10">
           <mat-label>Reps</mat-label>
-          <input matInput type="number" formControlName="reps"/>
+          <input matInput type="number" formControlName="reps" min="0"/>
           <mat-hint>how many repetitions?</mat-hint>
+          <mat-error *ngIf="numberInvalid('strength', 'reps')">Enter 0 or more</mat-error>
         </mat-form-field>
         <mat-form-field class="width-100-100 margin-bottom-10">
           <mat-label>Sets</mat-label>
-          <input matInput type="number" formControlName="sets"/>
+          <input matInput type="number" formControlName="sets" min="0"/>
           <mat-hint>how many sets?</mat-hint>
+          <mat-error *ngIf="numberInvalid('strength', 'sets')">Enter 0 or more</mat-error>
         </mat-form-field>
         <mat-form-field class="width-100-100">
           <mat-label>Weight (kg)</mat-label>
-          <input matInput type="number" formControlName="weight"/>
+          <input matInput type="number" formControlName="weight" min="0"/>
           <mat-hint>how much weight?</mat-hint>
+          <mat-error *ngIf="numberInvalid('strength', 'weight')">Enter 0 or more</mat-error>
         </mat-form-field>
       </div>
 
@@ -73,13 +78,15 @@ import { Workout } from 'src/app/models/workout.interface';
         formGroupName="endurance">
         <mat-form-field class="width-100-100 margin-bottom-10">
           <mat-label>Distance (km)</mat-label>
-          <input matInput type="number" formControlName="distance"/>
+          <input matInput type="number" formControlName="distance" min="0"/>
           <mat-hint>how many kilometers?</mat-hint>
+          <mat-error *ngIf="numberInvalid('endurance', 'distance')">Enter 0 or more</mat-error>
         </mat-form-field>
         <mat-form-field class="width-100-100">
           <mat-label>Duration (minutes)</mat-label>
-          <input matInput type="number" formControlName="duration"/>
+          <input matInput type="number" formControlName="duration" min="0"/>
           <mat-hint>for how long?</mat-hint>
+          <mat-error *ngIf="numberInvalid('endurance', 'duration')">Enter 0 or more</mat-error>
         </mat-form-field>
       </div>
 
@@ -94,7 +101,7 @@ import { Workout } from 'src/app/models/workout.interface';
           mat-raised-button
           color="primary"
           type="button"
-          [disabled]="form.invalid"
+          [disabled]="form.invalid || pending"
           (click)="createWorkout()">
           Create workout
         </button>
@@ -104,6 +111,7 @@ import { Workout } from 'src/app/models/workout.interface';
           mat-raised-button
           color="primary"
           type="button"
+          [disabled]="form.invalid || pending"
           (click)="updateWorkout()">
           Save
         </button>
@@ -152,6 +160,16 @@ import { Workout } from 'src/app/models/workout.interface';
 export class WorkoutFormComponent implements OnChanges {
 
   @Input() workout!: Workout;
+  @Input()
+  set pending(value: boolean) {
+    this.pendingValue = value;
+    if (!value) {
+      this.emitting = false;
+    }
+  }
+  get pending(): boolean {
+    return this.pendingValue;
+  }
   @Output() create = new EventEmitter<Workout>();
   @Output() update = new EventEmitter<Workout>();
   @Output() delete = new EventEmitter<Workout>();
@@ -159,17 +177,20 @@ export class WorkoutFormComponent implements OnChanges {
   toggled = false;
   exists = false;
 
+  private pendingValue = false;
+  private emitting = false;
+
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
     type: 'strength',
     strength: this.fb.group({
-      reps: 0,
-      sets: 0,
-      weight: 0
+      reps: [0, nonNegative],
+      sets: [0, nonNegative],
+      weight: [0, nonNegative]
     }),
     endurance: this.fb.group({
-      distance: 0,
-      duration: 0
+      distance: [0, nonNegative],
+      duration: [0, nonNegative]
     })
   });
 
@@ -194,18 +215,27 @@ export class WorkoutFormComponent implements OnChanges {
     return !!name && name.hasError('required') && name.touched;
   }
 
+  numberInvalid(groupName: 'strength' | 'endurance', controlName: string): boolean {
+    const control = this.form.get([groupName, controlName]);
+    return !!control && control.invalid && control.touched;
+  }
+
   createWorkout(): void {
-    if (this.form.valid) {
-      this.create.emit(this.form.value);
-    } else {
-      // console.log('fix to show the errors');
+    if (this.form.invalid || this.pending || this.emitting) {
+      this.form.markAllAsTouched();
+      return;
     }
+    this.emitting = true;
+    this.create.emit(this.form.value);
   }
 
   updateWorkout(): void {
-    if (this.form.valid) {
-      this.update.emit(this.form.value);
+    if (this.form.invalid || this.pending || this.emitting) {
+      this.form.markAllAsTouched();
+      return;
     }
+    this.emitting = true;
+    this.update.emit(this.form.value);
   }
 
   deleteWorkout(): void {

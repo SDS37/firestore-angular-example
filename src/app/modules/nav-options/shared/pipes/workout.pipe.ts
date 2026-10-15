@@ -7,17 +7,23 @@ import { Workout } from 'src/app/models/workout.interface';
 })
 export class WorkoutPipe implements PipeTransform {
   transform(value: Workout): string {
-    if (value.type === 'endurance') {
+    if (value?.type === 'endurance') {
       return `
-        Distance: ${value.endurance.distance + 'km'},
-        Duration: ${value.endurance.duration + 'mins'}
-      `;
-    } else {
-      return `
-        Weight: ${value.strength.weight + 'kg'},
-        Reps: ${value.strength.reps},
-        Sets: ${value.strength.sets}
+        Distance: ${this.figure(value.endurance?.distance, 'km')},
+        Duration: ${this.figure(value.endurance?.duration, 'mins')}
       `;
     }
+    return `
+      Weight: ${this.figure(value?.strength?.weight, 'kg')},
+      Reps: ${this.figure(value?.strength?.reps)},
+      Sets: ${this.figure(value?.strength?.sets)}
+    `;
+  }
+
+  private figure(value: number | null | undefined, unit = ''): string {
+    if (typeof value !== 'number' || Number.isNaN(value)) {
+      return 'none';
+    }
+    return `${value}${unit}`;
   }
 }

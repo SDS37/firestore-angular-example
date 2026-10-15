@@ -11,6 +11,7 @@ import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/wor
 
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
+import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 // rxjs
 import { Observable, Subscription, of, EMPTY } from 'rxjs';
@@ -38,6 +39,7 @@ import { switchMap, tap } from 'rxjs/operators';
       <div *ngIf="workout$ | async as workout; else loading;">
         <workout-form
           [workout]="workout"
+          [pending]="saving"
           (create)="addWorkout($event)"
           (update)="updateWorkout($event)"
           (delete)="deleteWorkout($event)">
@@ -56,6 +58,7 @@ export class WorkoutComponent implements OnInit, OnDestroy {
 
   workout$!: Observable<Workout | undefined>;
   subscription!: Subscription;
+  saving = false;
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -83,20 +86,30 @@ export class WorkoutComponent implements OnInit, OnDestroy {
   }
 
   async addWorkout(event: Workout): Promise<void> {
+    if (this.saving) {
+      return;
+    }
+    this.saving = true;
     try {
       await this.workoutsService.addWorkout(event);
       this.backToWorkouts();
     } catch {
+      this.saving = false;
       this.reportFailure('Could not save the workout.');
     }
   }
 
   async updateWorkout(event: Workout): Promise<void> {
+    if (this.saving) {
+      return;
+    }
+    this.saving = true;
     try {
       const key = this.activatedRoute.snapshot.params.id;
       await this.workoutsService.updateWorkout(key, event);
       this.backToWorkouts();
     } catch {
+      this.saving = false;
       this.reportFailure('Could not save the workout.');
     }
   }
@@ -106,8 +119,8 @@ export class WorkoutComponent implements OnInit, OnDestroy {
       const key = this.activatedRoute.snapshot.params.id;
       await this.workoutsService.deleteWorkout(key);
       this.backToWorkouts();
-    } catch {
-      this.reportFailure('Could not delete the workout.');
+    } catch (error: unknown) {
+      this.reportFailure(deleteFailureMessage(error, 'Could not delete the workout.'));
     }
   }
 

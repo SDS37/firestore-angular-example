@@ -1,3 +1,4 @@
+import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -17,6 +18,13 @@ import {
   DocumentData
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+
+export function observeInInjectionContext<T>(
+  injector: EnvironmentInjector,
+  read: () => Observable<T>
+): Observable<T> {
+  return runInInjectionContext(injector, read);
+}
 
 export const firestoreApi = {
   getCollection(firestore: Firestore, path: string): CollectionReference<DocumentData> {

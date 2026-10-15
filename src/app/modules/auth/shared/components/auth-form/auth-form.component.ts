@@ -16,20 +16,28 @@ import { MatInputModule } from '@angular/material/input';
       <mat-form-field class="margin-bottom-10">
         <mat-label>Email address</mat-label>
         <input matInput type="email" formControlName="email">
+        <mat-error *ngIf="emailRequired">
+          Email address is <strong>required</strong>
+        </mat-error>
         <mat-error *ngIf="emailFormat">
-        invalid email format
+          Enter a valid email address
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="margin-bottom-10">
         <mat-label>Password</mat-label>
         <input matInput type="password" formControlName="password">
-        <mat-error *ngIf="passwordInvalid">
-        Password <strong>required</strong>
+        <mat-error *ngIf="passwordRequired">
+          Password is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="passwordTooShort">
+          Use at least 6 characters
         </mat-error>
       </mat-form-field>
 
       <ng-content select=".error"></ng-content>
+      <ng-content select=".notice"></ng-content>
+      <ng-content select=".auth-reset"></ng-content>
 
       <div class="flex-row-container flex-justify-content-space-between flex-align-items-center">
         <ng-content select="a"></ng-content>
@@ -46,7 +54,7 @@ export class AuthFormComponent {
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   constructor(
@@ -54,19 +62,36 @@ export class AuthFormComponent {
   ) {}
 
   onSubmit(): void {
-    if (this.form.valid) {
-      this.submitted.emit(this.form);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
+    this.submitted.emit(this.form);
   }
 
-  get passwordInvalid(): boolean {
-    const control = this.form.get('password');
-    return !!control && control.hasError('required') && control.touched;
+  get emailRequired(): boolean {
+    return this.touchedError('email', 'required');
   }
 
   get emailFormat(): boolean {
-    const control = this.form.get('email');
-    return !!control && control.hasError('email') && control.touched;
+    return this.touchedError('email', 'email');
+  }
+
+  get passwordRequired(): boolean {
+    return this.touchedError('password', 'required');
+  }
+
+  get passwordTooShort(): boolean {
+    const control = this.form.get('password');
+    return !!control
+      && control.hasError('minlength')
+      && !control.hasError('required')
+      && control.touched;
+  }
+
+  private touchedError(controlName: 'email' | 'password', error: string): boolean {
+    const control = this.form.get(controlName);
+    return !!control && control.hasError(error) && control.touched;
   }
 
 }

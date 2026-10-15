@@ -99,4 +99,18 @@ describe('ScheduleComponent', () => {
     expect(component.open).toBe(true);
     expect(snackBar.open).toHaveBeenCalledWith('Could not update the schedule.', 'Dismiss', { duration: 8000 });
   });
+
+  it('should ignore a second update while the first write is in flight', async () => {
+    let resolveUpdate: (value: void) => void = () => undefined;
+    scheduleService.updateItems.mockReturnValue(new Promise(resolve => {
+      resolveUpdate = resolve;
+    }));
+
+    const first = component.updateItems({ meals: ['Soup'] });
+    const second = component.updateItems({ meals: ['Soup'] });
+    resolveUpdate();
+    await Promise.all([first, second]);
+
+    expect(scheduleService.updateItems).toHaveBeenCalledTimes(1);
+  });
 });

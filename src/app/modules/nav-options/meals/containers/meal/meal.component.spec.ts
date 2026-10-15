@@ -96,4 +96,27 @@ describe('MealComponent', () => {
     expect(snackBar.open).toHaveBeenCalledWith('Could not save the meal.', 'Dismiss', { duration: 8000 });
     expect(router.navigate).not.toHaveBeenCalled();
   });
+
+  it('should ignore a second create while the first write is in flight', async () => {
+    let resolveAdd: (value: { id: string }) => void = () => undefined;
+    mealsService.getMeal.mockReturnValue(EMPTY);
+    mealsService.addMeal.mockReturnValue(new Promise(resolve => {
+      resolveAdd = resolve;
+    }));
+    component.ngOnInit();
+    const meal: Meal = {
+      name: 'Toast',
+      ingredients: ['bread'],
+      timestamp: 1,
+      $key: '',
+      $exists: () => false
+    };
+
+    const first = component.addMeal(meal);
+    const second = component.addMeal(meal);
+    resolveAdd({ id: 'new-meal' });
+    await Promise.all([first, second]);
+
+    expect(mealsService.addMeal).toHaveBeenCalledTimes(1);
+  });
 });

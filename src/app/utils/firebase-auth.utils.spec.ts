@@ -7,5 +7,6 @@ describe('firebase-auth.utils', () => {
     expect(typeof firebaseAuthApi.signInUser).toBe('function');
     expect(typeof firebaseAuthApi.registerUser).toBe('function');
     expect(typeof firebaseAuthApi.signOutUser).toBe('function');
+    expect(typeof firebaseAuthApi.sendPasswordReset).toBe('function');
   });
 });

@@ -11,6 +11,7 @@ export interface FirebaseTestMocks {
   signInUser: Mock;
   registerUser: Mock;
   signOutUser: Mock;
+  sendPasswordReset: Mock;
   getCollection: Mock;
   observeCollectionData: Mock;
   getDocument: Mock;
@@ -33,6 +34,7 @@ function createMocks(user: User | null): FirebaseTestMocks {
     signInUser: vi.fn().mockResolvedValue({ user: mockFirebaseUser }),
     registerUser: vi.fn().mockResolvedValue({ user: mockFirebaseUser }),
     signOutUser: vi.fn().mockResolvedValue(undefined),
+    sendPasswordReset: vi.fn().mockResolvedValue(undefined),
     getCollection: vi.fn().mockImplementation((_firestore: unknown, path: string) => ({ path })),
     observeCollectionData: vi.fn().mockReturnValue(of([])),
     getDocument: vi.fn().mockImplementation((_firestore: unknown, path: string) => ({ path })),
@@ -52,6 +54,7 @@ function assignApiMocks(mocks: FirebaseTestMocks): void {
   firebaseAuthApi.signInUser = mocks.signInUser;
   firebaseAuthApi.registerUser = mocks.registerUser;
   firebaseAuthApi.signOutUser = mocks.signOutUser;
+  firebaseAuthApi.sendPasswordReset = mocks.sendPasswordReset;
   firestoreApi.getCollection = mocks.getCollection;
   firestoreApi.observeCollectionData = mocks.observeCollectionData;
   firestoreApi.getDocument = mocks.getDocument;

@@ -2,6 +2,7 @@ import {
   Auth,
   authState,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   User
@@ -33,6 +34,10 @@ export const firebaseAuthApi = {
 
   signOutUser(auth: Auth) {
     return signOut(auth);
+  },
+
+  sendPasswordReset(auth: Auth, email: string) {
+    return sendPasswordResetEmail(auth, email);
   }
 };
 
@@ -59,4 +64,8 @@ export function registerUser(auth: Auth, email: string, password: string) {
 
 export function signOutUser(auth: Auth) {
   return firebaseAuthApi.signOutUser(auth);
+}
+
+export function sendPasswordReset(auth: Auth, email: string) {
+  return firebaseAuthApi.sendPasswordReset(auth, email);
 }

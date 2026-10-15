@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, DocumentReference } from '@angular/fire/firestore';
 
@@ -14,6 +14,7 @@ import { observeAuthState } from 'src/app/utils/firebase-auth.utils';
 import {
   getCollection,
   observeCollectionData,
+  observeInInjectionContext,
   getDocument,
   createDocument,
   updateDocument,
@@ -35,6 +36,8 @@ import { DateRange } from 'src/app/models/date-range.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
+
+  private readonly environmentInjector = inject(EnvironmentInjector);
 
   private date$ = new BehaviorSubject<Date>(new Date());
   private section$ = new Subject<ScheduleSectionEvent>();
@@ -62,14 +65,16 @@ export class ScheduleService {
         return { startAt: startAtValue, endAt: endAtValue };
       }),
       switchMap(({ startAt: rangeStart, endAt: rangeEnd }) => {
-        const scheduleCollection = getCollection(this.firestore, `users/${user.uid}/schedule`);
-        const scheduleQuery = buildQuery(
-          scheduleCollection,
-          orderByField('timestamp'),
-          startAtValue(rangeStart),
-          endAtValue(rangeEnd)
-        );
-        return observeCollectionData<ScheduleItem>(scheduleQuery, { idField: '$key' });
+        return observeInInjectionContext(this.environmentInjector, () => {
+          const scheduleCollection = getCollection(this.firestore, `users/${user.uid}/schedule`);
+          const scheduleQuery = buildQuery(
+            scheduleCollection,
+            orderByField('timestamp'),
+            startAtValue(rangeStart),
+            endAtValue(rangeEnd)
+          );
+          return observeCollectionData<ScheduleItem>(scheduleQuery, { idField: '$key' });
+        });
       }),
       map((data: ScheduleItem[]): ScheduleList => {
         const mapped: ScheduleList = {};
@@ -125,9 +130,11 @@ export class ScheduleService {
   }
 
   async removeReferences(kind: 'meals' | 'workouts', id: string, name?: string): Promise<void> {
-    const scheduleCollection = getCollection(this.firestore, `users/${this.uid}/schedule`);
     const sections = await firstValueFrom(
-      observeCollectionData<ScheduleItem>(scheduleCollection, { idField: '$key' })
+      observeInInjectionContext(this.environmentInjector, () => {
+        const scheduleCollection = getCollection(this.firestore, `users/${this.uid}/schedule`);
+        return observeCollectionData<ScheduleItem>(scheduleCollection, { idField: '$key' });
+      })
     );
     await Promise.all(sections.map(section => {
       const current = section[kind];
@@ -155,13 +162,17 @@ export class ScheduleService {
   }
 
   private createSection(payload: ScheduleItem): Promise<DocumentReference> {
-    const scheduleCollection = getCollection(this.firestore, `users/${this.uid}/schedule`);
-    return createDocument(scheduleCollection, toFirestoreData(payload));
+    return runInInjectionContext(this.environmentInjector, () => {
+      const scheduleCollection = getCollection(this.firestore, `users/${this.uid}/schedule`);
+      return createDocument(scheduleCollection, toFirestoreData(payload));
+    });
   }
 
   private updateSection(key: string, payload: ScheduleItem): Promise<void> {
-    const scheduleDoc = getDocument(this.firestore, `users/${this.uid}/schedule/${key}`);
-    return updateDocument(scheduleDoc, toFirestoreData(payload));
+    return runInInjectionContext(this.environmentInjector, () => {
+      const scheduleDoc = getDocument(this.firestore, `users/${this.uid}/schedule/${key}`);
+      return updateDocument(scheduleDoc, toFirestoreData(payload));
+    });
   }
 
 }

@@ -57,12 +57,15 @@ import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.inte
       <div class="flex-row-container flex-justify-content-space-between flex-align-items-center">
         <button
           mat-button
+          type="button"
+          [disabled]="pending"
           (click)="updateAssign()">
           <mat-icon color="primary" aria-hidden="true">update</mat-icon>
           <span class="padding-left-10">Update</span>
         </button>
         <button
           mat-button
+          type="button"
           (click)="cancelAssign()">
           <mat-icon color="warn" aria-hidden="true">cancel</mat-icon>
           <span class="padding-left-10">Cancel</span>
@@ -78,11 +81,23 @@ export class ScheduleAssignComponent implements OnInit {
 
   @Input() section: ScheduleSectionEvent | null | undefined = null;
   @Input() list: (Meal | Workout)[] | null | undefined = null;
+  @Input()
+  set pending(value: boolean) {
+    this.pendingValue = value;
+    if (!value) {
+      this.emitting = false;
+    }
+  }
+  get pending(): boolean {
+    return this.pendingValue;
+  }
 
   @Output() updatingItems = new EventEmitter<Record<string, string[]>>();
   @Output() closingAssign = new EventEmitter<void>();
 
   private selected: string [] = [];
+  private pendingValue = false;
+  private emitting = false;
 
   // constructor() {}
 
@@ -107,9 +122,10 @@ export class ScheduleAssignComponent implements OnInit {
   }
 
   updateAssign(): void {
-    if (!this.section) {
+    if (!this.section || this.pending || this.emitting) {
       return;
     }
+    this.emitting = true;
     this.updatingItems.emit({
       [this.section.type]: this.selected.map(value => this.idFor(value))
     });

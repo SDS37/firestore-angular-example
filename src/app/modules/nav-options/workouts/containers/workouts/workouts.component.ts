@@ -18,6 +18,7 @@ import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/wor
 
 // interfaces
 import { Workout } from 'src/app/models/workout.interface';
+import { deleteFailureMessage } from 'src/app/utils/schedule-cleanup-error';
 
 @Component({
   standalone: true,
@@ -79,6 +80,7 @@ export class WorkoutsComponent implements OnInit, OnDestroy {
 
   workouts$!: Observable<Workout[] | undefined>;
   subscription!: Subscription;
+  private deleting = new Set<string>();
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -96,10 +98,16 @@ export class WorkoutsComponent implements OnInit, OnDestroy {
   }
 
   async removeWorkout(workout: Workout): Promise<void> {
+    if (!workout.$key || this.deleting.has(workout.$key)) {
+      return;
+    }
+    this.deleting.add(workout.$key);
     try {
       await this.workoutsService.deleteWorkout(workout.$key);
-    } catch {
-      this.snackBar.open('Could not delete the workout.', 'Dismiss', { duration: 8000 });
+    } catch (error: unknown) {
+      this.snackBar.open(deleteFailureMessage(error, 'Could not delete the workout.'), 'Dismiss', { duration: 8000 });
+    } finally {
+      this.deleting.delete(workout.$key);
     }
   }
 

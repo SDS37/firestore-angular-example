@@ -29,8 +29,8 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 
 | Id | Requirement | Observation | Status |
 |---|---|---|---|
-| TR-3.1 | `firestore.rules` allows read and write under `users/{userId}` only when `request.auth.uid == userId`, and denies everything else | Read from `firestore.rules` | Observed (file) |
-| TR-3.2 | Emulator tests prove the owner is allowed, and another user and an anonymous client are denied | `npm run test:rules`: 13 specs pass on `@firebase/rules-unit-testing` 5.0.2 against the Auth and Firestore emulators. The owner can read and write `users/{uid}` and its `meals`, `workouts`, and `schedule`; another signed-in user and an anonymous client cannot; a path outside `users` is denied | Observed |
+| TR-3.1 | `firestore.rules` allows access under `users/{userId}` only when `request.auth.uid == userId`. Meal, workout, and schedule writes must also match the shape the app saves. Everything else is denied | Read from `firestore.rules` | Observed (file) |
+| TR-3.2 | Emulator tests prove the owner is allowed, and another user and an anonymous client are denied | `npm run test:rules`: 16 specs pass on `@firebase/rules-unit-testing` 5.0.2 against the Auth and Firestore emulators. The owner can read and write `users/{uid}` and its `meals`, `workouts`, and `schedule`; another signed-in user and an anonymous client cannot; a path outside `users` is denied; a meal with no name, a workout with a negative weight, and an unknown schedule section are denied | Observed |
 | TR-3.3 | `npm run deploy:firebase` deploys the rules with hosting | `firebase.json` has `firestore.rules` and the hosting target; the script runs `firebase deploy --only firestore:rules,hosting`. Run on 2026-10-09: rules and hosting released to `fir-example-app-5c3d3`, and anonymous reads of `users` return 403 | Observed |
 
 ## TR-4 Schedule
@@ -58,7 +58,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
 | TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds. The stylesheet is `styles-KH4XGI3E.css` (109.39 kB), the same file as before the Sass module change. No Sass deprecation warning | Observed |
-| TR-6.4 | `npm test` passes | 88 of 88 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
+| TR-6.4 | `npm test` passes | 99 of 99 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
 | TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 11 (7 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
 | TR-6.7 | CI runs lint, build, and tests on every PR | `.github/workflows/verify.yml` runs on `pull_request` and on push to `master`: Node from `.nvmrc`, `npm ci` with the npm cache, then `npm run lint`, `npm run build`, `npm test`, `npm run test:rules`, and `npm run e2e` | Observed |

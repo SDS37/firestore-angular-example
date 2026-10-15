@@ -55,6 +55,9 @@ import { Meal } from 'src/app/models/meal.interface';
             <mat-label>Ingredient</mat-label>
             <input matInput [formControlName]="ind">
             <mat-hint>e.g. eggs</mat-hint>
+            <mat-error *ngIf="ingredientInvalid(ind)">
+              Ingredient is <strong>required</strong>
+            </mat-error>
           </mat-form-field>
           <button mat-icon-button type="button" (click)="removeIngredient(ind)">
             <mat-icon color="warn" aria-hidden="false" aria-label="Removes ingredient">highlight_off</mat-icon>
@@ -73,7 +76,7 @@ import { Meal } from 'src/app/models/meal.interface';
           mat-raised-button
           color="primary"
           type="button"
-          [disabled]="form.invalid"
+          [disabled]="form.invalid || pending"
           (click)="createMeal()">
           Create meal
         </button>
@@ -83,6 +86,7 @@ import { Meal } from 'src/app/models/meal.interface';
           mat-raised-button
           color="primary"
           type="button"
+          [disabled]="form.invalid || pending"
           (click)="updateMeal()">
           Save
         </button>
@@ -131,6 +135,16 @@ import { Meal } from 'src/app/models/meal.interface';
 export class MealFormComponent implements OnChanges {
 
   @Input() meal!: Meal;
+  @Input()
+  set pending(value: boolean) {
+    this.pendingValue = value;
+    if (!value) {
+      this.emitting = false;
+    }
+  }
+  get pending(): boolean {
+    return this.pendingValue;
+  }
   @Output() create = new EventEmitter<Meal>();
   @Output() update = new EventEmitter<Meal>();
   @Output() delete = new EventEmitter<Meal>();
@@ -138,10 +152,12 @@ export class MealFormComponent implements OnChanges {
   toggled = false;
   exists = false;
 
+  private pendingValue = false;
+  private emitting = false;
+
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    // empty array in fb to initialize app
-    ingredients: this.fb.array([''])
+    ingredients: this.fb.array([this.ingredientControl()], Validators.minLength(1))
   });
 
   constructor(
@@ -159,7 +175,7 @@ export class MealFormComponent implements OnChanges {
       this.form.patchValue(this.meal);
       if (this.meal.ingredients) {
         for (const ingredient of this.meal.ingredients) {
-          this.ingredients.push(new FormControl(ingredient));
+          this.ingredients.push(this.ingredientControl(ingredient));
         }
       }
     }
@@ -180,26 +196,40 @@ export class MealFormComponent implements OnChanges {
     return this.form.get('ingredients') as FormArray;
   }
 
+  ingredientInvalid(index: number): boolean {
+    const control = this.ingredients.at(index);
+    return !!control && control.invalid && control.touched;
+  }
+
   addIngredientField(): void {
-    // as FormArray
-    this.ingredients.push(new FormControl(''));
+    this.ingredients.push(this.ingredientControl());
   }
 
   removeIngredient(index: number): void {
-    // as FormArray
+    if (this.ingredients.length === 1) {
+      this.ingredients.at(0).setValue('');
+      this.ingredients.at(0).markAsTouched();
+      return;
+    }
     this.ingredients.removeAt(index);
   }
 
   createMeal(): void {
-    if (this.form.valid) {
-      this.create.emit(this.form.value);
+    if (this.form.invalid || this.pending || this.emitting) {
+      this.form.markAllAsTouched();
+      return;
     }
+    this.emitting = true;
+    this.create.emit(this.form.value);
   }
 
   updateMeal(): void {
-    if (this.form.valid) {
-      this.update.emit(this.form.value);
+    if (this.form.invalid || this.pending || this.emitting) {
+      this.form.markAllAsTouched();
+      return;
     }
+    this.emitting = true;
+    this.update.emit(this.form.value);
   }
 
   deleteMeal(): void {
@@ -208,6 +238,10 @@ export class MealFormComponent implements OnChanges {
 
   toggle(): void {
     this.toggled = !this.toggled;
+  }
+
+  private ingredientControl(value = ''): FormControl {
+    return new FormControl(value, [Validators.required, Validators.pattern(/\S/)]);
   }
 
 }

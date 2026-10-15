@@ -55,6 +55,7 @@ import { Workout } from 'src/app/models/workout.interface';
         *ngIf="open"
         [section]="selected$ | async"
         [list]="list$ | async"
+        [pending]="updating"
         (updatingItems)="updateItems($event)"
         (closingAssign)="closeAssign()">
       </schedule-assign>
@@ -74,6 +75,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   open = false;
+  updating = false;
 
   constructor(
     private store: Store,
@@ -113,16 +115,22 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   }
 
   async updateItems(items: Record<string, string[]>): Promise<void> {
+    if (this.updating) {
+      return;
+    }
+    this.updating = true;
     try {
       await this.scheduleService.updateItems(items);
       this.closeAssign();
     } catch {
+      this.updating = false;
       this.snackBar.open('Could not update the schedule.', 'Dismiss', { duration: 8000 });
     }
   }
 
   closeAssign(): void {
     this.open = false;
+    this.updating = false;
   }
 
 }

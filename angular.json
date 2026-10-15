@@ -35,6 +35,7 @@
             },
             "assets": [
               "src/assets",
+              "src/favicon.svg",
               "src/manifest.webmanifest",
               "src/robots.txt"
             ],
