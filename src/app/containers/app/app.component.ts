@@ -26,7 +26,7 @@ import { User } from 'src/app/models/user.interface';
 
 export class AppComponent implements OnInit, OnDestroy {
 
-  user$!: Observable<User | null>;
+  user$!: Observable<User | null | undefined>;
   private subscriptions = new Subscription();
 
   currentUrl: string | null = null;

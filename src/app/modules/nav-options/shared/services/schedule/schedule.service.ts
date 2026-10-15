@@ -24,8 +24,8 @@ import {
 } from 'src/app/utils/firestore.utils';
 
 // rxjs
-import { BehaviorSubject, Subject, from } from 'rxjs';
-import { tap, map, switchMap, withLatestFrom, filter } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Subject, from } from 'rxjs';
+import { tap, map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 // interfaces
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
@@ -71,8 +71,11 @@ export class ScheduleService {
   );
 
   schedule$ = observeAuthState(this.auth).pipe(
-    filter((user): user is NonNullable<typeof user> => !!user),
-    switchMap(user => this.date$.pipe(
+    switchMap(user => {
+      if (!user) {
+        return EMPTY;
+      }
+      return this.date$.pipe(
       tap((next: Date) => this.store.set('date', next)),
       map((day: Date): DateRange => {
         const startAtValue = new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime();
@@ -101,7 +104,8 @@ export class ScheduleService {
       tap((next: ScheduleList) => {
         this.store.set('schedule', next);
       })
-    ))
+    );
+    })
   );
 
   constructor(

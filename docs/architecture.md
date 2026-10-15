@@ -95,7 +95,7 @@ users/{uid}
 
 Services write in `tap`. A container must subscribe to the service stream for the store to fill, and the `ScheduleComponent` subscribes to six of them.
 
-**Today:** when the user signs out, only `user` is set to `null`; the other keys keep the previous user's data until the next query replaces it. [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) resets every key.
+Logout calls `Store.reset()`: `user` becomes `null` and every other key returns to `undefined`. Each data service `switchMap`s on the auth user and emits nothing when the user is `null`, so the previous user's listener is dropped before the next user subscribes.
 
 ## Auth flow
 

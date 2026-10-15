@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { Auth } from '@angular/fire/auth';
 import { AuthService } from './auth.service';
 import { Store } from 'src/app/store/store';
@@ -58,6 +58,35 @@ describe('AuthService', () => {
       'test@example.com',
       'secret'
     );
+  });
+
+  it('should reset every store key when auth becomes empty', () => {
+    const authState = new Subject<typeof mockFirebaseUser | null>();
+    TestBed.resetTestingModule();
+    const signedOutMocks = installFirebaseTestMocks(null);
+    signedOutMocks.observeAuthState.mockReturnValue(authState);
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        Store,
+        { provide: Auth, useValue: mockAuth }
+      ]
+    });
+
+    const signedOutStore = TestBed.inject(Store);
+    const signedOutService = TestBed.inject(AuthService);
+    signedOutStore.set('meals', []);
+    signedOutStore.set('schedule', {});
+    signedOutService.auth$.subscribe();
+
+    authState.next(mockFirebaseUser);
+    expect(signedOutStore.value.user?.uid).toBe(mockFirebaseUser.uid);
+
+    authState.next(null);
+    expect(signedOutStore.value.user).toBeNull();
+    expect(signedOutStore.value.meals).toBeUndefined();
+    expect(signedOutStore.value.schedule).toBeUndefined();
   });
 
   it('should delegate logout to firebase auth', async () => {

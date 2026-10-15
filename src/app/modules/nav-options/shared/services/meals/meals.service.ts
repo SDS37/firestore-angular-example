@@ -21,7 +21,7 @@ import {
 } from 'src/app/utils/firestore.utils';
 
 // rxjs
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
 
 // interfaces
@@ -31,8 +31,10 @@ import { Meal } from 'src/app/models/meal.interface';
 export class MealsService {
 
   meals$: Observable<Meal[]> = observeAuthState(this.auth).pipe(
-    filter((user): user is NonNullable<typeof user> => !!user),
     switchMap(user => {
+      if (!user) {
+        return EMPTY;
+      }
       const mealsCollection = getCollection(this.firestore, `users/${user.uid}/meals`);
       return observeCollectionData<Meal>(mealsCollection, { idField: '$key' });
     }),
@@ -85,7 +87,7 @@ export class MealsService {
         $exists: () => false
       });
     }
-    return this.store.select<Meal[]>('meals').pipe(
+    return this.store.select('meals').pipe(
       filter(Boolean),
       map((meals: Meal[]) => meals.find((meal: Meal) => meal.$key === paramskey))
     );

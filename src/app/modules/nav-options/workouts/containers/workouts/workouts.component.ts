@@ -85,7 +85,7 @@ export class WorkoutsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.workouts$ = this.store.select<Workout[]>('workouts');
+    this.workouts$ = this.store.select('workouts');
     this.subscription = this.workoutsService.workouts$.subscribe();
   }
 

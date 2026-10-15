@@ -36,7 +36,7 @@ import { User } from 'src/app/models/user.interface';
 })
 export class AppHeaderComponent {
 
-  @Input() user: User | null = null;
+  @Input() user: User | null | undefined = null;
   @Output() logout = new EventEmitter<void>();
 
   logoutUser(): void {

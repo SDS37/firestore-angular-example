@@ -25,7 +25,35 @@ describe('Store', () => {
 
     store.set('meals', meals);
 
-    await expect(firstValueFrom(store.select<Meal[]>('meals'))).resolves.toEqual(meals);
+    await expect(firstValueFrom(store.select('meals'))).resolves.toEqual(meals);
+  });
+
+  it('should reset every slice and leave the user signed out', () => {
+    store.set('user', { email: 'a@b.com', uid: '1', authenticated: true });
+    store.set('meals', []);
+    store.set('workouts', []);
+    store.set('date', new Date('2026-07-01T00:00:00'));
+    store.set('schedule', { morning: { meals: ['Omelette'], workouts: null, section: 'morning', timestamp: 1 } });
+    store.set('selected', {
+      type: 'meals',
+      assigned: ['Omelette'],
+      data: { meals: ['Omelette'], workouts: null, section: 'morning', timestamp: 1 },
+      section: 'morning',
+      day: new Date('2026-07-01T00:00:00')
+    });
+    store.set('list', []);
+
+    store.reset();
+
+    expect(store.value).toEqual({
+      user: null,
+      meals: undefined,
+      workouts: undefined,
+      date: undefined,
+      schedule: undefined,
+      selected: undefined,
+      list: undefined
+    });
   });
 
   it('should merge updates without dropping other slices', () => {

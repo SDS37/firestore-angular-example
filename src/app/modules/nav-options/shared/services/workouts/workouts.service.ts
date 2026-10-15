@@ -21,7 +21,7 @@ import {
 } from 'src/app/utils/firestore.utils';
 
 // rxjs
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { tap, map, filter, shareReplay, switchMap } from 'rxjs/operators';
 
 // interfaces
@@ -31,8 +31,10 @@ import { Workout } from 'src/app/models/workout.interface';
 export class WorkoutsService {
 
   workouts$: Observable<Workout[]> = observeAuthState(this.auth).pipe(
-    filter((user): user is NonNullable<typeof user> => !!user),
     switchMap(user => {
+      if (!user) {
+        return EMPTY;
+      }
       const workoutsCollection = getCollection(this.firestore, `users/${user.uid}/workouts`);
       return observeCollectionData<Workout>(workoutsCollection, { idField: '$key' });
     }),
@@ -87,7 +89,7 @@ export class WorkoutsService {
         $exists: () => false
       });
     }
-    return this.store.select<Workout[]>('workouts').pipe(
+    return this.store.select('workouts').pipe(
       filter(Boolean),
       map((workouts: Workout[]) => workouts.find((workout: Workout) => workout.$key === paramskey))
     );

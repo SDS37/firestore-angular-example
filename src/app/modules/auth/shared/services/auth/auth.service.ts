@@ -25,7 +25,7 @@ export class AuthService {
   auth$: Observable<User | null> = observeAuthState(this.auth).pipe(
     tap((next: User | null) => {
       if (!next) {
-        this.store.set('user', null);
+        this.store.reset();
         return;
       }
       const user: AppUser = {

@@ -12,7 +12,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-1.2 | The auth form rejects an empty or malformed email and an empty password | `AuthFormComponent` spec: an empty form does not emit, a valid form does. A malformed email is rejected by `Validators.email` in the form; no spec covers that case | Observed (spec and code) |
 | TR-1.3 | A signed-out user who opens a guarded route lands on `/auth/login` | `AuthGuard` spec: no user returns a `UrlTree` to `/auth/login` | Observed (spec) |
 | TR-1.4 | Logout signs out of Firebase and navigates to `/auth/login` | `AppComponent` spec | Observed (spec) |
-| TR-1.5 | Logout clears every store key, so the next user never sees the previous user's data | Today only `user` is reset | Not yet: [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) |
+| TR-1.5 | Logout clears every store key, so the next user never sees the previous user's data | `Store.reset` spec clears every key. `AuthService` spec resets the store when auth emits `null`. The meals spec shows the query path change from one uid to the next | Observed (specs) |
 
 ## TR-2 Data
 
@@ -58,7 +58,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
 | TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds. The stylesheet is `styles-KH4XGI3E.css` (109.39 kB), the same file as before the Sass module change. No Sass deprecation warning | Observed |
-| TR-6.4 | `npm test` passes | 73 of 73 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
+| TR-6.4 | `npm test` passes | 76 of 76 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
 | TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 11 (7 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
 | TR-6.7 | CI runs lint, build, and tests on every PR | `.github/workflows/verify.yml` runs on `pull_request` and on push to `master`: Node from `.nvmrc`, `npm ci` with the npm cache, then `npm run lint`, `npm run build`, `npm test`, and `npm run test:rules` | Observed |

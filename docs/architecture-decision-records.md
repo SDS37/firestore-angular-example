@@ -6,7 +6,7 @@ Each record states the context, the decision, its consequences, and the conditio
 |---|---|---|
 | [ADR-001](#adr-001-cloud-firestore-not-realtime-database) | Cloud Firestore, not the Realtime Database | Accepted |
 | [ADR-002](#adr-002-angularfire-with-explicit-overrides) | AngularFire with explicit `overrides` | Accepted |
-| [ADR-003](#adr-003-an-rxjs-store-service) | An RxJS store service | Accepted, under review in FAE-050 |
+| [ADR-003](#adr-003-an-rxjs-store-service) | An RxJS store service | Accepted |
 | [ADR-004](#adr-004-vitest-instead-of-karma) | Vitest instead of Karma and Jasmine | Accepted (implemented in FAE-031) |
 | [ADR-005](#adr-005-typescript-pinned-to-60) | TypeScript pinned to 6.0 | Accepted |
 | [ADR-006](#adr-006-grpc-js-pinned-to-1146) | `@grpc/grpc-js` pinned to 1.14.6 | Accepted |
@@ -40,11 +40,11 @@ Each record states the context, the decision, its consequences, and the conditio
 
 **Context.** Several screens share the user's meals, workouts, and the schedule. The app has a small `Store` class: one `BehaviorSubject<State>`, `select(key)`, and `set(key, value)`. The old README listed "change store to NgRx" as an idea.
 
-**Decision.** Keep the RxJS store service. Do not add NgRx. Services write to the store in `tap`; components read from it.
+**Decision.** Keep the RxJS store service. Do not add NgRx, and do not move the store to Angular signals. Services write to the store in `tap`; components read from it. [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) reviewed signals and kept this service: the store is one `BehaviorSubject`, `select` and `set` are typed by `keyof State`, and `reset()` clears every key on logout. A signals store would rewrite every reader for no new capability this app needs.
 
-**Consequences.** No extra dependency and very little code. Nothing enforces who writes which key, so the table in [architecture.md](architecture.md#state) is the contract. Logout must reset every key explicitly ([FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104)).
+**Consequences.** No extra dependency and very little code. Nothing enforces who writes which key, so the table in [architecture.md](architecture.md#state) is the contract. Logout calls `reset()` so the next user never reads the previous user's slices.
 
-**Reopen when.** [FAE-050](https://github.com/SDS37/firestore-angular-example/issues/104) decides whether the store moves to Angular signals. NgRx is reopened only if more than one feature needs undo, time travel, or effects across features.
+**Reopen when.** More than one feature needs undo, time travel, or effects across features. That reopens NgRx, not a signals rewrite of this same shape.
 
 ## ADR-004: Vitest instead of Karma
 

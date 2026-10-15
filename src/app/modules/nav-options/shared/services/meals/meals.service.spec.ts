@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, of, Subject } from 'rxjs';
 import { MealsService } from './meals.service';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 import { Store } from 'src/app/store/store';
@@ -43,6 +43,41 @@ describe('MealsService', () => {
   it('should load meals for the authenticated user into the store', async () => {
     await firstValueFrom(service.meals$);
     expect(store.value.meals).toEqual([meal]);
+  });
+
+  it('should query the signed-in user and drop that query on logout', () => {
+    const users = new Subject<typeof mockFirebaseUser | null>();
+    const secondUser = { ...mockFirebaseUser, uid: 'user-2' };
+    TestBed.resetTestingModule();
+    const switched = installFirebaseTestMocks(mockFirebaseUser);
+    switched.observeAuthState.mockReturnValue(users);
+    switched.observeCollectionData.mockReturnValue(of([meal]));
+    const paths: string[] = [];
+    switched.getCollection.mockImplementation((_firestore: unknown, path: string) => {
+      paths.push(path);
+      return { path };
+    });
+
+    TestBed.configureTestingModule({
+      providers: [
+        MealsService,
+        Store,
+        { provide: Auth, useValue: mockAuth },
+        { provide: Firestore, useValue: mockFirestore },
+        { provide: AuthService, useValue: { user: mockFirebaseUser } }
+      ]
+    });
+
+    const subscription = TestBed.inject(MealsService).meals$.subscribe();
+    users.next(mockFirebaseUser);
+    users.next(null);
+    users.next(secondUser);
+    subscription.unsubscribe();
+
+    expect(paths).toEqual([
+      `users/${mockFirebaseUser.uid}/meals`,
+      'users/user-2/meals'
+    ]);
   });
 
   it('should add meals without AngularFire metadata and with a timestamp', async () => {

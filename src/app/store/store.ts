@@ -22,17 +22,16 @@ export class Store {
 
   private behaviourSubject = new BehaviorSubject<State>(defaultState);
 
-  private store = this.behaviourSubject.asObservable().pipe(
-    distinctUntilChanged()
-  );
+  private store = this.behaviourSubject.asObservable();
 
   get value(): State {
     return this.behaviourSubject.value;
   }
 
-  select<T>(name: keyof State): Observable<T> {
+  select<K extends keyof State>(name: K): Observable<State[K]> {
     return this.store.pipe(
-      map(state => state[name] as T)
+      map(state => state[name]),
+      distinctUntilChanged()
     );
   }
 
@@ -40,6 +39,13 @@ export class Store {
     this.behaviourSubject.next({
       ...this.value,
       [name]: state
+    });
+  }
+
+  reset(): void {
+    this.behaviourSubject.next({
+      ...defaultState,
+      user: null
     });
   }
 
