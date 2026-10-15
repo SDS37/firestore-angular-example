@@ -93,9 +93,9 @@ export class WorkoutsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  async removeWorkout(event: { $key: string }): Promise<void> {
+  async removeWorkout(workout: Workout): Promise<void> {
     try {
-      await this.workoutsService.deleteWorkout(event.$key);
+      await this.workoutsService.deleteWorkout(workout.$key);
     } catch (error) {
       console.error(error);
     }

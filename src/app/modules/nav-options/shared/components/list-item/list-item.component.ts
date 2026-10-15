@@ -65,10 +65,10 @@ import { Workout } from 'src/app/models/workout.interface';
   `
 })
 
-export class ListItemComponent {
+export class ListItemComponent<T extends Meal | Workout = Meal | Workout> {
 
-  @Input() item!: Meal | Workout;
-  @Output() remove = new EventEmitter<Meal | Workout>();
+  @Input() item!: T;
+  @Output() remove = new EventEmitter<T>();
 
   toggled = false;
 

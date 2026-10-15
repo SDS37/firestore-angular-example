@@ -93,9 +93,9 @@ export class MealsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  async removeMeal(event: { $key: string }): Promise<void> {
+  async removeMeal(meal: Meal): Promise<void> {
     try {
-      await this.mealsService.deleteMeal(event.$key);
+      await this.mealsService.deleteMeal(meal.$key);
     } catch (error) {
       console.error(error);
     }
