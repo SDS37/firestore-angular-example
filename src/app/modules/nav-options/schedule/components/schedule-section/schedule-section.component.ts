@@ -7,6 +7,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
 import { JoinPipe } from '../../../shared/pipes/join.pipe';
+import { Meal } from 'src/app/models/meal.interface';
+import { Workout } from 'src/app/models/workout.interface';
+import { scheduleEntryLabel } from 'src/app/utils/schedule-labels';
 
 @Component({
   standalone: true,
@@ -28,7 +31,7 @@ import { JoinPipe } from '../../../shared/pipes/join.pipe';
       class="flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
       (click)="onSelect('meals', section.meals)">
       <mat-icon color="primary" aria-hidden="false" aria-label="Meals section">fastfood</mat-icon>
-      <span class="margin-left-10">{{ section.meals | join }}</span>
+      <span class="margin-left-10">{{ labelsFor('meals') | join }}</span>
     </div>
     <ng-template #addMeal>
       <div
@@ -48,14 +51,14 @@ import { JoinPipe } from '../../../shared/pipes/join.pipe';
       class="flex-row-container flex-justify-content-start flex-align-items-center padding-10 cursor-pointer background-color-gray-1"
       (click)="onSelect('workouts', section.workouts)">
       <mat-icon color="primary" aria-hidden="false" aria-label="Workouts section">fitness_center</mat-icon>
-      <span class="margin-left-10">{{ section.workouts | join }}</span>
+      <span class="margin-left-10">{{ labelsFor('workouts') | join }}</span>
     </div>
     <ng-template #addWorkout>
       <div
         id="div-as-button"
         class="flex-row-container flex-justify-content-start flex-align-items-center cursor-pointer padding-10 background-color-gray-2"
         (click)="onSelect('workouts')">
-        <mat-icon color="primary" aria-hidden="false" aria-label="Assign meal">control_point</mat-icon>
+        <mat-icon color="primary" aria-hidden="false" aria-label="Assign workout">control_point</mat-icon>
         <span class="margin-left-10">Assign workout</span>
       </div>
     </ng-template>
@@ -70,10 +73,18 @@ export class ScheduleSectionComponent {
 
   @Input() name!: string;
   @Input() section!: ScheduleItem;
+  @Input() meals: Meal[] | null | undefined = null;
+  @Input() workouts: Workout[] | null | undefined = null;
 
   @Output() selectingSection = new EventEmitter<Pick<ScheduleSectionEvent, 'type' | 'assigned' | 'data'>>();
 
   // constructor() {}
+
+  labelsFor(kind: 'meals' | 'workouts'): string[] {
+    const values = this.section[kind] ?? [];
+    const catalog = kind === 'meals' ? this.meals : this.workouts;
+    return values.map(value => scheduleEntryLabel(value, catalog));
+  }
 
   onSelect(type: string, assigned: string[] = []): void {
     const data: ScheduleItem = this.section;

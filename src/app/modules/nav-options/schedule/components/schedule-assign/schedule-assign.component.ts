@@ -49,8 +49,8 @@ import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.inte
           id="clickable-div-list"
           *ngFor="let item of list"
           class="flex-row-container flex-justify-content-stretch flex-align-items-center padding-10 margin-bottom-10 cursor-pointer"
-          [class.active]="exists(item.name)"
-          (click)="toggleItem(item.name)">
+          [class.active]="exists(item)"
+          (click)="toggleItem(item)">
           <mat-icon aria-hidden="false" aria-label="Meals/Workouts icon">playlist_add</mat-icon>
           <span class="margin-left-10">{{ item.name }}</span>
         </div>
@@ -92,22 +92,20 @@ export class ScheduleAssignComponent implements OnInit {
     this.selected = [...(this.section?.assigned ?? [])];
   }
 
-  toggleItem(name: string): void {
-    if (this.exists(name)) {
-      this.selected = this.selected.filter( ( item: string ) => item !== name);
-    } else {
-      this.selected = [...this.selected, name];
+  toggleItem(item: Meal | Workout): void {
+    if (this.exists(item)) {
+      this.selected = this.selected.filter(value => value !== item.$key && value !== item.name);
+      return;
     }
+    this.selected = [...this.selected.filter(value => value !== item.name), item.$key];
   }
 
   getRoute(name: string | undefined): string[] {
     return [`../${name}/new`];
   }
 
-  exists(name: string): boolean {
-    // double bang to convert to boolean
-    // ~ bitwise operator NOT. inverts all the bits
-    return !!~this.selected.indexOf(name);
+  exists(item: Meal | Workout): boolean {
+    return this.selected.includes(item.$key) || this.selected.includes(item.name);
   }
 
   updateAssign(): void {
@@ -115,10 +113,13 @@ export class ScheduleAssignComponent implements OnInit {
       return;
     }
     this.updatingItems.emit({
-      // creating property type dynamically: meals or workouts
-      [this.section.type]: this.selected
+      [this.section.type]: this.selected.map(value => this.idFor(value))
     });
+  }
 
+  private idFor(value: string): string {
+    const match = this.list?.find(item => item.$key === value || item.name === value);
+    return match?.$key ?? value;
   }
 
   cancelAssign(): void {

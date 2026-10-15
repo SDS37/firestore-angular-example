@@ -32,4 +32,20 @@ describe('ScheduleSectionComponent', () => {
       data: component.section
     });
   });
+
+  it('should resolve stored ids to names and mark a missing meal deleted', () => {
+    component.meals = [{
+      name: 'Omelette',
+      ingredients: ['eggs'],
+      timestamp: 1,
+      $key: 'meal-1',
+      $exists: () => true
+    }];
+    component.section = {
+      ...component.section,
+      meals: ['meal-1', 'meal-9']
+    };
+
+    expect(component.labelsFor('meals')).toEqual(['Omelette', 'Deleted']);
+  });
 });

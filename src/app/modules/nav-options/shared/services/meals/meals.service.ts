@@ -7,6 +7,7 @@ import { Store } from 'src/app/store/store';
 
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
+import { ScheduleService } from 'src/app/modules/nav-options/shared/services/schedule/schedule.service';
 
 // utils
 import { toFirestoreData } from 'src/app/utils/firestore-document';
@@ -48,7 +49,8 @@ export class MealsService {
     private firestore: Firestore,
     private auth: Auth,
     private store: Store,
-    private authService: AuthService
+    private authService: AuthService,
+    private scheduleService: ScheduleService
   ) {}
 
   get uid(): string {
@@ -72,9 +74,11 @@ export class MealsService {
     return updateDocument(mealDoc, toFirestoreData(meal));
   }
 
-  deleteMeal(key: string): Promise<void> {
+  async deleteMeal(key: string): Promise<void> {
+    const name = this.store.value.meals?.find(meal => meal.$key === key)?.name;
     const mealDoc = getDocument(this.firestore, `users/${this.uid}/meals/${key}`);
-    return deleteDocument(mealDoc);
+    await deleteDocument(mealDoc);
+    await this.scheduleService.removeReferences('meals', key, name);
   }
 
   getMeal(paramskey: string): Observable<Meal | undefined> {

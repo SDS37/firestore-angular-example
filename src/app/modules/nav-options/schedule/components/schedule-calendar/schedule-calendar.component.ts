@@ -8,6 +8,8 @@ import { ScheduleSectionComponent } from '../schedule-section/schedule-section.c
 import { ScheduleItem } from 'src/app/models/schedule-item.interface';
 import { ScheduleList } from 'src/app/models/schedule-list.interface';
 import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.interface';
+import { Meal } from 'src/app/models/meal.interface';
+import { Workout } from 'src/app/models/workout.interface';
 
 @Component({
   standalone: true,
@@ -26,6 +28,8 @@ import { ScheduleSectionEvent } from 'src/app/models/schedule-section-event.inte
     *ngFor="let section of sections"
     [name]="section.name"
     [section]="getSection(section.key)"
+    [meals]="meals"
+    [workouts]="workouts"
     (selectingSection)="selectSection($event, section.key)">
   </schedule-section>
   `
@@ -41,6 +45,8 @@ export class ScheduleCalendarComponent implements OnChanges {
     }
   }
   @Input() items: ScheduleList | null | undefined = null;
+  @Input() meals: Meal[] | null | undefined = null;
+  @Input() workouts: Workout[] | null | undefined = null;
 
   @Output() changingDate = new EventEmitter<Date>();
   @Output() selectedSection = new EventEmitter<ScheduleSectionEvent>();

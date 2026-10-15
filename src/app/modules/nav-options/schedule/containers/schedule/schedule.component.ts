@@ -45,6 +45,8 @@ import { Workout } from 'src/app/models/workout.interface';
         class="flex-1-1-auto overflow-y-scroll scrollbar-width-none"
         [date]="date$ | async"
         [items]="schedule$ | async"
+        [meals]="meals$ | async"
+        [workouts]="workouts$ | async"
         (changingDate)="changeDate($event)"
         (selectedSection)="changeSection($event)">
       </schedule-calendar>
@@ -64,6 +66,8 @@ import { Workout } from 'src/app/models/workout.interface';
 export class ScheduleComponent implements OnInit, OnDestroy {
 
   date$!: Observable<Date | undefined>;
+  meals$!: Observable<Meal[] | undefined>;
+  workouts$!: Observable<Workout[] | undefined>;
   selected$!: Observable<ScheduleSectionEvent | undefined>;
   list$!: Observable<(Meal | Workout)[] | undefined>;
   schedule$!: Observable<ScheduleList | undefined>;
@@ -81,6 +85,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.date$ = this.store.select('date');
+    this.meals$ = this.store.select('meals');
+    this.workouts$ = this.store.select('workouts');
     this.schedule$ = this.store.select('schedule');
     this.selected$ = this.store.select('selected');
     this.list$ = this.store.select('list');

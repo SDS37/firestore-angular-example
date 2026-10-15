@@ -24,7 +24,7 @@ import {
 } from 'src/app/utils/firestore.utils';
 
 // rxjs
-import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, Subject, firstValueFrom } from 'rxjs';
 import { tap, map, switchMap } from 'rxjs/operators';
 
 // interfaces
@@ -122,6 +122,27 @@ export class ScheduleService {
       return this.updateSection(id, payload);
     }
     return this.createSection(payload);
+  }
+
+  async removeReferences(kind: 'meals' | 'workouts', id: string, name?: string): Promise<void> {
+    const scheduleCollection = getCollection(this.firestore, `users/${this.uid}/schedule`);
+    const sections = await firstValueFrom(
+      observeCollectionData<ScheduleItem>(scheduleCollection, { idField: '$key' })
+    );
+    await Promise.all(sections.map(section => {
+      const current = section[kind];
+      if (!current || !section.$key) {
+        return Promise.resolve();
+      }
+      const next = current.filter(value => value !== id && value !== name);
+      if (next.length === current.length) {
+        return Promise.resolve();
+      }
+      return this.updateSection(section.$key, {
+        ...section,
+        [kind]: next.length ? next : null
+      });
+    }));
   }
 
   updateDate(date: Date): void {

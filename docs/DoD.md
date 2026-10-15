@@ -16,9 +16,9 @@ The roadmap is done when a colleague can follow the root README and every box be
 - [x] Lint, build, unit tests, and rules tests run in GitHub Actions on every PR, and `master` requires that check (M4)
 - [x] Rules tests on the emulator prove that a user cannot read or write another user's meals, workouts, or schedule (M4)
 - [x] A PR gets a preview URL, and a merge to `master` deploys hosting and rules (M4)
-- [ ] Logging out clears every store key. A second user, without a reload, sees only their own data (M5)
-- [ ] Schedule entries reference meals and workouts by id. Deleting a meal leaves no dangling entry (M5)
-- [ ] A rejected write shows a message to the user (M5)
+- [x] Logging out clears every store key. A second user, without a reload, sees only their own data (M5)
+- [x] Schedule entries reference meals and workouts by id. Deleting a meal leaves no dangling entry (M5)
+- [x] A rejected write shows a message to the user (M5)
 - [ ] Pinch zoom works and a keyboard-only user can assign a meal on the schedule (M6)
 - [ ] Playwright on the emulators covers register, login, create, assign, logout, and the two-user isolation path, in CI (M7)
 

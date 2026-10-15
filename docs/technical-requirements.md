@@ -40,7 +40,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-4.1 | The schedule for a day is the documents whose `timestamp` falls inside that local day, keyed by section | `ScheduleService` specs: documents map to a section-keyed object; the first wins on a duplicate section | Observed (specs) |
 | TR-4.2 | Assigning to a section updates its document if it exists, otherwise creates one | `ScheduleService` specs | Observed (specs) |
 | TR-4.3 | The week view selects a day and moves by whole weeks | `ScheduleCalendarComponent` and `ScheduleControlsComponent` specs | Observed (specs) |
-| TR-4.4 | Schedule entries reference meals and workouts by id; deleting one leaves no dangling entry | Today entries hold names | Not yet: [FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106) |
+| TR-4.4 | Schedule entries reference meals and workouts by id; deleting one leaves no dangling entry | Assign emits ids. `scheduleEntryLabel` resolves an id to the current name, keeps a legacy name that still matches, and labels anything else deleted. `ScheduleService.removeReferences` drops the id and the legacy name from schedule documents on delete | Observed (specs) |
 
 ## TR-5 PWA and accessibility
 
@@ -58,7 +58,7 @@ Observations below were taken on 2026-10-08 at `f31d0fc` with Node 24.20.0 after
 | TR-6.1 | `npm ci` installs on the Node version in `.nvmrc` or `engines` | Installs on Node 24.22.0, the version in `.nvmrc`. Node 14.19.1 is outside `engines` | Observed |
 | TR-6.2 | `npm run lint` reports no errors | No errors and no warnings | Observed |
 | TR-6.3 | `npm run build` succeeds | Succeeds. The stylesheet is `styles-KH4XGI3E.css` (109.39 kB), the same file as before the Sass module change. No Sass deprecation warning | Observed |
-| TR-6.4 | `npm test` passes | 81 of 81 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
+| TR-6.4 | `npm test` passes | 86 of 86 specs pass under Vitest 5.0.4 and jsdom 30.1.2, and `npm test` writes `coverage/firebase-example-app` | Observed |
 | TR-6.5 | `npm ls` reports one `firebase` version and no invalid package | On 2026-10-14, `npm ci` succeeds without `legacy-peer-deps`. `npm ls firebase rxfire` exits 0: one `firebase` 12.19.0 and `rxfire` 6.2.0. Before the override, 11.10.0 and 12.15.0 were both installed and `npm ls` exited with `ELSPROBLEMS` | Observed |
 | TR-6.6 | `npm audit --omit=dev` reports no critical or high | `npm audit --omit=dev` reports none. `npm audit` reports 11 (7 high, 4 moderate), all in `devDependencies`, listed in the dependencies standard | Observed |
 | TR-6.7 | CI runs lint, build, and tests on every PR | `.github/workflows/verify.yml` runs on `pull_request` and on push to `master`: Node from `.nvmrc`, `npm ci` with the npm cache, then `npm run lint`, `npm run build`, `npm test`, and `npm run test:rules` | Observed |

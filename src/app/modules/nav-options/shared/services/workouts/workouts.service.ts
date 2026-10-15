@@ -7,6 +7,7 @@ import { Store } from 'src/app/store/store';
 
 // services
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
+import { ScheduleService } from 'src/app/modules/nav-options/shared/services/schedule/schedule.service';
 
 // utils
 import { toFirestoreData } from 'src/app/utils/firestore-document';
@@ -48,7 +49,8 @@ export class WorkoutsService {
     private firestore: Firestore,
     private auth: Auth,
     private store: Store,
-    private authService: AuthService
+    private authService: AuthService,
+    private scheduleService: ScheduleService
   ) {}
 
   get uid(): string {
@@ -72,9 +74,11 @@ export class WorkoutsService {
     return updateDocument(workoutDoc, toFirestoreData(workout));
   }
 
-  deleteWorkout(key: string): Promise<void> {
+  async deleteWorkout(key: string): Promise<void> {
+    const name = this.store.value.workouts?.find(workout => workout.$key === key)?.name;
     const workoutDoc = getDocument(this.firestore, `users/${this.uid}/workouts/${key}`);
-    return deleteDocument(workoutDoc);
+    await deleteDocument(workoutDoc);
+    await this.scheduleService.removeReferences('workouts', key, name);
   }
 
   getWorkout(paramskey: string): Observable<Workout | undefined> {

@@ -29,22 +29,28 @@ describe('ScheduleAssignComponent', () => {
     component.ngOnInit();
   });
 
-  it('should toggle selected assignment items', () => {
-    expect(component.exists('Soup')).toBe(true);
+  it('should toggle by document id and treat a legacy name as selected', () => {
+    const soup = component.list?.[0];
+    expect(soup).toBeDefined();
+    if (!soup) {
+      return;
+    }
 
-    component.toggleItem('Soup');
-    expect(component.exists('Soup')).toBe(false);
+    expect(component.exists(soup)).toBe(true);
 
-    component.toggleItem('Salad');
-    expect(component.exists('Salad')).toBe(true);
+    component.toggleItem(soup);
+    expect(component.exists(soup)).toBe(false);
+
+    component.toggleItem(soup);
+    expect(component.exists(soup)).toBe(true);
   });
 
-  it('should emit updated assignments', () => {
+  it('should emit document ids, including a legacy name rewritten to its id', () => {
     vi.spyOn(component.updatingItems, 'emit');
 
     component.updateAssign();
 
-    expect(component.updatingItems.emit).toHaveBeenCalledWith({ meals: ['Soup'] });
+    expect(component.updatingItems.emit).toHaveBeenCalledWith({ meals: ['1'] });
   });
 
   it('should build create routes from section type', () => {

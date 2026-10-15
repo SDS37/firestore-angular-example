@@ -76,7 +76,7 @@ users/{uid}
 - `timestamp` is milliseconds since the epoch. Meals and workouts get `Date.now()` on create; a schedule document gets the selected day (`new Date(day).getTime()`).
 - `section` is one of `morning`, `lunch`, `evening`, `snacks`. The schedule for a day is the documents whose `timestamp` falls inside that local day.
 - `type` is `strength` or `endurance`. The form writes both groups; the UI reads the one that matches `type`.
-- **Today:** `schedule.meals` and `schedule.workouts` hold meal and workout **names**, not ids. Renaming or deleting a meal leaves the old name in the schedule. [FAE-052](https://github.com/SDS37/firestore-angular-example/issues/106) changes this to ids.
+- `schedule.meals` and `schedule.workouts` hold document ids. The schedule resolves an id to the current name, and a stored name from an older document still displays when that name matches one meal or workout. Anything else displays as deleted. Deleting a meal or workout removes its id and its legacy name from schedule documents.
 - `$key` (the document id) and `$exists` are added on the client. `toFirestoreData()` strips them before every write.
 
 ## State

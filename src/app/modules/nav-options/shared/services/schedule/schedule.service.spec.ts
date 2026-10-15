@@ -106,6 +106,21 @@ describe('ScheduleService', () => {
     expect(mocks.updateDocument).toHaveBeenCalled();
   });
 
+  it('should remove a deleted meal id and its legacy name from schedule sections', async () => {
+    mocks.observeCollectionData.mockReturnValue(of([{
+      ...scheduleItem,
+      meals: ['meal-1', 'Omelette', 'Toast'],
+      $key: 'schedule-1'
+    }]));
+
+    await service.removeReferences('meals', 'meal-1', 'Omelette');
+
+    expect(mocks.updateDocument).toHaveBeenCalled();
+    const payload = mocks.updateDocument.mock.calls.at(-1)?.[1] as ScheduleItem;
+    expect(payload.meals).toEqual(['Toast']);
+    expect(payload.$key).toBeUndefined();
+  });
+
   it('should expose meals or workouts for the selected section type', async () => {
     const meals: Meal[] = [{
       name: 'Soup',
