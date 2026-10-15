@@ -1,5 +1,6 @@
+import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ScheduleComponent } from './schedule.component';
 import { ScheduleService } from 'src/app/modules/nav-options/shared/services/schedule/schedule.service';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
@@ -14,19 +15,26 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ScheduleComponent', () => {
   let component: ScheduleComponent;
-  let scheduleService: jasmine.SpyObj<ScheduleService>;
+  let scheduleService: {
+    updateDate: Mock;
+    selectSection: Mock;
+    updateItems: Mock;
+    schedule$: Observable<any>;
+    selected$: Observable<any>;
+    list$: Observable<any>;
+    items$: Observable<any>;
+  };
 
   beforeEach(async () => {
-    scheduleService = jasmine.createSpyObj('ScheduleService', [
-      'updateDate',
-      'selectSection',
-      'updateItems'
-    ], {
+    scheduleService = {
+      updateDate: vi.fn(),
+      selectSection: vi.fn(),
+      updateItems: vi.fn(),
       schedule$: of({}),
       selected$: of(null),
       list$: of([]),
       items$: of(undefined)
-    });
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -66,7 +74,7 @@ describe('ScheduleComponent', () => {
 
     component.changeSection(event);
 
-    expect(component.open).toBeTrue();
+    expect(component.open).toBe(true);
     expect(scheduleService.selectSection).toHaveBeenCalledWith(event);
   });
 
@@ -76,6 +84,6 @@ describe('ScheduleComponent', () => {
     component.updateItems({ meals: ['Soup'] });
 
     expect(scheduleService.updateItems).toHaveBeenCalledWith({ meals: ['Soup'] });
-    expect(component.open).toBeFalse();
+    expect(component.open).toBe(false);
   });
 });

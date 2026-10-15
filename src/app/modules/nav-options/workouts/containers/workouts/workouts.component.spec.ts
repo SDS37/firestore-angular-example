@@ -1,5 +1,6 @@
+import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { WorkoutsComponent } from './workouts.component';
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 import { Store } from 'src/app/store/store';
@@ -9,13 +10,13 @@ import { Workout } from 'src/app/models/workout.interface';
 
 describe('WorkoutsComponent', () => {
   let component: WorkoutsComponent;
-  let workoutsService: jasmine.SpyObj<WorkoutsService>;
+  let workoutsService: { deleteWorkout: Mock; workouts$: Observable<any> };
 
   beforeEach(async () => {
-    workoutsService = jasmine.createSpyObj('WorkoutsService', ['deleteWorkout'], {
+    workoutsService = {
+      deleteWorkout: vi.fn().mockResolvedValue(undefined),
       workouts$: of([])
-    });
-    workoutsService.deleteWorkout.and.returnValue(Promise.resolve());
+    };
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, WorkoutsComponent, ListItemComponent],

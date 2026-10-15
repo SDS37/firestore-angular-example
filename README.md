@@ -4,7 +4,7 @@ A meal and workout planner with a weekly schedule. Cloud Firestore is the reacti
 
 License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-app-5c3d3.web.app)
 
-**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs in ChromeHeadless. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 12, all in dev dependencies, and no CI runs on pull requests. The [roadmap](docs/roadmap.md) fixes those in order.
+**Today:** `master` runs Angular 22.2.2 with `@angular/fire` 20.1.1 and the Firebase JS SDK. On Node 24.22.0, `npm ci` installs the tree, `npm run lint` reports no problems, `npm run build` writes `dist/firebase-example-app/browser`, and `npm test` passes 73 of 73 specs under Vitest and jsdom. Components are standalone, and each feature loads lazily. A user registers with an email and a password, keeps lists of meals and workouts, and assigns them to the morning, lunch, evening, and snacks sections of any day. Every document lives under `users/{uid}`, and the rules allow access only to that uid. One Firebase SDK (12.19.0) is installed: `overrides` map AngularFire's `firebase` onto the root version and pin `rxfire` to 6.2.0. `npm audit --omit=dev` reports no vulnerabilities. `npm audit` reports 11, all in dev dependencies, and no CI runs on pull requests. The [roadmap](docs/roadmap.md) fixes those in order.
 
 ## Current status
 
@@ -87,7 +87,6 @@ firestore-angular-example/
 
 - Node in the `engines` range of `package.json`: 22.22.3 or newer on 22, 24.15.0 or newer on 24, or 26 and later. `.nvmrc` names 24.22.0. On older Node, npm only warns, and the Angular CLI then refuses to run.
 - [nvm](https://github.com/nvm-sh/nvm), or any Node version manager, to get that version. The install steps below use nvm.
-- Google Chrome, for `npm test`.
 - A Firebase project, only if you want your own data or your own deploy. The Firebase CLI comes with the dev dependencies as `npx firebase`.
 
 ## Install
@@ -142,7 +141,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 | `npm run ng -- <args>` | Runs the project's Angular CLI, for example `npm run ng -- version` |
 | `npm start` | `ng serve` with the development configuration on `http://localhost:4200` |
 | `npm run build` | `ng build` with the production configuration into `dist/firebase-example-app/browser` |
-| `npm test` | `ng test` once, headless, in ChromeHeadless |
+| `npm test` | `ng test` once, in Vitest and jsdom, and writes `coverage/firebase-example-app` |
 | `npm run lint` | ESLint over `src/**/*.ts` and `src/**/*.html` |
 | `npm run verify` | `lint`, then `build`, then `test`. Run it before every PR |
 | `npm run deploy:firebase` | `npm run build`, then `firebase deploy --only firestore:rules,hosting` |

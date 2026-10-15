@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppHeaderComponent } from './app-header.component';
 
@@ -23,7 +24,7 @@ describe('AppHeaderComponent', () => {
   });
 
   it('should emit logout when the button is clicked', () => {
-    spyOn(fixture.componentInstance.logout, 'emit');
+    vi.spyOn(fixture.componentInstance.logout, 'emit');
     fixture.nativeElement.querySelector('button').click();
     expect(fixture.componentInstance.logout.emit).toHaveBeenCalled();
   });

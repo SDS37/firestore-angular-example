@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleCalendarComponent } from './schedule-calendar.component';
 import { ScheduleControlsComponent } from '../schedule-controls/schedule-controls.component';
@@ -37,7 +38,7 @@ describe('ScheduleCalendarComponent', () => {
   });
 
   it('should emit selected section events with the current day', () => {
-    spyOn(component.selectedSection, 'emit');
+    vi.spyOn(component.selectedSection, 'emit');
 
     component.selectSection({
       type: 'meals',
@@ -45,14 +46,14 @@ describe('ScheduleCalendarComponent', () => {
       data: component.items.morning
     }, 'morning');
 
-    expect(component.selectedSection.emit).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.selectedSection.emit).toHaveBeenCalledWith(expect.objectContaining({
       section: 'morning',
       day: component.selectedDay
     }));
   });
 
   it('should emit date changes when selecting a day in the week', () => {
-    spyOn(component.changingDate, 'emit');
+    vi.spyOn(component.changingDate, 'emit');
 
     component.selectDay(2);
 
@@ -60,7 +61,7 @@ describe('ScheduleCalendarComponent', () => {
   });
 
   it('should move the calendar by whole weeks', () => {
-    spyOn(component.changingDate, 'emit');
+    vi.spyOn(component.changingDate, 'emit');
 
     component.onMovingDate(1);
 

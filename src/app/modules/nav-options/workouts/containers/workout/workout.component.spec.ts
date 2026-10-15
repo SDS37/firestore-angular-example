@@ -1,6 +1,7 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { Mock, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of, EMPTY } from 'rxjs';
+import { Observable, of, EMPTY } from 'rxjs';
 import { WorkoutComponent } from './workout.component';
 import { WorkoutsService } from 'src/app/modules/nav-options/shared/services/workouts/workouts.service';
 import { WorkoutFormComponent } from '../../components/workout-form/workout-form.component';
@@ -11,14 +12,24 @@ import { Workout } from 'src/app/models/workout.interface';
 
 describe('WorkoutComponent', () => {
   let component: WorkoutComponent;
-  let workoutsService: jasmine.SpyObj<WorkoutsService>;
-  let router: jasmine.SpyObj<Router>;
+  let workoutsService: {
+    addWorkout: Mock;
+    updateWorkout: Mock;
+    deleteWorkout: Mock;
+    getWorkout: Mock;
+    workouts$: Observable<any>;
+  };
+  let router: { navigate: Mock };
 
   beforeEach(async () => {
-    workoutsService = jasmine.createSpyObj('WorkoutsService', ['addWorkout', 'updateWorkout', 'deleteWorkout', 'getWorkout'], {
+    workoutsService = {
+      addWorkout: vi.fn(),
+      updateWorkout: vi.fn(),
+      deleteWorkout: vi.fn(),
+      getWorkout: vi.fn(),
       workouts$: of([])
-    });
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    };
+    router = { navigate: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, ReactiveFormsModule, WorkoutComponent, WorkoutFormComponent, WorkoutTypeComponent],
@@ -38,19 +49,18 @@ describe('WorkoutComponent', () => {
     component = TestBed.createComponent(WorkoutComponent).componentInstance;
   });
 
-  it('should redirect to workouts when an unknown id is requested', fakeAsync(() => {
-    workoutsService.getWorkout.and.returnValue(of(undefined));
+  it('should redirect to workouts when an unknown id is requested', () => {
+    workoutsService.getWorkout.mockReturnValue(of(undefined));
 
     component.ngOnInit();
     component.workout$.subscribe();
-    tick();
 
     expect(router.navigate).toHaveBeenCalledWith(['/workouts']);
-  }));
+  });
 
   it('should create workouts and navigate back to the list', async () => {
-    workoutsService.getWorkout.and.returnValue(EMPTY);
-    workoutsService.addWorkout.and.returnValue(Promise.resolve({ id: 'new-workout' } as never));
+    workoutsService.getWorkout.mockReturnValue(EMPTY);
+    workoutsService.addWorkout.mockReturnValue(Promise.resolve({ id: 'new-workout' } as never));
     component.ngOnInit();
 
     const workout: Workout = {

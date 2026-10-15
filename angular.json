@@ -91,20 +91,12 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/assets",
-              "src/manifest.webmanifest"
-            ],
-            "styles": [
-              "@angular/material/prebuilt-themes/deeppurple-amber.css",
-              "src/styles.scss"
-            ],
-            "karmaConfig": "karma.conf.js"
+            "runner": "vitest",
+            "coverage": true,
+            "coverageReporters": ["text-summary", "html"]
           }
         },
         "lint": {

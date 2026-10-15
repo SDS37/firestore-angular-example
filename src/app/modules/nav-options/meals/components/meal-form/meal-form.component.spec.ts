@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -19,12 +20,12 @@ describe('MealFormComponent', () => {
   });
 
   it('should emit create events for valid new meals', () => {
-    spyOn(component.create, 'emit');
+    vi.spyOn(component.create, 'emit');
     component.form.setValue({ name: 'Toast', ingredients: ['bread'] });
 
     component.createMeal();
 
-    expect(component.create.emit).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.create.emit).toHaveBeenCalledWith(expect.objectContaining({
       name: 'Toast',
       ingredients: ['bread']
     }));
@@ -49,7 +50,7 @@ describe('MealFormComponent', () => {
       }
     });
 
-    expect(component.exists).toBeTrue();
+    expect(component.exists).toBe(true);
     expect(component.form.get('name')?.value).toBe('Omelette');
     expect(component.ingredients.length).toBe(2);
   });

@@ -1,6 +1,7 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { Mock, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of, EMPTY } from 'rxjs';
+import { Observable, of, EMPTY } from 'rxjs';
 import { MealComponent } from './meal.component';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 import { MealFormComponent } from '../../components/meal-form/meal-form.component';
@@ -10,14 +11,24 @@ import { Meal } from 'src/app/models/meal.interface';
 
 describe('MealComponent', () => {
   let component: MealComponent;
-  let mealsService: jasmine.SpyObj<MealsService>;
-  let router: jasmine.SpyObj<Router>;
+  let mealsService: {
+    addMeal: Mock;
+    updateMeal: Mock;
+    deleteMeal: Mock;
+    getMeal: Mock;
+    meals$: Observable<any>;
+  };
+  let router: { navigate: Mock };
 
   beforeEach(async () => {
-    mealsService = jasmine.createSpyObj('MealsService', ['addMeal', 'updateMeal', 'deleteMeal', 'getMeal'], {
+    mealsService = {
+      addMeal: vi.fn(),
+      updateMeal: vi.fn(),
+      deleteMeal: vi.fn(),
+      getMeal: vi.fn(),
       meals$: of([])
-    });
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    };
+    router = { navigate: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, ReactiveFormsModule, MealComponent, MealFormComponent],
@@ -37,19 +48,18 @@ describe('MealComponent', () => {
     component = TestBed.createComponent(MealComponent).componentInstance;
   });
 
-  it('should redirect to meals when an unknown id is requested', fakeAsync(() => {
-    mealsService.getMeal.and.returnValue(of(undefined));
+  it('should redirect to meals when an unknown id is requested', () => {
+    mealsService.getMeal.mockReturnValue(of(undefined));
 
     component.ngOnInit();
     component.meal$.subscribe();
-    tick();
 
     expect(router.navigate).toHaveBeenCalledWith(['/meals']);
-  }));
+  });
 
   it('should create meals and navigate back to the list', async () => {
-    mealsService.getMeal.and.returnValue(EMPTY);
-    mealsService.addMeal.and.returnValue(Promise.resolve({ id: 'new-meal' } as never));
+    mealsService.getMeal.mockReturnValue(EMPTY);
+    mealsService.addMeal.mockReturnValue(Promise.resolve({ id: 'new-meal' } as never));
     component.ngOnInit();
 
     const meal: Meal = {

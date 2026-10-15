@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ListItemComponent } from './list-item.component';
@@ -38,7 +39,7 @@ describe('ListItemComponent', () => {
   it('should emit remove events', () => {
     const item = { name: 'Soup', ingredients: ['water'], $key: 'meal-1' };
     fixture.componentInstance.item = item;
-    spyOn(fixture.componentInstance.remove, 'emit');
+    vi.spyOn(fixture.componentInstance.remove, 'emit');
 
     fixture.componentInstance.removeItem();
 

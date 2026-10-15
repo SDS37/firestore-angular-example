@@ -1,4 +1,6 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 import { Router, UrlTree } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { AuthGuard } from './auth.guard';
@@ -20,7 +22,7 @@ describe('AuthGuard', () => {
         {
           provide: Router,
           useValue: {
-            createUrlTree: jasmine.createSpy('createUrlTree').and.callFake(
+            createUrlTree: vi.fn().mockImplementation(
               (commands: string[]) => ({ commands } as unknown as UrlTree)
             )
           }
@@ -32,28 +34,23 @@ describe('AuthGuard', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should allow authenticated users', (done) => {
-    mocks.onAuthStateChanged.and.callFake((_auth, next) => {
+  it('should allow authenticated users', async () => {
+    mocks.onAuthStateChanged.mockImplementation((_auth, next) => {
       (next as (value: unknown) => void)(mockFirebaseUser);
       return () => undefined;
     });
 
-    guard.canActivate().subscribe(result => {
-      expect(result).toBeTrue();
-      done();
-    });
+    await expect(firstValueFrom(guard.canActivate())).resolves.toBe(true);
   });
 
-  it('should redirect unauthenticated users to login', (done) => {
-    mocks.onAuthStateChanged.and.callFake((_auth, next) => {
+  it('should redirect unauthenticated users to login', async () => {
+    mocks.onAuthStateChanged.mockImplementation((_auth, next) => {
       (next as (value: unknown) => void)(null);
       return () => undefined;
     });
 
-    guard.canActivate().subscribe(result => {
-      expect(router.createUrlTree).toHaveBeenCalledWith(['/auth/login']);
-      expect(result).toEqual({ commands: ['/auth/login'] } as unknown as UrlTree);
-      done();
-    });
+    const result = await firstValueFrom(guard.canActivate());
+    expect(router.createUrlTree).toHaveBeenCalledWith(['/auth/login']);
+    expect(result).toEqual({ commands: ['/auth/login'] } as unknown as UrlTree);
   });
 });

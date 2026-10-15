@@ -1,3 +1,4 @@
+import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject, of } from 'rxjs';
@@ -10,13 +11,13 @@ import { Store } from 'src/app/store/store';
 
 describe('AppComponent', () => {
   let routerEvents$: Subject<NavigationEnd>;
-  let logoutSpy: jasmine.Spy;
-  let navigateSpy: jasmine.Spy;
+  let logoutSpy: Mock;
+  let navigateSpy: Mock;
 
   beforeEach(async () => {
     routerEvents$ = new Subject<NavigationEnd>();
-    logoutSpy = jasmine.createSpy('logoutUser').and.returnValue(Promise.resolve());
-    navigateSpy = jasmine.createSpy('navigate');
+    logoutSpy = vi.fn().mockReturnValue(Promise.resolve());
+    navigateSpy = vi.fn();
 
     await TestBed.configureTestingModule({
       imports: [AppComponent, AppHeaderComponent, AppNavComponent, RouterTestingModule],
@@ -50,10 +51,10 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     routerEvents$.next(new NavigationEnd(1, '/auth/login', '/auth/login'));
-    expect(fixture.componentInstance.isAuthUrl).toBeTrue();
+    expect(fixture.componentInstance.isAuthUrl).toBe(true);
 
     routerEvents$.next(new NavigationEnd(2, '/schedule', '/schedule'));
-    expect(fixture.componentInstance.isAuthUrl).toBeFalse();
+    expect(fixture.componentInstance.isAuthUrl).toBe(false);
   });
 
   it('should logout and navigate to login', async () => {

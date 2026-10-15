@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleAssignComponent } from './schedule-assign.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -23,17 +24,17 @@ describe('ScheduleAssignComponent', () => {
   });
 
   it('should toggle selected assignment items', () => {
-    expect(component.exists('Soup')).toBeTrue();
+    expect(component.exists('Soup')).toBe(true);
 
     component.toggleItem('Soup');
-    expect(component.exists('Soup')).toBeFalse();
+    expect(component.exists('Soup')).toBe(false);
 
     component.toggleItem('Salad');
-    expect(component.exists('Salad')).toBeTrue();
+    expect(component.exists('Salad')).toBe(true);
   });
 
   it('should emit updated assignments', () => {
-    spyOn(component.updatingItems, 'emit');
+    vi.spyOn(component.updatingItems, 'emit');
 
     component.updateAssign();
 

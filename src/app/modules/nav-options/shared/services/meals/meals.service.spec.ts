@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { MealsService } from './meals.service';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 import { Store } from 'src/app/store/store';
@@ -24,7 +24,7 @@ describe('MealsService', () => {
 
   beforeEach(() => {
     mocks = installFirebaseTestMocks(mockFirebaseUser);
-    mocks.observeCollectionData.and.returnValue(of([meal]));
+    mocks.observeCollectionData.mockReturnValue(of([meal]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -40,11 +40,9 @@ describe('MealsService', () => {
     store = TestBed.inject(Store);
   });
 
-  it('should load meals for the authenticated user into the store', (done) => {
-    service.meals$.subscribe(() => {
-      expect(store.value.meals).toEqual([meal]);
-      done();
-    });
+  it('should load meals for the authenticated user into the store', async () => {
+    await firstValueFrom(service.meals$);
+    expect(store.value.meals).toEqual([meal]);
   });
 
   it('should add meals without AngularFire metadata and with a timestamp', async () => {
@@ -57,17 +55,17 @@ describe('MealsService', () => {
     });
 
     expect(mocks.createDocument).toHaveBeenCalled();
-    const payload = mocks.createDocument.calls.mostRecent().args[1] as Record<string, unknown>;
+    const payload = mocks.createDocument.mock.calls.at(-1)?.[1] as Record<string, unknown>;
     expect(payload.$key).toBeUndefined();
     expect(payload.$exists).toBeUndefined();
-    expect(payload.timestamp).toEqual(jasmine.any(Number));
+    expect(payload.timestamp).toEqual(expect.any(Number));
   });
 
   it('should preserve an existing timestamp when updating meals', async () => {
     await service.updateMeal('meal-1', meal);
 
     expect(mocks.updateDocument).toHaveBeenCalled();
-    const payload = mocks.updateDocument.calls.mostRecent().args[1] as Record<string, unknown>;
+    const payload = mocks.updateDocument.mock.calls.at(-1)?.[1] as Record<string, unknown>;
     expect(payload.name).toBe('Pancakes');
     expect(payload.$key).toBeUndefined();
   });
@@ -78,21 +76,16 @@ describe('MealsService', () => {
     expect(mocks.deleteDocument).toHaveBeenCalled();
   });
 
-  it('should return a blank meal template when no id is provided', (done) => {
-    service.getMeal('').subscribe(value => {
-      expect(value.name).toBe('');
-      expect(value.$exists()).toBeFalse();
-      done();
-    });
+  it('should return a blank meal template when no id is provided', async () => {
+    const value = await firstValueFrom(service.getMeal(''));
+    expect(value.name).toBe('');
+    expect(value.$exists()).toBe(false);
   });
 
-  it('should find a meal from the store by key', (done) => {
+  it('should find a meal from the store by key', async () => {
     store.set('meals', [meal]);
 
-    service.getMeal('meal-1').subscribe(value => {
-      expect(value).toEqual(meal);
-      done();
-    });
+    await expect(firstValueFrom(service.getMeal('meal-1'))).resolves.toEqual(meal);
   });
 
   it('should throw when uid is requested without authentication', () => {
@@ -110,6 +103,6 @@ describe('MealsService', () => {
     });
 
     const unauthenticatedService = TestBed.inject(MealsService);
-    expect(() => unauthenticatedService.uid).toThrowError('User not authenticated');
+    expect(() => unauthenticatedService.uid).toThrow('User not authenticated');
   });
 });

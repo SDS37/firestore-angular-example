@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleDaysComponent } from './schedule-days.component';
 
@@ -13,7 +14,7 @@ describe('ScheduleDaysComponent', () => {
   });
 
   it('should emit the selected day index', () => {
-    spyOn(component.selectingDay, 'emit');
+    vi.spyOn(component.selectingDay, 'emit');
 
     component.selectDay(3);
 

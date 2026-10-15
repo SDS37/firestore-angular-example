@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 import { Auth } from '@angular/fire/auth';
 import { AuthService } from './auth.service';
 import { Store } from 'src/app/store/store';
@@ -25,14 +26,13 @@ describe('AuthService', () => {
     store = TestBed.inject(Store);
   });
 
-  it('should sync authenticated users into the store', (done) => {
-    service.auth$.subscribe(() => {
-      expect(store.value.user).toEqual({
-        email: mockFirebaseUser.email,
-        uid: mockFirebaseUser.uid,
-        authenticated: true
-      });
-      done();
+  it('should sync authenticated users into the store', async () => {
+    await firstValueFrom(service.auth$);
+
+    expect(store.value.user).toEqual({
+      email: mockFirebaseUser.email,
+      uid: mockFirebaseUser.uid,
+      authenticated: true
     });
   });
 

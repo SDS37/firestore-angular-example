@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleSectionComponent } from './schedule-section.component';
 import { JoinPipe } from 'src/app/modules/nav-options/shared/pipes/join.pipe';
@@ -21,7 +22,7 @@ describe('ScheduleSectionComponent', () => {
   });
 
   it('should emit section selection events', () => {
-    spyOn(component.selectingSection, 'emit');
+    vi.spyOn(component.selectingSection, 'emit');
 
     component.onSelect('meals', ['Omelette']);
 

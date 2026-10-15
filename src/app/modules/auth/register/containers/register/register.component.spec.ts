@@ -1,3 +1,4 @@
+import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,11 +9,11 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
-  let authService: jasmine.SpyObj<AuthService>;
+  let authService: { createUser: Mock };
   let router: Router;
 
   beforeEach(async () => {
-    authService = jasmine.createSpyObj('AuthService', ['createUser']);
+    authService = { createUser: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, RegisterComponent, AuthFormComponent],
@@ -22,13 +23,13 @@ describe('RegisterComponent', () => {
     }).compileComponents();
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
     component = TestBed.createComponent(RegisterComponent).componentInstance;
   });
 
   it('should navigate home after successful registration', async () => {
-    authService.createUser.and.returnValue(Promise.resolve({} as never));
+    authService.createUser.mockReturnValue(Promise.resolve({} as never));
 
     await component.registerUser({
       value: { email: 'test@example.com', password: 'secret' }
@@ -39,7 +40,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should expose registration errors', async () => {
-    authService.createUser.and.returnValue(Promise.reject(new Error('Email already in use')));
+    authService.createUser.mockReturnValue(Promise.reject(new Error('Email already in use')));
 
     await component.registerUser({
       value: { email: 'test@example.com', password: 'secret' }

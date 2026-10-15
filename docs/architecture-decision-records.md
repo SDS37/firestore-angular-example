@@ -7,7 +7,7 @@ Each record states the context, the decision, its consequences, and the conditio
 | [ADR-001](#adr-001-cloud-firestore-not-realtime-database) | Cloud Firestore, not the Realtime Database | Accepted |
 | [ADR-002](#adr-002-angularfire-with-explicit-overrides) | AngularFire with explicit `overrides` | Accepted |
 | [ADR-003](#adr-003-an-rxjs-store-service) | An RxJS store service | Accepted, under review in FAE-050 |
-| [ADR-004](#adr-004-vitest-instead-of-karma) | Vitest instead of Karma and Jasmine | Accepted, not implemented (FAE-031) |
+| [ADR-004](#adr-004-vitest-instead-of-karma) | Vitest instead of Karma and Jasmine | Accepted (implemented in FAE-031) |
 | [ADR-005](#adr-005-typescript-pinned-to-60) | TypeScript pinned to 6.0 | Accepted |
 | [ADR-006](#adr-006-grpc-js-pinned-to-1146) | `@grpc/grpc-js` pinned to 1.14.6 | Accepted |
 
@@ -48,9 +48,9 @@ Each record states the context, the decision, its consequences, and the conditio
 
 ## ADR-004: Vitest instead of Karma
 
-**Context.** `ng test` uses `@angular/build:karma`. Karma needs a local Chrome; the tests fail to start where Chrome cannot launch. `@angular/build` 22.2 provides `@angular/build:unit-test` with Vitest (`^4.0.8 || ^5.0.0`).
+**Context.** Karma needed a local Chrome, so tests failed to start where Chrome could not launch. `@angular/build` 22.2 provides `@angular/build:unit-test` with Vitest (`^4.0.8 || ^5.0.0`).
 
-**Decision.** Move the 73 specs to `@angular/build:unit-test` with Vitest 5 and jsdom, and remove Karma and Jasmine. Implemented in [FAE-031](https://github.com/SDS37/firestore-angular-example/issues/95).
+**Decision.** The 73 specs run on `@angular/build:unit-test` with Vitest 5.0.4 and jsdom 30.1.2. Karma and Jasmine are removed. Implemented in [FAE-031](https://github.com/SDS37/firestore-angular-example/issues/95).
 
 **Consequences.** `jasmine.createSpy` and `spyOn` become `vi.fn` and `vi.spyOn`, including in `src/app/testing/firebase-test-harness.ts`. Tests run headless in CI without a browser. The question of Jasmine 7 against `karma-jasmine` 5 goes away.
 

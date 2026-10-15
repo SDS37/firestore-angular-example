@@ -1,47 +1,48 @@
 import { User } from '@angular/fire/auth';
+import { Mock, vi } from 'vitest';
 import { firebaseAuthApi } from 'src/app/utils/firebase-auth.utils';
 import { firestoreApi } from 'src/app/utils/firestore.utils';
 import { Observable, of } from 'rxjs';
 import { mockFirebaseUser } from './firebase.mock';
 
 export interface FirebaseTestMocks {
-  observeAuthState: jasmine.Spy<(auth: unknown) => Observable<User | null>>;
-  onAuthStateChanged: jasmine.Spy;
-  signInUser: jasmine.Spy;
-  registerUser: jasmine.Spy;
-  signOutUser: jasmine.Spy;
-  getCollection: jasmine.Spy;
-  observeCollectionData: jasmine.Spy;
-  getDocument: jasmine.Spy;
-  createDocument: jasmine.Spy;
-  updateDocument: jasmine.Spy;
-  deleteDocument: jasmine.Spy;
-  buildQuery: jasmine.Spy;
-  orderByField: jasmine.Spy;
-  startAtValue: jasmine.Spy;
-  endAtValue: jasmine.Spy;
+  observeAuthState: Mock<(auth: unknown) => Observable<User | null>>;
+  onAuthStateChanged: Mock;
+  signInUser: Mock;
+  registerUser: Mock;
+  signOutUser: Mock;
+  getCollection: Mock;
+  observeCollectionData: Mock;
+  getDocument: Mock;
+  createDocument: Mock;
+  updateDocument: Mock;
+  deleteDocument: Mock;
+  buildQuery: Mock;
+  orderByField: Mock;
+  startAtValue: Mock;
+  endAtValue: Mock;
 }
 
 function createMocks(user: User | null): FirebaseTestMocks {
   return {
-    observeAuthState: jasmine.createSpy('observeAuthState').and.returnValue(of(user)),
-    onAuthStateChanged: jasmine.createSpy('onAuthStateChanged').and.callFake((_auth, next) => {
-      (next as (value: User | null) => void)(user);
+    observeAuthState: vi.fn<(auth: unknown) => Observable<User | null>>().mockReturnValue(of(user)),
+    onAuthStateChanged: vi.fn().mockImplementation((_auth: unknown, next: (value: User | null) => void) => {
+      next(user);
       return () => undefined;
     }),
-    signInUser: jasmine.createSpy('signInUser').and.returnValue(Promise.resolve({ user: mockFirebaseUser })),
-    registerUser: jasmine.createSpy('registerUser').and.returnValue(Promise.resolve({ user: mockFirebaseUser })),
-    signOutUser: jasmine.createSpy('signOutUser').and.returnValue(Promise.resolve()),
-    getCollection: jasmine.createSpy('getCollection').and.callFake((_firestore, path) => ({ path })),
-    observeCollectionData: jasmine.createSpy('observeCollectionData').and.returnValue(of([])),
-    getDocument: jasmine.createSpy('getDocument').and.callFake((_firestore, path: string) => ({ path })),
-    createDocument: jasmine.createSpy('createDocument').and.returnValue(Promise.resolve({ id: 'new-id' })),
-    updateDocument: jasmine.createSpy('updateDocument').and.returnValue(Promise.resolve()),
-    deleteDocument: jasmine.createSpy('deleteDocument').and.returnValue(Promise.resolve()),
-    buildQuery: jasmine.createSpy('buildQuery').and.returnValue({}),
-    orderByField: jasmine.createSpy('orderByField').and.returnValue({}),
-    startAtValue: jasmine.createSpy('startAtValue').and.returnValue({}),
-    endAtValue: jasmine.createSpy('endAtValue').and.returnValue({})
+    signInUser: vi.fn().mockResolvedValue({ user: mockFirebaseUser }),
+    registerUser: vi.fn().mockResolvedValue({ user: mockFirebaseUser }),
+    signOutUser: vi.fn().mockResolvedValue(undefined),
+    getCollection: vi.fn().mockImplementation((_firestore: unknown, path: string) => ({ path })),
+    observeCollectionData: vi.fn().mockReturnValue(of([])),
+    getDocument: vi.fn().mockImplementation((_firestore: unknown, path: string) => ({ path })),
+    createDocument: vi.fn().mockResolvedValue({ id: 'new-id' }),
+    updateDocument: vi.fn().mockResolvedValue(undefined),
+    deleteDocument: vi.fn().mockResolvedValue(undefined),
+    buildQuery: vi.fn().mockReturnValue({}),
+    orderByField: vi.fn().mockReturnValue({}),
+    startAtValue: vi.fn().mockReturnValue({}),
+    endAtValue: vi.fn().mockReturnValue({})
   };
 }
 

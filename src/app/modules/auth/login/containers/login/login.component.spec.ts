@@ -1,3 +1,4 @@
+import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,11 +9,11 @@ import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.serv
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
-  let authService: jasmine.SpyObj<AuthService>;
+  let authService: { loginUser: Mock };
   let router: Router;
 
   beforeEach(async () => {
-    authService = jasmine.createSpyObj('AuthService', ['loginUser']);
+    authService = { loginUser: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, LoginComponent, AuthFormComponent],
@@ -22,14 +23,14 @@ describe('LoginComponent', () => {
     }).compileComponents();
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
     const fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
   });
 
   it('should navigate home after a successful login', async () => {
-    authService.loginUser.and.returnValue(Promise.resolve({} as never));
+    authService.loginUser.mockReturnValue(Promise.resolve({} as never));
 
     await component.loginUser({
       value: { email: 'test@example.com', password: 'secret' }
@@ -40,7 +41,7 @@ describe('LoginComponent', () => {
   });
 
   it('should expose login errors', async () => {
-    authService.loginUser.and.returnValue(Promise.reject(new Error('Invalid credentials')));
+    authService.loginUser.mockReturnValue(Promise.reject(new Error('Invalid credentials')));
 
     await component.loginUser({
       value: { email: 'test@example.com', password: 'wrong' }

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { WorkoutsService } from './workouts.service';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 import { Store } from 'src/app/store/store';
@@ -26,7 +26,7 @@ describe('WorkoutsService', () => {
 
   beforeEach(() => {
     mocks = installFirebaseTestMocks(mockFirebaseUser);
-    mocks.observeCollectionData.and.returnValue(of([workout]));
+    mocks.observeCollectionData.mockReturnValue(of([workout]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -42,11 +42,9 @@ describe('WorkoutsService', () => {
     store = TestBed.inject(Store);
   });
 
-  it('should load workouts into the store', (done) => {
-    service.workouts$.subscribe(() => {
-      expect(store.value.workouts).toEqual([workout]);
-      done();
-    });
+  it('should load workouts into the store', async () => {
+    await firstValueFrom(service.workouts$);
+    expect(store.value.workouts).toEqual([workout]);
   });
 
   it('should add workouts without metadata and with a timestamp', async () => {
@@ -60,15 +58,13 @@ describe('WorkoutsService', () => {
       $exists: () => true
     });
 
-    const payload = mocks.createDocument.calls.mostRecent().args[1] as Record<string, unknown>;
+    const payload = mocks.createDocument.mock.calls.at(-1)?.[1] as Record<string, unknown>;
     expect(payload.$key).toBeUndefined();
-    expect(payload.timestamp).toEqual(jasmine.any(Number));
+    expect(payload.timestamp).toEqual(expect.any(Number));
   });
 
-  it('should return a blank workout template when no id is provided', (done) => {
-    service.getWorkout('').subscribe(value => {
-      expect(value.type).toBe('strength');
-      done();
-    });
+  it('should return a blank workout template when no id is provided', async () => {
+    const value = await firstValueFrom(service.getWorkout(''));
+    expect(value.type).toBe('strength');
   });
 });

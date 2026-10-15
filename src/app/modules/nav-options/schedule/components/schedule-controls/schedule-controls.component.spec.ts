@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleControlsComponent } from './schedule-controls.component';
 
@@ -13,7 +14,7 @@ describe('ScheduleControlsComponent', () => {
   });
 
   it('should emit week offsets', () => {
-    spyOn(component.movingDate, 'emit');
+    vi.spyOn(component.movingDate, 'emit');
 
     component.moveDate(-1);
 

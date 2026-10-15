@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthFormComponent } from './auth-form.component';
@@ -17,13 +18,13 @@ describe('AuthFormComponent', () => {
   });
 
   it('should not emit invalid submissions', () => {
-    spyOn(component.submitted, 'emit');
+    vi.spyOn(component.submitted, 'emit');
     component.onSubmit();
     expect(component.submitted.emit).not.toHaveBeenCalled();
   });
 
   it('should emit the form when valid', () => {
-    spyOn(component.submitted, 'emit');
+    vi.spyOn(component.submitted, 'emit');
     component.form.setValue({
       email: 'test@example.com',
       password: 'secret'

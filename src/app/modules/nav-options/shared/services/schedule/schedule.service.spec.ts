@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { ScheduleService } from './schedule.service';
 import { AuthService } from 'src/app/modules/auth/shared/services/auth/auth.service';
 import { Store } from 'src/app/store/store';
@@ -25,7 +25,7 @@ describe('ScheduleService', () => {
 
   beforeEach(() => {
     mocks = installFirebaseTestMocks(mockFirebaseUser);
-    mocks.observeCollectionData.and.returnValue(of([scheduleItem]));
+    mocks.observeCollectionData.mockReturnValue(of([scheduleItem]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -41,25 +41,23 @@ describe('ScheduleService', () => {
     store = TestBed.inject(Store);
   });
 
-  it('should map schedule documents into a section keyed object', (done) => {
-    service.schedule$.subscribe(() => {
-      expect(store.value.schedule).toEqual({ morning: scheduleItem });
-      done();
-    });
+  it('should map schedule documents into a section keyed object', async () => {
+    await firstValueFrom(service.schedule$);
+    expect(store.value.schedule).toEqual({ morning: scheduleItem });
   });
 
-  it('should keep the first section when duplicate section keys exist', (done) => {
+  it('should keep the first section when duplicate section keys exist', async () => {
     const duplicate: ScheduleItem = {
       ...scheduleItem,
       meals: ['Toast'],
       $key: 'schedule-2'
     };
 
-    mocks.observeCollectionData.and.returnValue(of([scheduleItem, duplicate]));
+    mocks.observeCollectionData.mockReturnValue(of([scheduleItem, duplicate]));
 
     TestBed.resetTestingModule();
     const duplicateMocks = installFirebaseTestMocks(mockFirebaseUser);
-    duplicateMocks.observeCollectionData.and.returnValue(of([scheduleItem, duplicate]));
+    duplicateMocks.observeCollectionData.mockReturnValue(of([scheduleItem, duplicate]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -73,23 +71,13 @@ describe('ScheduleService', () => {
 
     const duplicateService = TestBed.inject(ScheduleService);
     const duplicateStore = TestBed.inject(Store);
-    duplicateService.schedule$.subscribe(() => {
-      expect(duplicateStore.value.schedule.morning.meals).toEqual(['Omelette']);
-      done();
-    });
+    await firstValueFrom(duplicateService.schedule$);
+    expect(duplicateStore.value.schedule.morning.meals).toEqual(['Omelette']);
   });
 
-  it('should create a new schedule section when assigning without an existing id', (done) => {
+  it('should create a new schedule section when assigning without an existing id', async () => {
     const day = new Date('2026-07-02T12:00:00');
-
-    service.items$.subscribe(() => {
-      expect(mocks.createDocument).toHaveBeenCalled();
-      const payload = mocks.createDocument.calls.mostRecent().args[1] as ScheduleItem;
-      expect(payload.section).toBe('lunch');
-      expect(payload.meals).toEqual(['Salad']);
-      expect(payload.timestamp).toBe(new Date(day).getTime());
-      done();
-    });
+    const pending = firstValueFrom(service.items$);
 
     service.selectSection({
       type: 'meals',
@@ -99,13 +87,17 @@ describe('ScheduleService', () => {
       day
     });
     service.updateItems({ meals: ['Salad'] });
+    await pending;
+
+    expect(mocks.createDocument).toHaveBeenCalled();
+    const payload = mocks.createDocument.mock.calls.at(-1)?.[1] as ScheduleItem;
+    expect(payload.section).toBe('lunch');
+    expect(payload.meals).toEqual(['Salad']);
+    expect(payload.timestamp).toBe(new Date(day).getTime());
   });
 
-  it('should update an existing schedule section when an id is present', (done) => {
-    service.items$.subscribe(() => {
-      expect(mocks.updateDocument).toHaveBeenCalled();
-      done();
-    });
+  it('should update an existing schedule section when an id is present', async () => {
+    const pending = firstValueFrom(service.items$);
 
     service.selectSection({
       type: 'meals',
@@ -115,9 +107,12 @@ describe('ScheduleService', () => {
       day: new Date(scheduleItem.timestamp)
     });
     service.updateItems({ meals: ['Omelette', 'Toast'] });
+    await pending;
+
+    expect(mocks.updateDocument).toHaveBeenCalled();
   });
 
-  it('should expose meals or workouts for the selected section type', (done) => {
+  it('should expose meals or workouts for the selected section type', async () => {
     const meals: Meal[] = [{
       name: 'Soup',
       ingredients: ['water'],
@@ -126,11 +121,7 @@ describe('ScheduleService', () => {
       $exists: () => true
     }];
     store.set('meals', meals);
-
-    service.list$.subscribe(value => {
-      expect(value).toEqual(meals);
-      done();
-    });
+    const pending = firstValueFrom(service.list$);
 
     service.selectSection({
       type: 'meals',
@@ -139,5 +130,7 @@ describe('ScheduleService', () => {
       section: 'evening',
       day: new Date()
     });
+
+    await expect(pending).resolves.toEqual(meals);
   });
 });

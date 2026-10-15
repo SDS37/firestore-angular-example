@@ -1,5 +1,6 @@
+import { Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { MealsComponent } from './meals.component';
 import { MealsService } from 'src/app/modules/nav-options/shared/services/meals/meals.service';
 import { Store } from 'src/app/store/store';
@@ -9,13 +10,13 @@ import { Meal } from 'src/app/models/meal.interface';
 
 describe('MealsComponent', () => {
   let component: MealsComponent;
-  let mealsService: jasmine.SpyObj<MealsService>;
+  let mealsService: { deleteMeal: Mock; meals$: Observable<any> };
 
   beforeEach(async () => {
-    mealsService = jasmine.createSpyObj('MealsService', ['deleteMeal'], {
+    mealsService = {
+      deleteMeal: vi.fn().mockResolvedValue(undefined),
       meals$: of([])
-    });
-    mealsService.deleteMeal.and.returnValue(Promise.resolve());
+    };
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, MealsComponent, ListItemComponent],

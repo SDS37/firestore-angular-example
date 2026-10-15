@@ -1,3 +1,4 @@
+import { firstValueFrom } from 'rxjs';
 import { Store } from './store';
 import { Meal } from '../models/meal.interface';
 
@@ -13,7 +14,7 @@ describe('Store', () => {
     expect(store.value.meals).toBeUndefined();
   });
 
-  it('should set and select state slices', (done) => {
+  it('should set and select state slices', async () => {
     const meals: Meal[] = [{
       name: 'Omelette',
       ingredients: ['eggs'],
@@ -24,10 +25,7 @@ describe('Store', () => {
 
     store.set('meals', meals);
 
-    store.select<Meal[]>('meals').subscribe(value => {
-      expect(value).toEqual(meals);
-      done();
-    });
+    await expect(firstValueFrom(store.select<Meal[]>('meals'))).resolves.toEqual(meals);
   });
 
   it('should merge updates without dropping other slices', () => {

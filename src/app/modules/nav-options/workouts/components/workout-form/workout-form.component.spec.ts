@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,7 +19,7 @@ describe('WorkoutFormComponent', () => {
   });
 
   it('should emit create events for valid strength workouts', () => {
-    spyOn(component.create, 'emit');
+    vi.spyOn(component.create, 'emit');
     component.form.setValue({
       name: 'Bench press',
       type: 'strength',
