@@ -19,7 +19,7 @@ The roadmap is done when a colleague can follow the root README and every box be
 - [x] Logging out clears every store key. A second user, without a reload, sees only their own data (M5)
 - [x] Schedule entries reference meals and workouts by id. Deleting a meal leaves no dangling entry (M5)
 - [x] A rejected write shows a message to the user (M5)
-- [ ] Pinch zoom works and a keyboard-only user can assign a meal on the schedule (M6)
+- [x] Pinch zoom works and a keyboard-only user can assign a meal on the schedule (M6)
 - [ ] Playwright on the emulators covers register, login, create, assign, logout, and the two-user isolation path, in CI (M7)
 
 ## Not in this DoD

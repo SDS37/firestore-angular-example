@@ -15,10 +15,24 @@ License: MIT · Hosted at [fir-example-app-5c3d3.web.app](https://fir-example-ap
 | Schedule | Week view, four sections per day, assign meals and workouts by document id. A stored name from an older entry still displays when that name matches. Deleting a meal or workout removes it from the schedule |
 | Security rules | `firestore.rules` restricts `users/{userId}` and its `meals`, `workouts`, and `schedule` subcollections to that user; everything else is denied. `npm run test:rules` proves the owner is allowed, and another signed-in user and an anonymous client are denied |
 | Unit tests | 88 specs, Vitest 5.0.4 and jsdom 30.1.2 |
-| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M6](https://github.com/SDS37/firestore-angular-example/issues/108) |
-| PWA | Manifest and service worker are built; the service worker is not registered |
+| Dependencies | Angular 22.2.2, CDK and Material 22.2.3, ESLint 10.12, Node 24.22.0, one `firebase` (12.19.0). Production audit is clean. TypeScript `strict` and `strictTemplates` are on. Next is [M7](https://github.com/SDS37/firestore-angular-example/issues/111) |
+| PWA | Manifest name is “Meal and workout planner”. `robots.txt` is served. The service worker is built and not registered. Scores are in [Lighthouse](#lighthouse) |
 | CI and deploy | GitHub Actions runs lint, build, unit tests, and rules tests on every pull request and on `master`. A pull request deploys a Hosting preview and comments the URL. A push to `master` deploys hosting and `firestore.rules`. The credential is the `FIREBASE_SERVICE_ACCOUNT` GitHub secret |
 | Documentation | Roadmap, Definition of Done, requirements, architecture, ADRs, standards. See [docs/](docs/README.md) |
+
+## Lighthouse
+
+Lighthouse 13.5.0 on 2026-10-15, default mobile run, against a local production build of `dist/firebase-example-app/browser`. The app redirects `/` to `/auth/login`. Lighthouse 13 has no PWA category. The service worker is built and not registered.
+
+| Category | Score |
+|---|---|
+| Performance | 74 |
+| Accessibility | 98 |
+| Best practices | 96 |
+| SEO | 100 |
+| Agentic browsing | 100 |
+
+First contentful paint was 3.5 s and largest contentful paint was 5.0 s. Accessibility misses a `main` landmark. Best practices miss source maps and a favicon, which 404s in the console.
 
 ## How it works
 
