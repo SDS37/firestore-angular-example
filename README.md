@@ -132,7 +132,7 @@ Open `http://localhost:4200`. Register with any email and a password of six char
 
 `npm run test:rules` starts the same emulators, runs the rules specs against the demo project `demo-fir-example-app`, and shuts the emulators down. That command does not need a Firebase login and does not touch the hosted project.
 
-`npm run e2e` starts those emulators, serves the app with `useEmulators: true` from `src/environments/environment.e2e.ts`, and runs Playwright against that server. `environment.ts` and the production build stay on `useEmulators: false`. Java 21 is required, the same as the rules tests.
+`npm run e2e` starts those emulators, serves the app with `useEmulators: true` from `src/environments/environment.e2e.ts`, and runs Playwright against that server. `environment.ts` and the production build stay on `useEmulators: false`. Java 21 is required, the same as the rules tests. The first run also needs the browser: `npx playwright install chromium`.
 
 ## Use your own Firebase project
 
