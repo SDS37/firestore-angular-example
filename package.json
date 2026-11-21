@@ -35,11 +35,11 @@
     "zone.js": "~0.16.3"
   },
   "devDependencies": {
-    "@angular-eslint/builder": "^22.6.0",
-    "@angular-eslint/eslint-plugin": "^22.6.0",
-    "@angular-eslint/eslint-plugin-template": "^22.6.0",
-    "@angular-eslint/schematics": "^22.6.0",
-    "@angular-eslint/template-parser": "^22.6.0",
+    "@angular-eslint/builder": "^22.8.0",
+    "@angular-eslint/eslint-plugin": "^22.8.0",
+    "@angular-eslint/eslint-plugin-template": "^22.8.0",
+    "@angular-eslint/schematics": "^22.8.0",
+    "@angular-eslint/template-parser": "^22.8.0",
     "@angular/build": "^22.2.2",
     "@angular/cli": "^22.2.2",
     "@angular/compiler-cli": "^22.2.2",
@@ -48,12 +48,12 @@
     "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
     "@vitest/coverage-v8": "^5.0.4",
-    "angular-eslint": "^22.6.0",
-    "eslint": "^10.12.0",
+    "angular-eslint": "^22.8.0",
+    "eslint": "^10.15.0",
     "firebase-tools": "^15.33.0",
     "jsdom": "^30.0.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.71.2",
+    "typescript-eslint": "^8.73.0",
     "vitest": "^5.0.0"
   },
   "overrides": {
